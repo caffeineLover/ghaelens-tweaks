@@ -1,0 +1,14 @@
+[
+  {
+    "op": "add",
+    "path": "/walkspeedmultiplier",
+    "value": 1.10,
+    "file": "game:blocktypes/soil/packeddirt.json"
+  },
+  {
+    "op": "add",
+    "path": "/walkspeedmultiplier",
+    "value": 1.20,
+    "file": "game:blocktypes/soil/rammed.json"
+  }
+]

@@ -1,0 +1,59 @@
+[
+  {
+    "op": "add",
+    "path": "/variantgroups/1/states/-",
+    "value": "bone",
+    "file": "game:itemtypes/tool/knife.json"
+  },
+  {
+    "op": "add",
+    "path": "/texturesByType/knife-generic-bone",
+    "value": {
+      "material": { "base": "block/creature/bone-yellow" }
+    },
+    "file": "game:itemtypes/tool/knife.json"
+  },
+  {
+    "op": "add",
+    "path": "/durabilitybytype/knife-generic-bone",
+    "value": 100,
+    "file": "game:itemtypes/tool/knife.json"
+  },
+  {
+    "op": "add",
+    "path": "/miningspeedbytype/knife-generic-bone",
+    "value": {
+      "plant": 1
+    },
+    "file": "game:itemtypes/tool/knife.json"
+  },
+  {
+    "op": "add",
+    "path": "/attackpowerbytype/knife-generic-bone",
+    "value": 0.75,
+    "file": "game:itemtypes/tool/knife.json"
+  },
+  {
+    "op": "add",
+    "path": "/materialDensityByType",
+    "value": {
+      "knife-generic-bone": 1900
+    },
+    "file": "game:itemtypes/tool/knife.json"
+  },
+  {
+    "op": "add",
+    "path": "/-",
+    "value": {
+      "ingredientPattern": "B\tS",
+      "ingredients": {
+        "B": { "type": "item", "code": "bone" },
+        "S": { "type": "item", "code": "stick" }
+      },
+      "width": 1,
+      "height": 2,
+      "output": { "type": "item", "code": "knife-generic-bone", "quantity": 1 }
+    },
+    "file": "game:recipes/grid/tool/knife.json"
+  }
+]

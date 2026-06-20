@@ -1,0 +1,13 @@
+{
+    "type": "content",
+    "modid": "ghaelentweaks",
+    "name": "Ghaelen Tweaks",
+    "authors": [
+        "Ghaelen"
+    ],
+    "description": "To be added",
+    "version": "0.1.6",
+    "dependencies": {
+        "game": "1.22.2 - 1.22.3"
+    }
+}

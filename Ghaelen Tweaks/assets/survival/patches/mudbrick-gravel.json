@@ -1,0 +1,102 @@
+[
+  {
+    "op": "add",
+    "path": "/-",
+    "value": {
+      "ingredientPattern": "G_G\tCSC\tGLG",
+      "enabled": true,
+      "ingredients": {
+        "G": { "type": "item", "code": "drygrass", "quantity": 2 },
+        "S": { "type": "block", "code": "gravel-*" },
+        "C": { "type": "item", "code": "clay-*", "quantity": 4 },
+        "L": {
+          "type": "block",
+          "code": "soil-*-none",
+          "name": "grade",
+          "allowedVariants": ["low", "medium"]
+        }
+      },
+      "name": "mudbrick",
+      "width": 3,
+      "height": 3,
+      "output": { "type": "block", "code": "mudbrick-light", "quantity": 4 }
+    },
+    "file": "game:recipes/grid/mudbricks.json",
+    "side": "Server"
+  },
+  {
+    "op": "add",
+    "path": "/-",
+    "value": {
+      "ingredientPattern": "G_G\tCSC\tGLG",
+      "enabled": true,
+      "ingredients": {
+        "G": { "type": "item", "code": "drygrass", "quantity": 2 },
+        "S": { "type": "block", "code": "dirtygravel-*" },
+        "C": { "type": "item", "code": "clay-*", "quantity": 4 },
+        "L": {
+          "type": "block",
+          "code": "soil-*-none",
+          "name": "grade",
+          "allowedVariants": ["low", "medium"]
+        }
+      },
+      "name": "mudbrick",
+      "width": 3,
+      "height": 3,
+      "output": { "type": "block", "code": "mudbrick-light", "quantity": 4 }
+    },
+    "file": "game:recipes/grid/mudbricks.json",
+    "side": "Server"
+  },
+  {
+    "op": "add",
+    "path": "/-",
+    "value": {
+      "ingredientPattern": "G_G\tCSC\tGLG",
+      "enabled": true,
+      "ingredients": {
+        "G": { "type": "item", "code": "drygrass", "quantity": 2 },
+        "S": { "type": "block", "code": "muddygravel" },
+        "C": { "type": "item", "code": "clay-*", "quantity": 4 },
+        "L": {
+          "type": "block",
+          "code": "soil-*-none",
+          "name": "grade",
+          "allowedVariants": ["low", "medium"]
+        }
+      },
+      "name": "mudbrick",
+      "width": 3,
+      "height": 3,
+      "output": { "type": "block", "code": "mudbrick-light", "quantity": 4 }
+    },
+    "file": "game:recipes/grid/mudbricks.json",
+    "side": "Server"
+  },
+  {
+    "op": "add",
+    "path": "/-",
+    "value": {
+      "ingredientPattern": "G_G\tCSC\tGLG",
+      "enabled": true,
+      "ingredients": {
+        "G": { "type": "item", "code": "drygrass", "quantity": 2 },
+        "S": { "type": "block", "code": "sludgygravel" },
+        "C": { "type": "item", "code": "clay-*", "quantity": 4 },
+        "L": {
+          "type": "block",
+          "code": "soil-*-none",
+          "name": "grade",
+          "allowedVariants": ["low", "medium"]
+        }
+      },
+      "name": "mudbrick",
+      "width": 3,
+      "height": 3,
+      "output": { "type": "block", "code": "mudbrick-light", "quantity": 4 }
+    },
+    "file": "game:recipes/grid/mudbricks.json",
+    "side": "Server"
+  }
+]

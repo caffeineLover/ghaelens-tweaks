@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.7 - 2026-06-20
+
+### Fixed
+
+- Fixed ModDB upload validation by changing the `game` dependency back to a single minimum version, `1.22.2`; Vintage Story mod dependencies do not accept a `1.22.2 - 1.22.3` range string.
+- Kept Vintage Story 1.22.3 listed as supported in the README.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.1.6` to `0.1.7`.
+
 ## 0.1.6 - 2026-06-20
 
 ### Changed

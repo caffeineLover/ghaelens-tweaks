@@ -6,8 +6,8 @@
         "Ghaelen"
     ],
     "description": "To be added",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "dependencies": {
-        "game": "1.22.2 - 1.22.3"
+        "game": "1.22.2"
     }
 }

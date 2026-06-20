@@ -1,6 +1,6 @@
 Tweaks I like to play with, especially with my kids. Always looking for people to play with and learn from, so feel free to reach out if you want to play together. I love PvE and hate PvP. Very co-opy kind of guy.
 
-Supported Vintage Story versions: 1.22.2 through 1.22.3.
+Supported Vintage Story versions: 1.22.2 through 1.22.3. The modinfo dependency uses `game: 1.22.2` because Vintage Story treats that field as the minimum required game version.
 
 ## Light Mudbrick Recipe Also Uses Gravel
 

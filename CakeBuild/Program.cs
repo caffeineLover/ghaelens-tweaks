@@ -1,4 +1,8 @@
-// Cake Frosting build host for validating the mod assets and packaging Ghaelen Tweaks into a Vintage Story mod archive.
+/*
+	Build pipeline for the Ghaelen Tweaks content mod. It reads release metadata from modinfo.json, validates the JSON
+	assets that Vintage Story will load, and creates the versioned ModDB-ready zip.
+*/
+
 using System;
 using System.IO;
 using Cake.Common;
@@ -12,6 +16,8 @@ using Vintagestory.API.Common;
 
 namespace CakeBuild;
 
+
+
 public static class Program
 {
 	public static int Main(string[] args)
@@ -21,6 +27,8 @@ public static class Program
 			.Run(args);
 	}
 }
+
+
 
 public class BuildContext : FrostingContext
 {
@@ -38,6 +46,8 @@ public class BuildContext : FrostingContext
 		Name = modInfo.ModID;
 	}
 }
+
+
 
 [TaskName("ValidateJson")]
 public sealed class ValidateJsonTask : FrostingTask<BuildContext>
@@ -66,6 +76,8 @@ public sealed class ValidateJsonTask : FrostingTask<BuildContext>
 	}
 }
 
+
+
 [TaskName("Package")]
 [IsDependentOn(typeof(ValidateJsonTask))]
 public sealed class PackageTask : FrostingTask<BuildContext>
@@ -90,6 +102,8 @@ public sealed class PackageTask : FrostingTask<BuildContext>
 		context.Zip($"../Releases/{context.Name}", $"../Releases/{context.Name}_{context.Version}.zip");
 	}
 }
+
+
 
 [TaskName("Default")]
 [IsDependentOn(typeof(PackageTask))]

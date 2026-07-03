@@ -1,5 +1,88 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Added configurable palisade damage for lore creatures on or horizontally next to `game:palisadewall-*` and `game:palisadestakes-*`.
+- Added charging hostile mundane predator palisade damage for adult bears, wolves, and hyenas near players.
+- Added Config Lib settings `enable-palisade-damage` and `palisade-damage-amount`.
+- Added axe and saw firewood drops for palisade walls and palisade stakes.
+
+## 0.1.14 - 2026-06-26
+
+### Changed
+
+- Cat lore-creature and fall-damage immunity now applies everywhere instead of only underground.
+- Split cat lore warning radii into underground and above-ground config values.
+- Underground cat lore glow and yowl default to 8 blocks; above-ground glow and yowl default to 16 blocks.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.1.13` to `0.1.14`.
+
+## 0.1.13 - 2026-06-21
+
+### Changed
+
+- Changed the default `radius-for-lore-glow` and `radius-for-lore-yowl` values from 8 blocks to 10 blocks.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.1.12` to `0.1.13`.
+
+## 0.1.12 - 2026-06-21
+
+### Added
+
+- Added Config Lib settings for the cat lore-guardian config values.
+- Cat lore settings now update at runtime when Config Lib publishes setting changes.
+
+### Changed
+
+- Changed the default `radius-for-lore-glow` and `radius-for-lore-yowl` values from 5 blocks to 8 blocks.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.1.11` to `0.1.12`.
+
+## 0.1.11 - 2026-06-21
+
+### Changed
+
+- Changed cat lore glow from an on/off effect to a proximity-scaled effect.
+- Cats now use a soft glow near the edge of `radius-for-lore-glow` and a stronger glow as the nearest lore creature gets closer.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.1.10` to `0.1.11`.
+
+## 0.1.10 - 2026-06-21
+
+### Added
+
+- Added a configurable cat lore-guardian behavior for the Cats mod.
+- Cats now glow while a lore creature is within `radius-for-lore-glow` blocks; `0` disables the glow.
+- Cats now play `Angry_Cat.ogg` when a lore creature first enters `radius-for-lore-yowl` blocks; `0` disables the yowl.
+- Cats can be made immune to lore-creature damage and fall damage while underground with `cat-impervious-to-lore-creatures`.
+- Added `ghaelentweaks.json` mod config defaults for the cat lore behavior.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.1.9` to `0.1.10`.
+
+## 0.1.9 - 2026-06-20
+
+### Fixed
+
+- Fixed a crash when right-clicking packed dirt or rammed earth in Vintage Story 1.22.2 by avoiding a block sound API call that was not runtime-compatible with 1.22.2.
+- Updated the code project default to compile against the StoryForge 1.22.2 API when that install is present.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.1.8` to `0.1.9`.
+
+## 0.1.8 - 2026-06-20
+
+### Added
+
+- Added a code behavior that lets players right-click placed packed dirt or rammed earth with loose stones to convert it into a stone path.
+- Mason, Miner, and Commoner characters use 2 stones.
+- Tinker, Artisan, Homesteader, and Clockmaker characters use 3 stones.
+- All other characters use 4 stones.
+- Added the behavior to packed dirt and rammed earth through a survival patch.
+
+### Changed
+
+- Changed the mod type from `content` to `code`.
+- Updated the Cake package task to build and include `GhaelenTweaks.dll`.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.1.7` to `0.1.8`.
+
 ## 0.1.7 - 2026-06-20
 
 ### Fixed

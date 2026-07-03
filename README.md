@@ -26,6 +26,50 @@ Packed dirt and rammed earth give movement speed buffs, but they stay weaker tha
   - Rammed earth increases walking speed by 20%.
   - Stone paths are unchanged and still increase walking speed by 30%.
 
+## Stone Paths From Prepared Soil
+
+Placed packed dirt and rammed earth can now be upgraded directly into stone paths with loose stones.
+
+- Prepared dirt already forms the base of a road surface, so adding stones on top should finish it into a stronger path.
+- Mason, Miner, and Commoner characters can do this most efficiently.
+- Tinker, Artisan, Homesteader, and Clockmaker characters get a smaller material discount.
+- From a player perspective:
+  - Right-click placed packed dirt or rammed earth while holding loose stones to turn it into a stone path.
+  - Mason, Miner, and Commoner characters use 2 stones.
+  - Tinker, Artisan, Homesteader, and Clockmaker characters use 3 stones.
+  - All other characters use 4 stones.
+
+## Cat Lore Warning
+
+Cats from the Cats mod can now warn you about nearby lore creatures.
+
+- Cats glow when a lore creature is nearby, with a stronger glow as the nearest lore creature gets closer.
+- Cats yowl when a lore creature first enters the configured warning radius.
+- Cats can be protected from lore-creature damage and fall damage.
+- From a player perspective:
+  - `cat-impervious-to-lore-creatures` controls lore-creature and fall-damage immunity.
+  - `underground-radius-for-lore-glow` controls the underground glow radius; `0` disables underground glow.
+  - `underground-radius-for-lore-yowl` controls the underground yowl radius; `0` disables underground yowl.
+  - `above-ground-radius-for-lore-glow` controls the above-ground glow radius; `0` disables above-ground glow.
+  - `above-ground-radius-for-lore-yowl` controls the above-ground yowl radius; `0` disables above-ground yowl.
+  - These settings can be edited through Config Lib when it is installed.
+  - The default glow and yowl radii are 8 blocks underground and 16 blocks above ground.
+
+## Palisades
+
+Palisades can now hurt less-aware hostile creatures and can be chopped into firewood.
+
+- Lore creatures take damage when they are on or horizontally next to palisade walls or palisade stakes.
+- Hostile mundane predators such as adult bears, wolves, and hyenas also take damage when they are charging toward a nearby player.
+- Normal animals and players are not damaged by palisades.
+- From a player perspective:
+  - `enable-palisade-damage` controls whether palisade creature damage is enabled.
+  - `palisade-damage-amount` controls the damage dealt each second; the default is `1`.
+  - Breaking palisade wall pieces with an axe or saw drops 3 or 4 firewood depending on the wall size.
+  - Breaking palisade stakes with an axe or saw drops 1 firewood.
+  - Breaking palisades with other tools uses the normal drop behavior.
+  - These settings can be edited through Config Lib when it is installed.
+
 ## Bone Knife
 
 Bones can now be crafted into a basic knife.

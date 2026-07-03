@@ -1,0 +1,86 @@
+{
+  "file": "ghaelentweaks.json",
+  "settings": [
+    {
+      "type": "boolean",
+      "code": "cat-impervious-to-lore-creatures",
+      "ingui": "ghaelentweaks:setting-cat-impervious-to-lore-creatures",
+      "comment": "ghaelentweaks:setting-cat-impervious-to-lore-creatures-comment",
+      "default": true,
+      "sortingWeight": 1
+    },
+    {
+      "type": "number",
+      "code": "underground-radius-for-lore-glow",
+      "ingui": "ghaelentweaks:setting-underground-radius-for-lore-glow",
+      "comment": "ghaelentweaks:setting-underground-radius-for-lore-glow-comment",
+      "default": 8,
+      "range": {
+        "min": 0,
+        "max": 64,
+        "step": 1
+      },
+      "sortingWeight": 2
+    },
+    {
+      "type": "number",
+      "code": "underground-radius-for-lore-yowl",
+      "ingui": "ghaelentweaks:setting-underground-radius-for-lore-yowl",
+      "comment": "ghaelentweaks:setting-underground-radius-for-lore-yowl-comment",
+      "default": 8,
+      "range": {
+        "min": 0,
+        "max": 64,
+        "step": 1
+      },
+      "sortingWeight": 3
+    },
+    {
+      "type": "number",
+      "code": "above-ground-radius-for-lore-glow",
+      "ingui": "ghaelentweaks:setting-above-ground-radius-for-lore-glow",
+      "comment": "ghaelentweaks:setting-above-ground-radius-for-lore-glow-comment",
+      "default": 16,
+      "range": {
+        "min": 0,
+        "max": 64,
+        "step": 1
+      },
+      "sortingWeight": 4
+    },
+    {
+      "type": "number",
+      "code": "above-ground-radius-for-lore-yowl",
+      "ingui": "ghaelentweaks:setting-above-ground-radius-for-lore-yowl",
+      "comment": "ghaelentweaks:setting-above-ground-radius-for-lore-yowl-comment",
+      "default": 16,
+      "range": {
+        "min": 0,
+        "max": 64,
+        "step": 1
+      },
+      "sortingWeight": 5
+    },
+    {
+      "type": "boolean",
+      "code": "enable-palisade-damage",
+      "ingui": "ghaelentweaks:setting-enable-palisade-damage",
+      "comment": "ghaelentweaks:setting-enable-palisade-damage-comment",
+      "default": true,
+      "sortingWeight": 6
+    },
+    {
+      "type": "number",
+      "code": "palisade-damage-amount",
+      "ingui": "ghaelentweaks:setting-palisade-damage-amount",
+      "comment": "ghaelentweaks:setting-palisade-damage-amount-comment",
+      "default": 1,
+      "range": {
+        "min": 0,
+        "max": 20,
+        "step": 0.25
+      },
+      "sortingWeight": 7
+    }
+  ]
+}

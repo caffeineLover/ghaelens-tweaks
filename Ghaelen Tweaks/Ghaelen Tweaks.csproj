@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="Directory.Build.props.user" Condition="Exists('Directory.Build.props.user')" />
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>GhaelenTweaks</AssemblyName>
+    <RootNamespace>GhaelenTweaks</RootNamespace>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin\$(Configuration)\Mods\ghaelentweaks\</OutputPath>
+    <StoryForgeVintageStoryInstall>$(APPDATA)\StoryForge\versions\1.22.2</StoryForgeVintageStoryInstall>
+    <VintageStoryInstall Condition="'$(VintageStoryInstall)' == '' and Exists('$(StoryForgeVintageStoryInstall)\VintagestoryAPI.dll')">$(StoryForgeVintageStoryInstall)</VintageStoryInstall>
+    <VintageStoryInstall Condition="'$(VintageStoryInstall)' == ''">$(VINTAGE_STORY)</VintageStoryInstall>
+    <VintageStoryApiDll>$(VintageStoryInstall)\VintagestoryAPI.dll</VintageStoryApiDll>
+    <VintageStoryNewtonsoftJsonDll>$(VintageStoryInstall)\Lib\Newtonsoft.Json.dll</VintageStoryNewtonsoftJsonDll>
+  </PropertyGroup>
+
+  <Target Name="ValidateVintageStoryApiReference" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(VintageStoryInstall)' == ''"
+           Text="VintageStoryInstall is not set. Set it in Directory.Build.props.user or pass /p:VintageStoryInstall=&quot;path\to\Vintage Story&quot;." />
+    <Error Condition="!Exists('$(VintageStoryApiDll)')"
+           Text="VintagestoryAPI.dll was not found at '$(VintageStoryApiDll)'. Set VintageStoryInstall to the game install folder that contains VintagestoryAPI.dll." />
+    <Error Condition="!Exists('$(VintageStoryNewtonsoftJsonDll)')"
+           Text="Newtonsoft.Json.dll was not found at '$(VintageStoryNewtonsoftJsonDll)'. Set VintageStoryInstall to the game install folder that contains Lib\Newtonsoft.Json.dll." />
+  </Target>
+
+  <ItemGroup>
+    <Reference Include="VintagestoryAPI">
+      <HintPath>$(VintageStoryApiDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(VintageStoryNewtonsoftJsonDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="modinfo.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

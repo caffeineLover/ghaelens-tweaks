@@ -1,0 +1,16 @@
+[
+  {
+    "op": "add",
+    "path": "/behaviors/-",
+    "value": { "name": "PalisadeFirewoodDrops" },
+    "file": "game:blocktypes/wood/palisadewall.json"
+  },
+  {
+    "op": "add",
+    "path": "/behaviors",
+    "value": [
+      { "name": "PalisadeFirewoodDrops" }
+    ],
+    "file": "game:blocktypes/wood/palisadestakes.json"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "op": "add",
+    "file": "cats:entities/land/cat-female.json",
+    "path": "/client/behaviors/-",
+    "dependsOn": [{ "modid": "cats" }],
+    "value": { "code": "catloreguardian" }
+  },
+  {
+    "op": "add",
+    "file": "cats:entities/land/cat-female.json",
+    "path": "/server/behaviors/-",
+    "dependsOn": [{ "modid": "cats" }],
+    "value": { "code": "catloreguardian" }
+  },
+  {
+    "op": "add",
+    "file": "cats:entities/land/cat-male.json",
+    "path": "/client/behaviors/-",
+    "dependsOn": [{ "modid": "cats" }],
+    "value": { "code": "catloreguardian" }
+  },
+  {
+    "op": "add",
+    "file": "cats:entities/land/cat-male.json",
+    "path": "/server/behaviors/-",
+    "dependsOn": [{ "modid": "cats" }],
+    "value": { "code": "catloreguardian" }
+  },
+  {
+    "op": "add",
+    "file": "cats:entities/land/cat-kitten.json",
+    "path": "/client/behaviors/-",
+    "dependsOn": [{ "modid": "cats" }],
+    "value": { "code": "catloreguardian" }
+  },
+  {
+    "op": "add",
+    "file": "cats:entities/land/cat-kitten.json",
+    "path": "/server/behaviors/-",
+    "dependsOn": [{ "modid": "cats" }],
+    "value": { "code": "catloreguardian" }
+  }
+]

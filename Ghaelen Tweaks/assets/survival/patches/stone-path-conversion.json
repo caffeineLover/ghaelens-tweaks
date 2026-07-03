@@ -1,0 +1,18 @@
+[
+	{
+		"op": "add",
+		"path": "/behaviors",
+		"file": "game:blocktypes/soil/packeddirt.json",
+		"value": [
+			{ "name": "StonePathConversion" }
+		]
+	},
+	{
+		"op": "add",
+		"path": "/behaviors",
+		"file": "game:blocktypes/soil/rammed.json",
+		"value": [
+			{ "name": "StonePathConversion" }
+		]
+	}
+]

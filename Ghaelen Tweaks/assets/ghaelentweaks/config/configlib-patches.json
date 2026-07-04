@@ -81,6 +81,19 @@
         "step": 0.25
       },
       "sortingWeight": 7
+    },
+    {
+      "type": "number",
+      "code": "palisade-damage-cooldown-seconds",
+      "ingui": "ghaelentweaks:setting-palisade-damage-cooldown-seconds",
+      "comment": "ghaelentweaks:setting-palisade-damage-cooldown-seconds-comment",
+      "default": 5,
+      "range": {
+        "min": 1,
+        "max": 10,
+        "step": 1
+      },
+      "sortingWeight": 8
     }
   ]
 }

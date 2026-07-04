@@ -13,7 +13,9 @@
   "ghaelentweaks:setting-enable-palisade-damage": "Enable palisade damage",
   "ghaelentweaks:setting-enable-palisade-damage-comment": "Lore creatures and charging hostile predators take damage from palisades.",
   "ghaelentweaks:setting-palisade-damage-amount": "Palisade damage amount",
-  "ghaelentweaks:setting-palisade-damage-amount-comment": "Damage dealt each second while an affected creature is on or horizontally next to a palisade.",
+  "ghaelentweaks:setting-palisade-damage-amount-comment": "Damage dealt each time an affected creature's palisade damage cooldown elapses.",
+  "ghaelentweaks:setting-palisade-damage-cooldown-seconds": "Palisade damage cooldown",
+  "ghaelentweaks:setting-palisade-damage-cooldown-seconds-comment": "Seconds between palisade damage pulses for each affected creature. Range: 1 to 10.",
   "item-knife-generic-bone": "Bone knife",
   "item-creature-locust-corrupt-sawblade-hacked": "Hacked sawblade locust",
   "item-dead-creature-locust-corrupt-sawblade-hacked": "Dead sawblade locust (hacked)"

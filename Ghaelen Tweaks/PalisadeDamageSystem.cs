@@ -20,6 +20,7 @@ internal sealed class PalisadeDamageSystem
 	private readonly ICoreAPI api;
 	private readonly Dictionary<long, PositionSnapshot> previousPositions = new();
 	private readonly Dictionary<long, int> recentChargingPredators = new();
+	private readonly Dictionary<long, int> lastDamagedEntities = new();
 	private int scanSequence;
 
 	public PalisadeDamageSystem(ICoreAPI api)
@@ -35,6 +36,7 @@ internal sealed class PalisadeDamageSystem
 		{
 			previousPositions.Clear();
 			recentChargingPredators.Clear();
+			lastDamagedEntities.Clear();
 			return;
 		}
 
@@ -43,6 +45,7 @@ internal sealed class PalisadeDamageSystem
 		{
 			previousPositions.Clear();
 			recentChargingPredators.Clear();
+			lastDamagedEntities.Clear();
 			return;
 		}
 
@@ -69,22 +72,25 @@ internal sealed class PalisadeDamageSystem
 					continue;
 				}
 
-				ProcessEntity(entity, players, config.PalisadeDamageAmount);
+				ProcessEntity(entity, players, config.PalisadeDamageAmount, config.PalisadeDamageCooldownSeconds);
 			}
 		}
 
 		PrunePositionCache(scannedEntityIds);
 	}
 
-	private void ProcessEntity(Entity entity, IPlayer[] players, float damage)
+	private void ProcessEntity(Entity entity, IPlayer[] players, float damage, float cooldownSeconds)
 	{
 		try
 		{
 			BlockPos? palisadePos = GetNearbyPalisadePos(entity);
-			if (palisadePos != null && ShouldDamageEntity(entity, players))
+			if (palisadePos != null
+				&& ShouldDamageEntity(entity, players)
+				&& IsDamageCooldownReady(entity, cooldownSeconds))
 			{
 				Block palisadeBlock = api.World.BlockAccessor.GetBlock(palisadePos);
 				ReceivePalisadeDamage(entity, palisadeBlock, palisadePos, damage);
+				lastDamagedEntities[entity.EntityId] = scanSequence;
 			}
 		}
 		finally
@@ -171,6 +177,17 @@ internal sealed class PalisadeDamageSystem
 			&& scanSequence - lastChargingScan <= RecentChargingMemoryTicks;
 	}
 
+	private bool IsDamageCooldownReady(Entity entity, float cooldownSeconds)
+	{
+		if (!lastDamagedEntities.TryGetValue(entity.EntityId, out int lastDamagedScan))
+		{
+			return true;
+		}
+
+		int cooldownTicks = Math.Max(1, (int)Math.Ceiling(cooldownSeconds));
+		return scanSequence - lastDamagedScan >= cooldownTicks;
+	}
+
 	private BlockPos? GetNearbyPalisadePos(Entity entity)
 	{
 		BlockPos entityPos = entity.Pos.AsBlockPos;
@@ -235,6 +252,7 @@ internal sealed class PalisadeDamageSystem
 		{
 			previousPositions.Remove(entityId);
 			recentChargingPredators.Remove(entityId);
+			lastDamagedEntities.Remove(entityId);
 		}
 	}
 

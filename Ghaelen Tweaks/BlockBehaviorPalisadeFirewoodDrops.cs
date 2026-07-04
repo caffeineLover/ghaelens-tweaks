@@ -1,4 +1,3 @@
-using System;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 
@@ -7,6 +6,7 @@ namespace GhaelenTweaks;
 public sealed class BlockBehaviorPalisadeFirewoodDrops : BlockBehavior
 {
 	private static readonly AssetLocation FirewoodCode = new("game", "firewood");
+	private static readonly AssetLocation PlankCode = new("game", "plank-oak");
 
 	public BlockBehaviorPalisadeFirewoodDrops(Block block)
 		: base(block)
@@ -20,28 +20,28 @@ public sealed class BlockBehaviorPalisadeFirewoodDrops : BlockBehavior
 		ref float dropChanceMultiplier,
 		ref EnumHandling handling)
 	{
-		if (!IsAxeOrSaw(byPlayer))
+		EnumTool? tool = GetActiveTool(byPlayer);
+		if (tool is not (EnumTool.Axe or EnumTool.Saw))
 		{
 			return base.GetDrops(world, pos, byPlayer, ref dropChanceMultiplier, ref handling);
 		}
 
-		Item? firewood = world.GetItem(FirewoodCode);
-		if (firewood == null)
+		Item? dropItem = world.GetItem(tool == EnumTool.Saw ? PlankCode : FirewoodCode);
+		if (dropItem == null)
 		{
 			return base.GetDrops(world, pos, byPlayer, ref dropChanceMultiplier, ref handling);
 		}
 
 		handling = EnumHandling.PreventDefault;
-		return new[] { new ItemStack(firewood, GetFirewoodQuantity()) };
+		return new[] { new ItemStack(dropItem, GetDropQuantity()) };
 	}
 
-	private static bool IsAxeOrSaw(IPlayer player)
+	private static EnumTool? GetActiveTool(IPlayer player)
 	{
-		EnumTool? tool = player.InventoryManager.ActiveHotbarSlot.Itemstack?.Collectible?.Tool;
-		return tool is EnumTool.Axe or EnumTool.Saw;
+		return player.InventoryManager.ActiveHotbarSlot.Itemstack?.Collectible?.Tool;
 	}
 
-	private int GetFirewoodQuantity()
+	private int GetDropQuantity()
 	{
 		string? path = block.Code?.Path;
 		if (path == null)

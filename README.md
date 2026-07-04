@@ -57,18 +57,31 @@ Cats from the Cats mod can now warn you about nearby lore creatures.
 
 ## Palisades
 
-Palisades can now hurt less-aware hostile creatures and can be chopped into firewood.
+Palisades can now hurt less-aware hostile creatures and can be recycled with woodworking tools.
 
 - Lore creatures take damage when they are on or horizontally next to palisade walls or palisade stakes.
 - Hostile mundane predators such as adult bears, wolves, and hyenas also take damage when they are charging toward a nearby player.
 - Normal animals and players are not damaged by palisades.
 - From a player perspective:
   - `enable-palisade-damage` controls whether palisade creature damage is enabled.
-  - `palisade-damage-amount` controls the damage dealt each second; the default is `1`.
-  - Breaking palisade wall pieces with an axe or saw drops 3 or 4 firewood depending on the wall size.
-  - Breaking palisade stakes with an axe or saw drops 1 firewood.
+  - `palisade-damage-amount` controls the damage dealt each pulse; the default is `1`.
+  - `palisade-damage-cooldown-seconds` controls the per-creature cooldown between damage pulses; the default is `5`, with a range from `1` to `10`.
+  - Breaking palisade wall pieces with an axe drops 3 or 4 firewood depending on the wall size.
+  - Breaking palisade wall pieces with a saw drops 3 or 4 oak boards depending on the wall size.
+  - Breaking palisade stakes with an axe drops 1 firewood.
+  - Breaking palisade stakes with a saw drops 1 oak board.
   - Breaking palisades with other tools uses the normal drop behavior.
   - These settings can be edited through Config Lib when it is installed.
+
+## Barricades
+
+Looted clutter barricades can now be recycled into aged wood materials.
+
+- Barricades are old salvaged clutter, so they return aged materials rather than fresh wood.
+- From a player perspective:
+  - Breaking clutter barricades with an axe drops 4 aged firewood.
+  - Breaking clutter barricades with a saw drops 4 aged oak boards.
+  - Breaking clutter barricades with other tools uses the normal drop behavior.
 
 ## Bone Knife
 

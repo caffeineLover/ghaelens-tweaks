@@ -27,6 +27,9 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("palisade-damage-amount")]
 	public float PalisadeDamageAmount { get; set; } = 1f;
 
+	[JsonProperty("palisade-damage-cooldown-seconds")]
+	public float PalisadeDamageCooldownSeconds { get; set; } = 5f;
+
 	public void Normalize()
 	{
 		UndergroundRadiusForLoreGlow = ClampRadius(UndergroundRadiusForLoreGlow);
@@ -34,6 +37,7 @@ public sealed class GhaelenTweaksConfig
 		AboveGroundRadiusForLoreGlow = ClampRadius(AboveGroundRadiusForLoreGlow);
 		AboveGroundRadiusForLoreYowl = ClampRadius(AboveGroundRadiusForLoreYowl);
 		PalisadeDamageAmount = ClampDamage(PalisadeDamageAmount);
+		PalisadeDamageCooldownSeconds = ClampPalisadeDamageCooldown(PalisadeDamageCooldownSeconds);
 	}
 
 	public float GetRadiusForLoreGlow(bool isUnderground)
@@ -54,5 +58,15 @@ public sealed class GhaelenTweaksConfig
 	private static float ClampDamage(float damage)
 	{
 		return damage < 0 ? 0 : damage;
+	}
+
+	private static float ClampPalisadeDamageCooldown(float cooldownSeconds)
+	{
+		if (cooldownSeconds < 1)
+		{
+			return 1;
+		}
+
+		return cooldownSeconds > 10 ? 10 : cooldownSeconds;
 	}
 }

@@ -20,6 +20,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 
 		api.RegisterBlockBehaviorClass("StonePathConversion", typeof(BlockBehaviorStonePathConversion));
 		api.RegisterBlockBehaviorClass("PalisadeFirewoodDrops", typeof(BlockBehaviorPalisadeFirewoodDrops));
+		api.RegisterBlockBehaviorClass("BarricadeRecyclingDrops", typeof(BlockBehaviorBarricadeRecyclingDrops));
 		api.RegisterEntityBehaviorClass("catloreguardian", typeof(EntityBehaviorCatLoreGuardian));
 
 		LoadConfig(api);
@@ -93,6 +94,11 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 			case "palisade-damage-amount":
 				GhaelenTweaksConfig.Current.PalisadeDamageAmount =
 					tree.GetFloat("value", GhaelenTweaksConfig.Current.PalisadeDamageAmount);
+				break;
+
+			case "palisade-damage-cooldown-seconds":
+				GhaelenTweaksConfig.Current.PalisadeDamageCooldownSeconds =
+					tree.GetFloat("value", GhaelenTweaksConfig.Current.PalisadeDamageCooldownSeconds);
 				break;
 
 			default:

@@ -1,13 +1,35 @@
 # Changelog
 
-## Unreleased
+## 0.2.2 - 2026-07-04
+
+### Added
+
+- Added axe and saw recycling drops for looted clutter barricades: 4 aged firewood with an axe, or 4 aged oak boards with a saw.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.2.1` to `0.2.2`.
+
+## 0.2.1 - 2026-07-04
+
+### Changed
+
+- Palisade walls and stakes now drop firewood with axes and oak boards with saws, using the same 1-to-1 quantity based on palisade size.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.2.0` to `0.2.1`.
+
+## 0.2.0 - 2026-07-03
 
 ### Added
 
 - Added configurable palisade damage for lore creatures on or horizontally next to `game:palisadewall-*` and `game:palisadestakes-*`.
 - Added charging hostile mundane predator palisade damage for adult bears, wolves, and hyenas near players.
-- Added Config Lib settings `enable-palisade-damage` and `palisade-damage-amount`.
+- Added Config Lib settings `enable-palisade-damage`, `palisade-damage-amount`, and `palisade-damage-cooldown-seconds`.
 - Added axe and saw firewood drops for palisade walls and palisade stakes.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.1.14` to `0.2.0`.
+- Palisade damage now defaults to a 5-second per-creature cooldown, configurable from 1 to 10 seconds.
 
 ## 0.1.14 - 2026-06-26
 

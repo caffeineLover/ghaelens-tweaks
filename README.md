@@ -39,6 +39,17 @@ Placed packed dirt and rammed earth can now be upgraded directly into stone path
   - Tinker, Artisan, Homesteader, and Clockmaker characters use 3 stones.
   - All other characters use 4 stones.
 
+## Persistent Crafting Grid
+
+The player crafting grid can now keep its ingredients when the inventory closes.
+
+- This uses the vanilla 3x3 player crafting grid rather than adding a new inventory or GUI.
+- The output slot is still vanilla-derived from the ingredients and is not stored separately.
+- From a player perspective:
+  - `persistent-crafting-grid` controls whether the tweak is enabled.
+  - Closing and reopening the inventory keeps the crafting-grid ingredients in place.
+  - The setting can be edited through Config Lib when it is installed.
+
 ## Cat Lore Warning
 
 Cats from the Cats mod can now warn you about nearby lore creatures.

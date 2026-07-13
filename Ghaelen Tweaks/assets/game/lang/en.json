@@ -16,6 +16,8 @@
   "ghaelentweaks:setting-palisade-damage-amount-comment": "Damage dealt each time an affected creature's palisade damage cooldown elapses.",
   "ghaelentweaks:setting-palisade-damage-cooldown-seconds": "Palisade damage cooldown",
   "ghaelentweaks:setting-palisade-damage-cooldown-seconds-comment": "Seconds between palisade damage pulses for each affected creature. Range: 1 to 10.",
+  "ghaelentweaks:setting-persistent-crafting-grid": "Persistent crafting grid",
+  "ghaelentweaks:setting-persistent-crafting-grid-comment": "Keeps player crafting-grid ingredients in place when closing the inventory.",
   "item-knife-generic-bone": "Bone knife",
   "item-creature-locust-corrupt-sawblade-hacked": "Hacked sawblade locust",
   "item-dead-creature-locust-corrupt-sawblade-hacked": "Dead sawblade locust (hacked)"

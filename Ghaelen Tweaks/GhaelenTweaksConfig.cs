@@ -30,6 +30,9 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("palisade-damage-cooldown-seconds")]
 	public float PalisadeDamageCooldownSeconds { get; set; } = 5f;
 
+	[JsonProperty("persistent-crafting-grid")]
+	public bool PersistentCraftingGrid { get; set; } = true;
+
 	public void Normalize()
 	{
 		UndergroundRadiusForLoreGlow = ClampRadius(UndergroundRadiusForLoreGlow);

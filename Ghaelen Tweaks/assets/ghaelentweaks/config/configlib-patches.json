@@ -94,6 +94,14 @@
         "step": 1
       },
       "sortingWeight": 8
+    },
+    {
+      "type": "boolean",
+      "code": "persistent-crafting-grid",
+      "ingui": "ghaelentweaks:setting-persistent-crafting-grid",
+      "comment": "ghaelentweaks:setting-persistent-crafting-grid-comment",
+      "default": true,
+      "sortingWeight": 9
     }
   ]
 }

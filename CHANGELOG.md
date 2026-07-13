@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.3.0 - 2026-07-12
+
+### Added
+
+- Added a configurable persistent player crafting grid tweak, enabled by default with `persistent-crafting-grid`.
+- The tweak preserves the vanilla 3x3 player crafting-grid ingredient slots when closing the inventory dialog.
+- The implementation uses the existing vanilla `craftinggrid` inventory and output slot; it does not add a new GUI, inventory, block, or custom persistence store.
+- Added Config Lib metadata and English text for the new `persistent-crafting-grid` setting.
+- Added `PERSISTENT_CRAFTING_GRID.md` documenting the inspected Vintage Story 1.22.3 crafting inventory, close-time evacuation path, persistence behavior, death handling, and spoilage behavior.
+
+### Changed
+
+- Added a Harmony reference from the configured Vintage Story install so the client-side inventory-close patch can be applied.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.2.4` to `0.3.0`.
+
+## 0.2.3 - 2026-07-10
+
+### Fixed
+
+- Fixed Vintage Story patch-load errors from `Ghaelen Tweaks/assets/survival/patches/hacked-locusts.json` when patching `game:entities/lore/locust-hacked.json`.
+- Removed the six hacked locust damage patches that targeted `/server/behaviors/8/aitasks/2/...`.
+- Those removed patches attempted to edit `/server/behaviors/8/aitasks/2/damageByType`, `/server/behaviors/8/aitasks/2/damageTierByType`, and `/server/behaviors/8/aitasks/2/damageTypeByType`.
+- In the reported `locust-hacked.json` data, AI task `2` is `seektargetingentityrepairablelocust`, a repair-targeting task with fields such as `entityCodes`, `movespeed`, `seekingRange`, `leapAtTarget`, and `animation`.
+- Because that repair-targeting task does not contain any damage maps, Vintage Story rejected the remove/add operations before they could apply. These patches were already non-functional and were only producing load errors.
+- Kept the valid hacked locust damage patches under `/server/behaviors/8/aitasks/1/...`, where the damage maps actually exist.
+- Kept the rest of the hacked sawblade locust support intact: the hacked entity mapping, hacked texture setup, corrupt sawblade health values, and `corrupt-sawblade` variant registration are unchanged.
+- Regenerated the release package as `Releases/ghaelentweaks_0.2.3.zip` so the packaged mod contains the corrected hacked-locust patch file.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.2.2` to `0.2.3`.
+
 ## 0.2.2 - 2026-07-04
 
 ### Added

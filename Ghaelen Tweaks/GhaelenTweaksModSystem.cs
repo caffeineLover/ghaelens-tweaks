@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
+using HarmonyLib;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Datastructures;
-using Vintagestory.API.MathTools;
 
 namespace GhaelenTweaks;
 
@@ -13,6 +11,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 	private const string ConfigLibSettingChangedEvent = "configlib:ghaelentweaks:setting-changed";
 	private const string ConfigLibSettingLoadedEvent = "configlib:ghaelentweaks:setting-loaded";
 	private PalisadeDamageSystem? palisadeDamageSystem;
+	private Harmony? harmony;
 
 	public override void Start(ICoreAPI api)
 	{
@@ -28,10 +27,25 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		api.Event.RegisterEventBusListener(OnConfigLibSettingEvent, filterByEventName: ConfigLibSettingChangedEvent);
 		api.Event.RegisterEventBusListener(OnConfigLibSettingEvent, filterByEventName: ConfigLibSettingLoadedEvent);
 
+		if (api.Side == EnumAppSide.Client)
+		{
+			harmony = new Harmony("ghaelentweaks.persistent-crafting-grid");
+			PersistentCraftingGridPatches.Apply(harmony, api.Logger);
+		}
+
 		if (api.Side == EnumAppSide.Server)
 		{
 			palisadeDamageSystem = new PalisadeDamageSystem(api);
 		}
+	}
+
+	public override void Dispose()
+	{
+		palisadeDamageSystem?.Dispose();
+		palisadeDamageSystem = null;
+		harmony?.UnpatchAll("ghaelentweaks.persistent-crafting-grid");
+		harmony = null;
+		base.Dispose();
 	}
 
 	private static void LoadConfig(ICoreAPI api)
@@ -99,6 +113,11 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 			case "palisade-damage-cooldown-seconds":
 				GhaelenTweaksConfig.Current.PalisadeDamageCooldownSeconds =
 					tree.GetFloat("value", GhaelenTweaksConfig.Current.PalisadeDamageCooldownSeconds);
+				break;
+
+			case "persistent-crafting-grid":
+				GhaelenTweaksConfig.Current.PersistentCraftingGrid =
+					tree.GetBool("value", GhaelenTweaksConfig.Current.PersistentCraftingGrid);
 				break;
 
 			default:

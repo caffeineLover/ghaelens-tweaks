@@ -6,7 +6,7 @@ using Vintagestory.API.MathTools;
 
 namespace GhaelenTweaks;
 
-internal sealed class PalisadeDamageSystem
+internal sealed class PalisadeDamageSystem : IDisposable
 {
 	private const int ScanIntervalMilliseconds = 1000;
 	private const float EntityScanHorizontalRange = 64f;
@@ -21,12 +21,21 @@ internal sealed class PalisadeDamageSystem
 	private readonly Dictionary<long, PositionSnapshot> previousPositions = new();
 	private readonly Dictionary<long, int> recentChargingPredators = new();
 	private readonly Dictionary<long, int> lastDamagedEntities = new();
+	private readonly long tickListenerId;
 	private int scanSequence;
 
 	public PalisadeDamageSystem(ICoreAPI api)
 	{
 		this.api = api;
-		api.Event.RegisterGameTickListener(OnServerTick, ScanIntervalMilliseconds);
+		tickListenerId = api.Event.RegisterGameTickListener(OnServerTick, ScanIntervalMilliseconds);
+	}
+
+	public void Dispose()
+	{
+		api.Event.UnregisterGameTickListener(tickListenerId);
+		previousPositions.Clear();
+		recentChargingPredators.Clear();
+		lastDamagedEntities.Clear();
 	}
 
 	private void OnServerTick(float deltaTime)

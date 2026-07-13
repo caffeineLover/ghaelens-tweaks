@@ -95,39 +95,6 @@
     "file": "game:entities/lore/locust-hacked.json"
   },
   {
-    "op": "remove",
-    "path": "/server/behaviors/8/aitasks/2/damageByType/*-corrupt-*",
-    "file": "game:entities/lore/locust-hacked.json"
-  },
-  {
-    "op": "add",
-    "path": "/server/behaviors/8/aitasks/2/damageByType/*-corrupt-hacked",
-    "value": 4,
-    "file": "game:entities/lore/locust-hacked.json"
-  },
-  {
-    "op": "remove",
-    "path": "/server/behaviors/8/aitasks/2/damageTierByType/*-corrupt-*",
-    "file": "game:entities/lore/locust-hacked.json"
-  },
-  {
-    "op": "add",
-    "path": "/server/behaviors/8/aitasks/2/damageTierByType/*-corrupt-hacked",
-    "value": 3,
-    "file": "game:entities/lore/locust-hacked.json"
-  },
-  {
-    "op": "remove",
-    "path": "/server/behaviors/8/aitasks/2/damageTypeByType/*-corrupt-*",
-    "file": "game:entities/lore/locust-hacked.json"
-  },
-  {
-    "op": "add",
-    "path": "/server/behaviors/8/aitasks/2/damageTypeByType/*-corrupt-hacked",
-    "value": "PiercingAttack",
-    "file": "game:entities/lore/locust-hacked.json"
-  },
-  {
     "op": "add",
     "path": "/variantgroups/0/states/-",
     "value": "corrupt-sawblade",

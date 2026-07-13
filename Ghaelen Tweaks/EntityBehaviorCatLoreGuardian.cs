@@ -1,11 +1,10 @@
-using System;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Datastructures;
 
 namespace GhaelenTweaks;
 
-public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
+public sealed class EntityBehaviorCatLoreGuardian(Entity behaviorEntity) : EntityBehavior(behaviorEntity)
 {
 	private const float ScanIntervalSeconds = 0.25f;
 	private const int MinLoreGlowLevel = 25;
@@ -24,13 +23,6 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 	private int lastAppliedGlowLevel = -1;
 	private byte lastAppliedLightValue;
 	private byte[]? originalLightHsv;
-
-	public EntityBehaviorCatLoreGuardian(Entity entity)
-		: base(entity)
-	{
-	}
-
-
 
 	public override void Initialize(EntityProperties properties, JsonObject attributes)
 	{

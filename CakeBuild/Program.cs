@@ -3,18 +3,7 @@
 	Vintage Story will load, builds the code mod, and creates the versioned ModDB-ready zip.
 */
 
-using System;
-using System.IO;
-using Cake.Common;
-using Cake.Common.IO;
-using Cake.Common.Tools.DotNet;
-using Cake.Common.Tools.DotNet.Build;
-using Cake.Core;
 using Cake.Frosting;
-using Cake.Json;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Vintagestory.API.Common;
 
 namespace CakeBuild;
 
@@ -34,98 +23,3 @@ public static class Program
 
 // Cake constructs this context by reflection; there is intentionally no direct new BuildContext(...) call.
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class BuildContext : FrostingContext
-{
-	public const string ProjectName = "Ghaelen Tweaks";
-	public string Version { get; }
-	public string Name { get; }
-	public bool SkipJsonValidation { get; }
-
-	public BuildContext(ICakeContext context)
-		: base(context)
-	{
-		SkipJsonValidation = context.Argument("skipJsonValidation", false);
-		var modInfo = context.DeserializeJsonFromFile<ModInfo>($"../{ProjectName}/modinfo.json");
-		Version = modInfo.Version;
-		Name = modInfo.ModID;
-	}
-}
-
-
-
-[TaskName("ValidateJson")]
-public sealed class ValidateJsonTask : FrostingTask<BuildContext>
-{
-	public override void Run(BuildContext context)
-	{
-		if (context.SkipJsonValidation)
-		{
-			return;
-		}
-
-		var modOutputDirectory = $"../{BuildContext.ProjectName}/bin";
-		var jsonFiles = context.GetFiles($"../{BuildContext.ProjectName}/assets/**/*.json");
-		foreach (var file in jsonFiles)
-		{
-			if (file.FullPath.StartsWith(context.MakeAbsolute(context.Directory(modOutputDirectory)).FullPath))
-			{
-				continue;
-			}
-
-			try
-			{
-				var json = File.ReadAllText(file.FullPath);
-				JToken.Parse(json);
-			}
-			catch (JsonException ex)
-			{
-				throw new Exception(
-					$"Validation failed for JSON file: {file.FullPath}{Environment.NewLine}{ex.Message}", ex);
-			}
-		}
-	}
-}
-
-
-
-[TaskName("Package")]
-[IsDependentOn(typeof(ValidateJsonTask))]
-public sealed class PackageTask : FrostingTask<BuildContext>
-{
-	public override void Run(BuildContext context)
-	{
-		context.DotNetBuild($"../{BuildContext.ProjectName}/{BuildContext.ProjectName}.csproj", new DotNetBuildSettings
-		{
-			Configuration = "Release"
-		});
-
-		context.EnsureDirectoryExists("../Releases");
-		context.CleanDirectory("../Releases");
-		context.EnsureDirectoryExists($"../Releases/{context.Name}");
-
-		if (context.DirectoryExists($"../{BuildContext.ProjectName}/assets"))
-		{
-			context.CopyDirectory($"../{BuildContext.ProjectName}/assets", $"../Releases/{context.Name}/assets");
-		}
-
-		context.CopyFile($"../{BuildContext.ProjectName}/modinfo.json", $"../Releases/{context.Name}/modinfo.json");
-		if (context.FileExists($"../{BuildContext.ProjectName}/modicon.png"))
-		{
-			context.CopyFile($"../{BuildContext.ProjectName}/modicon.png", $"../Releases/{context.Name}/modicon.png");
-		}
-
-		context.CopyFile(
-			$"../{BuildContext.ProjectName}/bin/Release/Mods/{context.Name}/GhaelenTweaks.dll",
-			$"../Releases/{context.Name}/GhaelenTweaks.dll");
-
-		context.Zip($"../Releases/{context.Name}", $"../Releases/{context.Name}_{context.Version}.zip");
-	}
-}
-
-
-
-[TaskName("Default")]
-[IsDependentOn(typeof(PackageTask))]
-public sealed class DefaultTask : FrostingTask
-{
-}

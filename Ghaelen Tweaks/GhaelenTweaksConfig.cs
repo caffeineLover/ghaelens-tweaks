@@ -43,25 +43,35 @@ public sealed class GhaelenTweaksConfig
 		PalisadeDamageCooldownSeconds = ClampPalisadeDamageCooldown(PalisadeDamageCooldownSeconds);
 	}
 
+
+
 	public float GetRadiusForLoreGlow(bool isUnderground)
 	{
 		return isUnderground ? UndergroundRadiusForLoreGlow : AboveGroundRadiusForLoreGlow;
 	}
+
+
 
 	public float GetRadiusForLoreYowl(bool isUnderground)
 	{
 		return isUnderground ? UndergroundRadiusForLoreYowl : AboveGroundRadiusForLoreYowl;
 	}
 
+
+
 	private static float ClampRadius(float radius)
 	{
 		return radius < 0 ? 0 : radius;
 	}
 
+
+
 	private static float ClampDamage(float damage)
 	{
 		return damage < 0 ? 0 : damage;
 	}
+
+
 
 	private static float ClampPalisadeDamageCooldown(float cooldownSeconds)
 	{

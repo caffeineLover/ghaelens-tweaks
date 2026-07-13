@@ -30,6 +30,8 @@ internal sealed class PalisadeDamageSystem : IDisposable
 		tickListenerId = api.Event.RegisterGameTickListener(OnServerTick, ScanIntervalMilliseconds);
 	}
 
+
+
 	public void Dispose()
 	{
 		api.Event.UnregisterGameTickListener(tickListenerId);
@@ -37,6 +39,8 @@ internal sealed class PalisadeDamageSystem : IDisposable
 		recentChargingPredators.Clear();
 		lastDamagedEntities.Clear();
 	}
+
+
 
 	private void OnServerTick(float deltaTime)
 	{
@@ -88,6 +92,8 @@ internal sealed class PalisadeDamageSystem : IDisposable
 		PrunePositionCache(scannedEntityIds);
 	}
 
+
+
 	private void ProcessEntity(Entity entity, IPlayer[] players, float damage, float cooldownSeconds)
 	{
 		try
@@ -108,12 +114,16 @@ internal sealed class PalisadeDamageSystem : IDisposable
 		}
 	}
 
+
+
 	private static bool IsPotentialPalisadeVictim(Entity entity)
 	{
 		return entity.Alive
 			&& (GhaelenTweaksEntityPredicates.IsLoreCreature(entity)
 				|| GhaelenTweaksEntityPredicates.IsHostileMundaneAdultPredator(entity));
 	}
+
+
 
 	private bool ShouldDamageEntity(Entity entity, IPlayer[] players)
 	{
@@ -125,6 +135,8 @@ internal sealed class PalisadeDamageSystem : IDisposable
 		return GhaelenTweaksEntityPredicates.IsHostileMundaneAdultPredator(entity)
 			&& IsChargingTowardPlayer(entity, players);
 	}
+
+
 
 	private bool IsChargingTowardPlayer(Entity entity, IPlayer[] players)
 	{
@@ -180,11 +192,15 @@ internal sealed class PalisadeDamageSystem : IDisposable
 		return movedTowardPlayer;
 	}
 
+
+
 	private bool WasRecentlyCharging(Entity entity)
 	{
 		return recentChargingPredators.TryGetValue(entity.EntityId, out int lastChargingScan)
 			&& scanSequence - lastChargingScan <= RecentChargingMemoryTicks;
 	}
+
+
 
 	private bool IsDamageCooldownReady(Entity entity, float cooldownSeconds)
 	{
@@ -197,11 +213,15 @@ internal sealed class PalisadeDamageSystem : IDisposable
 		return scanSequence - lastDamagedScan >= cooldownTicks;
 	}
 
+
+
 	private BlockPos? GetNearbyPalisadePos(Entity entity)
 	{
 		BlockPos entityPos = entity.Pos.AsBlockPos;
 		return GetPalisadePosAtOrNear(entityPos) ?? GetPalisadePosAtOrNear(entityPos.DownCopy(1));
 	}
+
+
 
 	private BlockPos? GetPalisadePosAtOrNear(BlockPos center)
 	{
@@ -217,11 +237,15 @@ internal sealed class PalisadeDamageSystem : IDisposable
 			?? GetPalisadePos(center.WestCopy(1));
 	}
 
+
+
 	private BlockPos? GetPalisadePos(BlockPos pos)
 	{
 		Block block = api.World.BlockAccessor.GetBlock(pos);
 		return IsPalisadeBlock(block) ? pos : null;
 	}
+
+
 
 	private static bool IsPalisadeBlock(Block block)
 	{
@@ -230,6 +254,8 @@ internal sealed class PalisadeDamageSystem : IDisposable
 			&& (path.StartsWith("palisadewall-", StringComparison.Ordinal)
 				|| path.StartsWith("palisadestakes-", StringComparison.Ordinal));
 	}
+
+
 
 	private static void ReceivePalisadeDamage(Entity entity, Block palisadeBlock, BlockPos palisadePos, float damage)
 	{
@@ -245,6 +271,8 @@ internal sealed class PalisadeDamageSystem : IDisposable
 			},
 			damage);
 	}
+
+
 
 	private void PrunePositionCache(HashSet<long> scannedEntityIds)
 	{
@@ -265,12 +293,16 @@ internal sealed class PalisadeDamageSystem : IDisposable
 		}
 	}
 
+
+
 	private static double HorizontalDistance(double x1, double z1, double x2, double z2)
 	{
 		double dx = x1 - x2;
 		double dz = z1 - z2;
 		return Math.Sqrt((dx * dx) + (dz * dz));
 	}
+
+
 
 	private readonly record struct PositionSnapshot(double X, double Z)
 	{

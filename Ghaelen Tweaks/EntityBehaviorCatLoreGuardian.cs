@@ -30,6 +30,8 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 	{
 	}
 
+
+
 	public override void Initialize(EntityProperties properties, JsonObject attributes)
 	{
 		base.Initialize(properties, attributes);
@@ -38,10 +40,14 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 		originalLightHsv = entity.LightHsv;
 	}
 
+
+
 	public override string PropertyName()
 	{
 		return "catloreguardian";
 	}
+
+
 
 	public override void OnGameTick(float deltaTime)
 	{
@@ -76,6 +82,8 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 		}
 	}
 
+
+
 	public override void OnEntityReceiveDamage(DamageSource damageSource, ref float damage)
 	{
 		base.OnEntityReceiveDamage(damageSource, ref damage);
@@ -97,10 +105,14 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 		damageSource.SourceEntity = null;
 	}
 
+
+
 	private bool HasNearbyLoreCreature(float radius)
 	{
 		return GetNearestLoreCreature(radius) != null;
 	}
+
+
 
 	private float? GetLoreProximity(float radius)
 	{
@@ -119,6 +131,8 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 		return 1 - Clamp01((float)(distance / radius));
 	}
 
+
+
 	private Entity? GetNearestLoreCreature(float radius)
 	{
 		return entity.World.GetNearestEntity(
@@ -128,10 +142,14 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 			candidate => candidate != entity && candidate.Alive && GhaelenTweaksEntityPredicates.IsLoreCreature(candidate));
 	}
 
+
+
 	private bool IsUnderground()
 	{
 		return entity.World.BlockAccessor.GetLightLevel(entity.Pos.AsBlockPos, EnumLightLevelType.OnlySunLight) <= 0;
 	}
+
+
 
 	private void SetGlow(float? proximity)
 	{
@@ -164,6 +182,8 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 		entity.LightHsv = new[] { LoreLightHue, LoreLightSaturation, lightValue };
 	}
 
+
+
 	private void RestoreGlow()
 	{
 		if (!glowApplied)
@@ -183,6 +203,8 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 		entity.LightHsv = originalLightHsv;
 	}
 
+
+
 	private static float Clamp01(float value)
 	{
 		if (value < 0)
@@ -192,6 +214,8 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 
 		return value > 1 ? 1 : value;
 	}
+
+
 
 	private static bool IsLoreCreature(Entity? candidate)
 	{

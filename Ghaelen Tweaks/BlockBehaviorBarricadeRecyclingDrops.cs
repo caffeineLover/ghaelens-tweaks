@@ -37,6 +37,8 @@ public sealed class BlockBehaviorBarricadeRecyclingDrops : BlockBehavior
 		return new[] { new ItemStack(dropItem, DropQuantity) };
 	}
 
+
+
 	private bool IsBarricadeBlock()
 	{
 		return block.Code?.Path.StartsWith("clutter-barricade", StringComparison.Ordinal) == true;

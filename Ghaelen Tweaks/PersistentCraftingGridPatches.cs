@@ -119,10 +119,14 @@ internal static class PersistentCraftingGridPatches
 		return codes;
 	}
 
+
+
 	private static bool IsPersistentCraftingGridEnabled()
 	{
 		return GhaelenTweaksConfig.Current.PersistentCraftingGrid;
 	}
+
+
 
 	private static bool IsDropAllInventoryItemsCall(CodeInstruction instruction)
 	{
@@ -132,6 +136,8 @@ internal static class PersistentCraftingGridPatches
 			&& method.GetParameters().Length == 1
 			&& method.GetParameters()[0].ParameterType == typeof(IInventory);
 	}
+
+
 
 	private static int FindPreviousCall(List<CodeInstruction> codes, int startIndex, string methodName)
 	{
@@ -145,6 +151,8 @@ internal static class PersistentCraftingGridPatches
 
 		return -1;
 	}
+
+
 
 	private static int FindPreviousCraftingInventoryLoad(List<CodeInstruction> codes, int getEnumeratorIndex)
 	{

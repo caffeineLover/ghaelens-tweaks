@@ -5,13 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CakeBuild", "CakeBuild\CakeBuild.csproj", "{7AA045A3-2ADB-4E11-A244-2D61A665E3B5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F73B74E1-1BBE-49F3-82F4-E2700BE6DD7C}"
-	ProjectSection(SolutionItems) = preProject
-		CHANGELOG.md = CHANGELOG.md
-		README.md = README.md
-		RECYCLING.md = RECYCLING.md
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ghaelen Tweaks", "Ghaelen Tweaks\Ghaelen Tweaks.csproj", "{7DA50B82-B73A-4AF6-860E-773234A67110}"
 EndProject
 Global

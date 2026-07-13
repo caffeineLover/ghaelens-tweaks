@@ -36,10 +36,14 @@ public sealed class BlockBehaviorPalisadeFirewoodDrops : BlockBehavior
 		return new[] { new ItemStack(dropItem, GetDropQuantity()) };
 	}
 
+
+
 	private static EnumTool? GetActiveTool(IPlayer player)
 	{
 		return player.InventoryManager.ActiveHotbarSlot.Itemstack?.Collectible?.Tool;
 	}
+
+
 
 	private int GetDropQuantity()
 	{

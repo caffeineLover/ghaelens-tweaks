@@ -23,6 +23,8 @@ internal static class GhaelenTweaksEntityPredicates
 			|| path.StartsWith("shiver", StringComparison.Ordinal);
 	}
 
+
+
 	public static bool IsHostileMundaneAdultPredator(Entity? candidate)
 	{
 		string? path = candidate?.Code?.Path ?? candidate?.Properties?.Code?.Path;

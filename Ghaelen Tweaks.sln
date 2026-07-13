@@ -12,11 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		RECYCLING.md = RECYCLING.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Releases", "Releases", "{17B9F928-2DCE-4B1A-9150-F91C7D7093F6}"
-	ProjectSection(SolutionItems) = preProject
-		Releases\ghaelentweaks_0.2.2.zip = Releases\ghaelentweaks_0.2.2.zip
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ghaelen Tweaks", "Ghaelen Tweaks\Ghaelen Tweaks.csproj", "{7DA50B82-B73A-4AF6-860E-773234A67110}"
 EndProject
 Global

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.1 - 2026-07-15
+
+### Added
+
+- Added a tule handbasket recipe: craft the normal reed handbasket with thatch in the same pattern and material cost used by existing cattail and papyrus handbasket recipes.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.3.0` to `0.3.1`.
+
 ## 0.3.0 - 2026-07-12
 
 ### Added

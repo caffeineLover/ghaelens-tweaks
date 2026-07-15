@@ -1,6 +1,6 @@
 Tweaks I like to play with, especially with my kids. Always looking for people to play with and learn from, so feel free to reach out if you want to play together. I love PvE and hate PvP. Very co-opy kind of guy.
 
-Supported Vintage Story versions: 1.22.2 through 1.22.3. The modinfo dependency uses `game: 1.22.2` because Vintage Story treats that field as the minimum required game version.
+Supported Vintage Story version: 1.22.3. The modinfo dependency uses `game: 1.22.3`.
 
 ## Light Mudbrick Recipe Also Uses Gravel
 
@@ -13,6 +13,16 @@ Light mudbricks can now use gravel or sand in the crafting recipe.
   - Normal, layered, dirty, muddy, and sludgy gravel should all work.
   - The recipe is otherwise unchanged.
   - Dark mudbricks are unchanged.
+
+## Tule Handbasket Recipe
+
+Tule can now be used to make a handbasket.
+
+- Tule harvests into thatch, which is close enough to reed fiber to work as a simple basket material.
+- From a player perspective:
+  - Craft a handbasket with thatch in the same pattern used for cattail and papyrus handbaskets.
+  - The recipe uses 2 thatch in each occupied slot, matching the existing handbasket material cost.
+  - Existing cattail and papyrus handbasket recipes are unchanged.
 
 ## Packed Dirt And Rammed Earth Speed Buffs
 

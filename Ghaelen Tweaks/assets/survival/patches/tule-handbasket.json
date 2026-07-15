@@ -1,0 +1,19 @@
+[
+  {
+    "op": "add",
+    "path": "/-",
+    "value": {
+      "ingredientPattern": "T_T\tTTT",
+      "enabled": true,
+      "ingredients": {
+        "T": { "type": "item", "code": "thatch", "quantity": 2 }
+      },
+      "name": "basket",
+      "width": 3,
+      "height": 2,
+      "output": { "type": "item", "code": "basket-normal-reed" }
+    },
+    "file": "game:recipes/grid/basket.json",
+    "side": "Server"
+  }
+]

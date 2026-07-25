@@ -19,8 +19,10 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 	private const string ConfigFileName = "ghaelentweaks.json";
 	private const string ConfigLibSettingChangedEvent = "configlib:ghaelentweaks:setting-changed";
 	private const string ConfigLibSettingLoadedEvent = "configlib:ghaelentweaks:setting-loaded";
+	private const string TuleHandbasketRecipeName = "tule-handbasket";
 	private PalisadeDamageSystem? palisadeDamageSystem;
 	private Harmony? harmony;
+	private ICoreAPI? api;
 
 
 
@@ -35,6 +37,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 	public override void Start(ICoreAPI api)
 	{
 		base.Start(api);
+		this.api = api;
 
 		// Register behavior classes before config-dependent systems start so
 		// asset-declared blocks and entities can resolve their behavior names.
@@ -65,6 +68,23 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 
 
 
+	//// Applies configuration-dependent recipe state after Vintage Story has
+	//// loaded and resolved recipes.
+	////
+	//// The tule handbasket recipe is declared as a normal JSON patch so it can
+	//// use the vanilla recipe loader. Once recipes exist in the world
+	//// registry, this hook applies the mod config to the recipe's runtime
+	//// Enabled flag without changing vanilla cattail or papyrus recipes.
+	////
+	public override void AssetsFinalize(ICoreAPI api)
+	{
+		base.AssetsFinalize(api);
+
+		ApplyTuleHandbasketRecipeSetting(api);
+	}
+
+
+
 	//// Releases side-specific runtime resources owned by the mod system.
 	////
 	//// Vintage Story invokes this during mod unloading. The palisade damage
@@ -77,6 +97,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		palisadeDamageSystem = null;
 		harmony?.UnpatchAll("ghaelentweaks.persistent-crafting-grid");
 		harmony = null;
+		this.api = null;
 		base.Dispose();
 	}
 
@@ -116,7 +137,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 	//// this mod, updates matching properties, and normalizes the config after
 	//// recognized changes.
 	////
-	private static void OnConfigLibSettingEvent(string eventName, ref EnumHandling handling, IAttribute data)
+	private void OnConfigLibSettingEvent(string eventName, ref EnumHandling handling, IAttribute data)
 	{
 		if (data is not ITreeAttribute tree)
 		{
@@ -155,9 +176,9 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 					tree.GetFloat("value", GhaelenTweaksConfig.Current.AboveGroundRadiusForLoreYowl);
 				break;
 
-			case "enable-palisade-damage":
-				GhaelenTweaksConfig.Current.EnablePalisadeDamage =
-					tree.GetBool("value", GhaelenTweaksConfig.Current.EnablePalisadeDamage);
+			case "enable-palisade-damage-to-hostiles":
+				GhaelenTweaksConfig.Current.EnablePalisadeDamageToHostiles =
+					tree.GetBool("value", GhaelenTweaksConfig.Current.EnablePalisadeDamageToHostiles);
 				break;
 
 			case "palisade-damage-amount":
@@ -175,6 +196,11 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 					tree.GetBool("value", GhaelenTweaksConfig.Current.PersistentCraftingGrid);
 				break;
 
+			case "tule-handbasket":
+				GhaelenTweaksConfig.Current.TuleHandbasket =
+					tree.GetBool("value", GhaelenTweaksConfig.Current.TuleHandbasket);
+				break;
+
 			default:
 				changed = false;
 				break;
@@ -183,6 +209,34 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		if (changed)
 		{
 			GhaelenTweaksConfig.Current.Normalize();
+
+			if (api != null)
+			{
+				ApplyTuleHandbasketRecipeSetting(api);
+			}
+		}
+	}
+
+
+
+	//// Applies the active tule handbasket configuration value to the patched
+	//// grid recipe.
+	////
+	//// Vintage Story's crafting grid checks each candidate GridRecipe's
+	//// Enabled flag before matching, so toggling that flag is enough to make
+	//// the recipe available or unavailable without rebuilding the recipe
+	//// registry or fast-search ingredient cache.
+	////
+	private static void ApplyTuleHandbasketRecipeSetting(ICoreAPI api)
+	{
+		foreach (GridRecipe recipe in api.World.GridRecipes)
+		{
+			if (recipe.Name?.Path != TuleHandbasketRecipeName)
+			{
+				continue;
+			}
+
+			recipe.Enabled = GhaelenTweaksConfig.Current.TuleHandbasket;
 		}
 	}
 }

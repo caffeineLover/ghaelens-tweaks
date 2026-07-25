@@ -20,8 +20,10 @@ Tule can now be used to make a handbasket.
 
 - Tule harvests into thatch, which is close enough to reed fiber to work as a simple basket material.
 - From a player perspective:
+  - `tule-handbasket` controls whether the extra recipe is enabled.
   - Craft a handbasket with thatch in the same pattern used for cattail and papyrus handbaskets.
   - The recipe uses 2 thatch in each occupied slot, matching the existing handbasket material cost.
+  - The recipe is enabled by default.
   - Existing cattail and papyrus handbasket recipes are unchanged.
 
 ## Packed Dirt And Rammed Earth Speed Buffs
@@ -84,7 +86,7 @@ Palisades can now hurt less-aware hostile creatures and can be recycled with woo
 - Hostile mundane predators such as adult bears, wolves, and hyenas also take damage when they are charging toward a nearby player.
 - Normal animals and players are not damaged by palisades.
 - From a player perspective:
-  - `enable-palisade-damage` controls whether palisade creature damage is enabled.
+  - `enable-palisade-damage-to-hostiles` controls whether palisades damage lore creatures and charging adult bears, wolves, and hyenas.
   - `palisade-damage-amount` controls the damage dealt each pulse; the default is `1`.
   - `palisade-damage-cooldown-seconds` controls the per-creature cooldown between damage pulses; the default is `5`, with a range from `1` to `10`.
   - Breaking palisade wall pieces with an axe drops 3 or 4 firewood depending on the wall size.

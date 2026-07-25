@@ -12,7 +12,7 @@ The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation curre
 
 ## Active work
 
-No multi-step implementation is currently in progress. The most recent feature work added a server-side recipe patch that lets players craft the normal reed handbasket from thatch harvested from tule, then released it as version `0.3.1` with tag `Tule-Handbasket`.
+No multi-step implementation is currently in progress. The most recent feature work added a `tule-handbasket` Config Lib boolean setting, true by default, and wired it to the tule/thatch handbasket grid recipe's runtime `Enabled` flag. The palisade damage toggle is now serialized as `enable-palisade-damage-to-hostiles`.
 
 ## Durable technical knowledge
 
@@ -23,6 +23,8 @@ No multi-step implementation is currently in progress. The most recent feature w
 - C# source files must follow the shared Vintage Story mod coding standards: file-level `/* ... */` comments, `////` comments for callable members, internal `//` intent comments, and three blank lines before method comment blocks.
 - Vintage Story 1.22.3 `survival/blocktypes/plant/reedpapyrus.json` defines tule as `tallplant-tule-*`. Normal tule drops `thatch`; harvested tule drops `tuleroot`.
 - Vintage Story 1.22.3 `survival/recipes/grid/basket.json` uses the 3x2 pattern `L_L	LLL` or `P_P	PPP`, with quantity 2 per occupied slot, for cattail and papyrus handbaskets.
+- Vintage Story 1.22.3 `RecipeBase.Enabled` can be changed at runtime. `InventoryCraftingGrid` checks `gridRecipe.Enabled` before matching recipes, so the tule handbasket config toggles the patched recipe by setting that flag after assets finalize and on Config Lib events.
+- The palisade damage config toggle is `enable-palisade-damage-to-hostiles`; despite the concise setting name, the affected entities are lore creatures plus charging adult bears, wolves, and hyenas.
 
 ## Architecture and design decisions
 
@@ -77,7 +79,7 @@ None recorded yet.
 - `Ghaelen Tweaks/src/Patches/PersistentCraftingGridPatches.cs`: Harmony patches for persistent crafting grid behavior.
 - `Ghaelen Tweaks/src/Systems/PalisadeDamageSystem.cs`: server-side palisade damage system.
 - `Ghaelen Tweaks/assets/`: Vintage Story assets and mod data.
-- `Ghaelen Tweaks/assets/survival/patches/tule-handbasket.json`: appends a handbasket recipe using `thatch` in the vanilla handbasket pattern.
+- `Ghaelen Tweaks/assets/survival/patches/tule-handbasket.json`: appends a handbasket recipe named `tule-handbasket` using `thatch` in the vanilla handbasket pattern.
 - `Ghaelen Tweaks/docs/CODEX_STATE.md`: older persistent session notes that may contain useful historical context.
 
 ## Session history
@@ -103,3 +105,8 @@ None recorded yet.
 - Corrected `docs/README.md` to say the current mod metadata depends on Vintage Story `game: 1.22.3`.
 - Created the Git release tag `Tule-Handbasket` for version `0.3.1`.
 - Built the release artifact `Releases/ghaelentweaks_0.3.1.zip` from the tagged commit and opened the `Releases/` folder in File Explorer.
+- Added `GhaelenTweaksConfig.TuleHandbasket` serialized as `tule-handbasket`, defaulting to `true`.
+- Added the `tule-handbasket` boolean to `assets/ghaelentweaks/config/configlib-patches.json` and English Config Lib text.
+- Changed the patched recipe name from `basket` to `tule-handbasket` so code can identify it without touching vanilla basket recipes.
+- Added `GhaelenTweaksModSystem.AssetsFinalize()` and Config Lib event handling to apply the setting to the recipe's runtime `Enabled` flag.
+- Renamed the active palisade damage toggle from `enable-palisade-damage` to `enable-palisade-damage-to-hostiles` in the config model, Config Lib metadata, English strings, event handling, and README.

@@ -29,14 +29,6 @@ unless this `AGENTS.md` contains a more specific instruction that explicitly ove
 
 
 
-## Source Layout
-
-All source files must live under `src/`.
-
-When source files are strongly grouped by functionality, place them in a clearly named folder under `src/`.
-
-
-
 ## Vintage Story Research
 
 When this project needs Vintage Story game, API, asset, recipe, patch, decompiled code, external documentation, or

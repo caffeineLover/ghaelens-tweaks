@@ -63,9 +63,9 @@
     },
     {
       "type": "boolean",
-      "code": "enable-palisade-damage",
-      "ingui": "ghaelentweaks:setting-enable-palisade-damage",
-      "comment": "ghaelentweaks:setting-enable-palisade-damage-comment",
+      "code": "enable-palisade-damage-to-hostiles",
+      "ingui": "ghaelentweaks:setting-enable-palisade-damage-to-hostiles",
+      "comment": "ghaelentweaks:setting-enable-palisade-damage-to-hostiles-comment",
       "default": true,
       "sortingWeight": 6
     },
@@ -102,6 +102,14 @@
       "comment": "ghaelentweaks:setting-persistent-crafting-grid-comment",
       "default": true,
       "sortingWeight": 9
+    },
+    {
+      "type": "boolean",
+      "code": "tule-handbasket",
+      "ingui": "ghaelentweaks:setting-tule-handbasket",
+      "comment": "ghaelentweaks:setting-tule-handbasket-comment",
+      "default": true,
+      "sortingWeight": 10
     }
   ]
 }

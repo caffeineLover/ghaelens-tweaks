@@ -8,7 +8,7 @@
       "ingredients": {
         "T": { "type": "item", "code": "thatch", "quantity": 2 }
       },
-      "name": "basket",
+      "name": "tule-handbasket",
       "width": 3,
       "height": 2,
       "output": { "type": "item", "code": "basket-normal-reed" }

@@ -47,10 +47,10 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("above-ground-radius-for-lore-yowl")]
 	public float AboveGroundRadiusForLoreYowl { get; set; } = 16f;
 
-	//// Controls whether the server-side palisade damage system runs.
+	//// Controls whether eligible hostile creatures take palisade damage.
 	////
-	[JsonProperty("enable-palisade-damage")]
-	public bool EnablePalisadeDamage { get; set; } = true;
+	[JsonProperty("enable-palisade-damage-to-hostiles")]
+	public bool EnablePalisadeDamageToHostiles { get; set; } = true;
 
 	//// Sets the damage applied by each eligible palisade damage pulse.
 	////
@@ -67,6 +67,12 @@ public sealed class GhaelenTweaksConfig
 	////
 	[JsonProperty("persistent-crafting-grid")]
 	public bool PersistentCraftingGrid { get; set; } = true;
+
+	//// Controls whether the tule/thatch handbasket grid recipe remains
+	//// enabled after recipes load.
+	////
+	[JsonProperty("tule-handbasket")]
+	public bool TuleHandbasket { get; set; } = true;
 
 
 

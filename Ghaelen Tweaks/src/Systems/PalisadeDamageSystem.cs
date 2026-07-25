@@ -78,7 +78,7 @@ internal sealed class PalisadeDamageSystem : IDisposable
 	private void OnServerTick(float deltaTime)
 	{
 		var config = GhaelenTweaksConfig.Current;
-		if (!config.EnablePalisadeDamage || config.PalisadeDamageAmount <= 0)
+		if (!config.EnablePalisadeDamageToHostiles || config.PalisadeDamageAmount <= 0)
 		{
 			previousPositions.Clear();
 			recentChargingPredators.Clear();

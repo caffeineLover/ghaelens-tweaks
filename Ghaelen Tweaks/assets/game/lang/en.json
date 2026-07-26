@@ -20,6 +20,13 @@
   "ghaelentweaks:setting-persistent-crafting-grid-comment": "Keeps player crafting-grid ingredients in place when closing the inventory.",
   "ghaelentweaks:setting-tule-handbasket": "Tule handbasket",
   "ghaelentweaks:setting-tule-handbasket-comment": "Allows crafting the normal reed handbasket with thatch harvested from tule.",
+  "ghaelentweaks:setting-betterruins-blueprint-learning": "Better Ruins blueprint learning",
+  "ghaelentweaks:setting-betterruins-blueprint-learning-comment": "Allows players to read Better Ruins blueprints and craft known blueprint recipes without placing the blueprint in the grid.",
+  "ghaelentweaks:heldhelp-read-betterruins-blueprint": "Read blueprint",
+  "ghaelentweaks:betterruins-blueprint-learned": "Learned {0}.",
+  "ghaelentweaks:betterruins-blueprint-already-learned": "Already know {0}.",
+  "ghaelentweaks:betterruins-blueprint-tooltip-learned": "Blueprint learned.",
+  "ghaelentweaks:betterruins-blueprint-tooltip-unread": "Blueprint not yet learned.",
   "item-knife-generic-bone": "Bone knife",
   "item-creature-locust-corrupt-sawblade-hacked": "Hacked sawblade locust",
   "item-dead-creature-locust-corrupt-sawblade-hacked": "Dead sawblade locust (hacked)"

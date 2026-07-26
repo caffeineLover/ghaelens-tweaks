@@ -74,6 +74,12 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("tule-handbasket")]
 	public bool TuleHandbasket { get; set; } = true;
 
+	//// Controls whether Better Ruins schematic blueprints can be learned per
+	//// player and then treated as virtual crafting ingredients.
+	////
+	[JsonProperty("betterruins-blueprint-learning")]
+	public bool BetterRuinsBlueprintLearning { get; set; } = true;
+
 
 
 	//// Normalizes loaded or externally supplied values into the supported

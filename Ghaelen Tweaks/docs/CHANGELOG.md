@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Added Better Ruins blueprint learning: players can right-click a Better Ruins blueprint to remember it, then craft recipes for that blueprint without placing the physical blueprint in the crafting grid.
+- Added the `betterruins-blueprint-learning` config setting, enabled by default.
+
 ## 0.3.1 - 2026-07-15
 
 ### Added

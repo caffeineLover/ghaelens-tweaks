@@ -26,6 +26,19 @@ Tule can now be used to make a handbasket.
   - The recipe is enabled by default.
   - Existing cattail and papyrus handbasket recipes are unchanged.
 
+## Better Ruins Blueprint Learning
+
+Better Ruins blueprints can now be learned per player.
+
+- Better Ruins blueprints are already reusable; this goes one step further by letting the player remember a blueprint after reading it.
+- From a player perspective:
+  - `betterruins-blueprint-learning` controls whether the tweak is enabled.
+  - Right-click a Better Ruins blueprint to learn it.
+  - Once learned, recipes that require that blueprint can be crafted without placing the physical blueprint in the crafting grid.
+  - The physical blueprint is not consumed.
+  - Learned blueprints are stored per player on the server.
+  - This tweak is conditional and only affects worlds where Better Ruins is installed.
+
 ## Packed Dirt And Rammed Earth Speed Buffs
 
 Packed dirt and rammed earth give movement speed buffs, but they stay weaker than stone paths.

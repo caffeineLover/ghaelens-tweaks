@@ -16,6 +16,7 @@
     <VintageStoryApiDll>$(VintageStoryInstall)\VintagestoryAPI.dll</VintageStoryApiDll>
     <VintageStoryHarmonyDll>$(VintageStoryInstall)\Lib\0Harmony.dll</VintageStoryHarmonyDll>
     <VintageStoryNewtonsoftJsonDll>$(VintageStoryInstall)\Lib\Newtonsoft.Json.dll</VintageStoryNewtonsoftJsonDll>
+    <VintageStoryProtobufDll>$(VintageStoryInstall)\Lib\protobuf-net.dll</VintageStoryProtobufDll>
   </PropertyGroup>
 
   <Target Name="ValidateVintageStoryApiReference" BeforeTargets="ResolveReferences">
@@ -27,6 +28,8 @@
            Text="0Harmony.dll was not found at '$(VintageStoryHarmonyDll)'. Set VintageStoryInstall to the game install folder that contains Lib\0Harmony.dll." />
     <Error Condition="!Exists('$(VintageStoryNewtonsoftJsonDll)')"
            Text="Newtonsoft.Json.dll was not found at '$(VintageStoryNewtonsoftJsonDll)'. Set VintageStoryInstall to the game install folder that contains Lib\Newtonsoft.Json.dll." />
+    <Error Condition="!Exists('$(VintageStoryProtobufDll)')"
+           Text="protobuf-net.dll was not found at '$(VintageStoryProtobufDll)'. Set VintageStoryInstall to the game install folder that contains Lib\protobuf-net.dll." />
   </Target>
 
   <ItemGroup>
@@ -40,6 +43,10 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(VintageStoryNewtonsoftJsonDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>$(VintageStoryProtobufDll)</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

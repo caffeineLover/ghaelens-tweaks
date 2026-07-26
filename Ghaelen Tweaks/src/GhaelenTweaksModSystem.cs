@@ -2,15 +2,17 @@
  * Provides the main Vintage Story mod-system entry point for Ghaelen Tweaks.
  *
  * This class registers block and entity behaviors, loads and normalizes mod
- * configuration, listens for optional Config Lib setting events, applies the
- * client-only persistent crafting grid Harmony patch, and creates the
- * server-only palisade damage system. Individual features live in dedicated
- * behavior, patch, and system classes.
+ * configuration, listens for optional Config Lib setting events, applies
+ * Harmony patches, initializes Better Ruins blueprint knowledge sync, and
+ * creates the server-only palisade damage system. Individual features live
+ * in dedicated behavior, patch, and system classes.
  */
 
 using HarmonyLib;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Datastructures;
+using Vintagestory.API.Server;
 
 namespace GhaelenTweaks;
 
@@ -19,6 +21,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 	private const string ConfigFileName = "ghaelentweaks.json";
 	private const string ConfigLibSettingChangedEvent = "configlib:ghaelentweaks:setting-changed";
 	private const string ConfigLibSettingLoadedEvent = "configlib:ghaelentweaks:setting-loaded";
+	private const string HarmonyId = "ghaelentweaks";
 	private const string TuleHandbasketRecipeName = "tule-handbasket";
 	private PalisadeDamageSystem? palisadeDamageSystem;
 	private Harmony? harmony;
@@ -30,9 +33,9 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 	//// Vintage Story side.
 	////
 	//// Vintage Story invokes this once during mod startup. Common behavior
-	//// classes and config loading are registered on both sides, while the
-	//// persistent crafting-grid patch is client-only and the palisade damage
-	//// system is server-only.
+	//// classes, config loading, and the Better Ruins recipe patch are
+	//// registered on both sides, while the persistent crafting-grid patch is
+	//// client-only and the palisade damage system is server-only.
 	////
 	public override void Start(ICoreAPI api)
 	{
@@ -44,6 +47,9 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		api.RegisterBlockBehaviorClass("StonePathConversion", typeof(BlockBehaviorStonePathConversion));
 		api.RegisterBlockBehaviorClass("PalisadeFirewoodDrops", typeof(BlockBehaviorPalisadeFirewoodDrops));
 		api.RegisterBlockBehaviorClass("BarricadeRecyclingDrops", typeof(BlockBehaviorBarricadeRecyclingDrops));
+		api.RegisterCollectibleBehaviorClass(
+			"BetterRuinsBlueprintReading",
+			typeof(CollectibleBehaviorBetterRuinsBlueprintReading));
 		api.RegisterEntityBehaviorClass("catloreguardian", typeof(EntityBehaviorCatLoreGuardian));
 
 		LoadConfig(api);
@@ -54,9 +60,11 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		api.Event.RegisterEventBusListener(OnConfigLibSettingEvent, filterByEventName: ConfigLibSettingChangedEvent);
 		api.Event.RegisterEventBusListener(OnConfigLibSettingEvent, filterByEventName: ConfigLibSettingLoadedEvent);
 
+		harmony = new Harmony(HarmonyId);
+		BetterRuinsBlueprintRecipePatches.Apply(harmony, api.Logger);
+
 		if (api.Side == EnumAppSide.Client)
 		{
-			harmony = new Harmony("ghaelentweaks.persistent-crafting-grid");
 			PersistentCraftingGridPatches.Apply(harmony, api.Logger);
 		}
 
@@ -64,6 +72,36 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		{
 			palisadeDamageSystem = new PalisadeDamageSystem(api);
 		}
+	}
+
+
+
+	//// Initializes client-only runtime integrations after common startup.
+	////
+	//// Vintage Story invokes this only for the game client. The Better Ruins
+	//// blueprint knowledge channel receives the server-owned learned
+	//// schematic set used by client-side crafting preview and tooltip text.
+	////
+	public override void StartClientSide(ICoreClientAPI api)
+	{
+		base.StartClientSide(api);
+
+		BetterRuinsBlueprintKnowledge.StartClientSide(api);
+	}
+
+
+
+	//// Initializes server-only runtime integrations after common startup.
+	////
+	//// Vintage Story invokes this only for the game server. The Better Ruins
+	//// blueprint knowledge channel sends each player their own persisted
+	//// schematic set and resends it whenever a new schematic is learned.
+	////
+	public override void StartServerSide(ICoreServerAPI api)
+	{
+		base.StartServerSide(api);
+
+		BetterRuinsBlueprintKnowledge.StartServerSide(api);
 	}
 
 
@@ -88,14 +126,16 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 	//// Releases side-specific runtime resources owned by the mod system.
 	////
 	//// Vintage Story invokes this during mod unloading. The palisade damage
-	//// system unregisters its server tick listener, and Harmony unpatching
-	//// removes this mod's client inventory patch by its unique patch id.
+	//// system unregisters its server tick listener, blueprint sync releases
+	//// its player event hook, and Harmony unpatching removes this mod's
+	//// recipe and client inventory patches by their shared patch id.
 	////
 	public override void Dispose()
 	{
 		palisadeDamageSystem?.Dispose();
 		palisadeDamageSystem = null;
-		harmony?.UnpatchAll("ghaelentweaks.persistent-crafting-grid");
+		BetterRuinsBlueprintKnowledge.Dispose();
+		harmony?.UnpatchAll(HarmonyId);
 		harmony = null;
 		this.api = null;
 		base.Dispose();
@@ -146,10 +186,12 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 
 		bool changed = true;
 
+		string settingCode = tree.GetAsString("setting");
+
 		// Config Lib sends each setting update as a key plus a typed value.
 		// Keeping the mapping explicit prevents unknown event data from
 		// silently mutating the wrong runtime option.
-		switch (tree.GetAsString("setting"))
+		switch (settingCode)
 		{
 			case "cat-impervious-to-lore-creatures":
 				GhaelenTweaksConfig.Current.CatImperviousToLoreCreatures =
@@ -201,6 +243,11 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 					tree.GetBool("value", GhaelenTweaksConfig.Current.TuleHandbasket);
 				break;
 
+			case "betterruins-blueprint-learning":
+				GhaelenTweaksConfig.Current.BetterRuinsBlueprintLearning =
+					tree.GetBool("value", GhaelenTweaksConfig.Current.BetterRuinsBlueprintLearning);
+				break;
+
 			default:
 				changed = false;
 				break;
@@ -213,6 +260,11 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 			if (api != null)
 			{
 				ApplyTuleHandbasketRecipeSetting(api);
+
+				if (settingCode == "betterruins-blueprint-learning")
+				{
+					BetterRuinsBlueprintKnowledge.SyncAllOnlinePlayers();
+				}
 			}
 		}
 	}

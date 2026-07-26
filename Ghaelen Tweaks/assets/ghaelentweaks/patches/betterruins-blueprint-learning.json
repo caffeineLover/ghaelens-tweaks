@@ -1,0 +1,9 @@
+[
+  {
+    "op": "add",
+    "file": "betterruins:itemtypes/betterruins/schematic.json",
+    "path": "/behaviors/-",
+    "dependsOn": [{ "modid": "betterruins" }],
+    "value": { "name": "BetterRuinsBlueprintReading" }
+  }
+]

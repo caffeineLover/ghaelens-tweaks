@@ -75,7 +75,7 @@ None recorded yet.
 - Build command previously recorded in `docs/CODEX_STATE.md`: `dotnet build "Ghaelen Tweaks.sln"`.
 - Build was not run during the 2026-07-15 source-layout and coding-standards sessions because explicit build permission was not given.
 - Build was not run after the Better Ruins blueprint-learning implementation because project notes still require explicit build permission.
-- Better Ruins blueprint-learning static checks run on 2026-07-26: parsed `assets/game/lang/en.json`, `assets/ghaelentweaks/config/configlib-patches.json`, `assets/ghaelentweaks/patches/betterruins-blueprint-learning.json`, and `modinfo.json` with PowerShell `ConvertFrom-Json`; `git diff --check` passed with only Git line-ending normalization warnings.
+- Better Ruins blueprint-learning and `0.3.2` version-bump static checks run on 2026-07-26: parsed `assets/game/lang/en.json`, `assets/ghaelentweaks/config/configlib-patches.json`, `assets/ghaelentweaks/patches/betterruins-blueprint-learning.json`, and `modinfo.json` with PowerShell `ConvertFrom-Json`; `git diff --check` passed with only Git line-ending normalization warnings.
 - Release `0.3.1` verification ran `dotnet build "Ghaelen Tweaks.sln"`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package`.
 - The build and Cake tasks succeeded. CakeBuild still reports existing NuGet vulnerability warnings for its package dependencies.
 - The release ZIP was created at `Releases/ghaelentweaks_0.3.1.zip`; the ZIP's packaged `modinfo.json` was checked and contained version `0.3.1`, mod id `ghaelentweaks`, and game dependency `1.22.3`.
@@ -115,6 +115,8 @@ None recorded yet.
 - Added a `protobuf-net.dll` reference from the configured Vintage Story install because the learned schematic sync packet uses Vintage Story's protobuf network channel serialization.
 - Verified modified JSON files parse with `ConvertFrom-Json` and ran `git diff --check`; only line-ending normalization warnings were reported. Did not run `dotnet build` because explicit build permission was not given.
 - Fixed source errors in `BetterRuinsBlueprintRecipePatches.cs` by adding the `Vintagestory.API.Datastructures` namespace needed for `Tags.Matches(...)` and by guarding nullable schematic recipe ingredients before calling `SatisfiesAsIngredient(...)`.
+- Bumped `modinfo.json` from `0.3.1` to `0.3.2`.
+- Moved the Better Ruins blueprint-learning changelog notes from `Unreleased` to `0.3.2 - 2026-07-26`.
 
 ### 2026-07-25
 

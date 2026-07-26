@@ -1,11 +1,15 @@
 # Changelog
 
-## Unreleased
+## 0.3.2 - 2026-07-26
 
 ### Added
 
 - Added Better Ruins blueprint learning: players can right-click a Better Ruins blueprint to remember it, then craft recipes for that blueprint without placing the physical blueprint in the crafting grid.
 - Added the `betterruins-blueprint-learning` config setting, enabled by default.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.3.1` to `0.3.2`.
 
 ## 0.3.1 - 2026-07-15
 

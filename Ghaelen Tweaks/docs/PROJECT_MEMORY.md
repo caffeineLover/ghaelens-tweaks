@@ -76,6 +76,7 @@ None recorded yet.
 - Build was not run during the 2026-07-15 source-layout and coding-standards sessions because explicit build permission was not given.
 - Build was not run after the Better Ruins blueprint-learning implementation because project notes still require explicit build permission.
 - Better Ruins blueprint-learning and `0.3.2` version-bump static checks run on 2026-07-26: parsed `assets/game/lang/en.json`, `assets/ghaelentweaks/config/configlib-patches.json`, `assets/ghaelentweaks/patches/betterruins-blueprint-learning.json`, and `modinfo.json` with PowerShell `ConvertFrom-Json`; `git diff --check` passed with only Git line-ending normalization warnings.
+- Release `0.3.2` pre-tag verification ran `dotnet build "Ghaelen Tweaks.sln"`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package` on 2026-07-26. The initial build exposed two Better Ruins nullable warnings, which were fixed before packaging; the final project-code build was clean aside from existing CakeBuild NuGet advisory warnings.
 - Release `0.3.1` verification ran `dotnet build "Ghaelen Tweaks.sln"`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package`.
 - The build and Cake tasks succeeded. CakeBuild still reports existing NuGet vulnerability warnings for its package dependencies.
 - The release ZIP was created at `Releases/ghaelentweaks_0.3.1.zip`; the ZIP's packaged `modinfo.json` was checked and contained version `0.3.1`, mod id `ghaelentweaks`, and game dependency `1.22.3`.
@@ -117,6 +118,8 @@ None recorded yet.
 - Fixed source errors in `BetterRuinsBlueprintRecipePatches.cs` by adding the `Vintagestory.API.Datastructures` namespace needed for `Tags.Matches(...)` and by guarding nullable schematic recipe ingredients before calling `SatisfiesAsIngredient(...)`.
 - Bumped `modinfo.json` from `0.3.1` to `0.3.2`.
 - Moved the Better Ruins blueprint-learning changelog notes from `Unreleased` to `0.3.2 - 2026-07-26`.
+- Fixed two nullable warnings found during release verification by adding explicit held-stack and crafting-grid stack null guards in the Better Ruins blueprint code.
+- Prepared the `0.3.2` release with tag `better-ruin-schematic-memorization` and added its `docs/RELEASES.md` entry.
 
 ### 2026-07-25
 

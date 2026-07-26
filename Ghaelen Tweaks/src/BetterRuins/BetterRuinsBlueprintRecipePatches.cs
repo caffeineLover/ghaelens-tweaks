@@ -264,7 +264,7 @@ internal static class BetterRuinsBlueprintRecipePatches
 		foreach (ItemSlot inputSlot in inputSlots)
 		{
 			ItemStack? inputStack = inputSlot.Itemstack;
-			if (!BetterRuinsBlueprintKnowledge.TryGetSchematicCode(inputStack, out _))
+			if (inputStack == null || !BetterRuinsBlueprintKnowledge.TryGetSchematicCode(inputStack, out _))
 			{
 				continue;
 			}

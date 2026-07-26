@@ -52,7 +52,8 @@ public sealed class CollectibleBehaviorBetterRuinsBlueprintReading : Collectible
 		ref EnumHandHandling handHandling,
 		ref EnumHandling handling)
 	{
-		if (!BetterRuinsBlueprintKnowledge.TryGetSchematicCode(slot.Itemstack, out _))
+		ItemStack? itemStack = slot.Itemstack;
+		if (itemStack == null || !BetterRuinsBlueprintKnowledge.TryGetSchematicCode(itemStack, out _))
 		{
 			return;
 		}
@@ -76,7 +77,7 @@ public sealed class CollectibleBehaviorBetterRuinsBlueprintReading : Collectible
 
 		if (!BetterRuinsBlueprintKnowledge.TryLearnSchematic(
 			player,
-			slot.Itemstack,
+			itemStack,
 			out string schematicName,
 			out bool alreadyLearned))
 		{

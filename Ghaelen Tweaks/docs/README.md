@@ -37,6 +37,7 @@ Better Ruins blueprints can now be learned per player.
   - Once learned, recipes that require that blueprint can be crafted without placing the physical blueprint in the crafting grid.
   - The physical blueprint is not consumed.
   - Learned blueprints are stored per player on the server.
+  - Use `/gtweak schematics` to list your memorized Better Ruins schematics.
   - This tweak is conditional and only affects worlds where Better Ruins is installed.
 
 ## Packed Dirt And Rammed Earth Speed Buffs

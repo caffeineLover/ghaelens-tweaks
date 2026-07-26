@@ -1,5 +1,20 @@
 # Releases
 
+## Version 0.3.3
+
+**Tag:** `v0.3.3`
+**Released:** 2026-07-26
+
+This release adds a player command for checking which Better Ruins schematic blueprints have been memorized.
+
+### Changes
+
+- Added `/gtweak schematics`, which lists the player's memorized Better Ruins schematics.
+- The command shows readable schematic names when they can be resolved, along with the stored schematic code for troubleshooting.
+- If Better Ruins blueprint learning is disabled, the command still reports the saved memorized schematic list and clearly notes that the feature is disabled.
+
+
+
 ## Version 0.3.2
 
 **Tag:** `better-ruin-schematic-memorization`

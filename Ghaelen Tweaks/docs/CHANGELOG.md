@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.3 - 2026-07-26
+
+### Added
+
+- Added `/gtweak schematics` so players can list their memorized Better Ruins schematic blueprints from chat.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.3.2` to `0.3.3`.
+
 ## 0.3.2 - 2026-07-26
 
 ### Added

@@ -101,6 +101,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 	{
 		base.StartServerSide(api);
 
+		GhaelenTweaksChatCommands.StartServerSide(api);
 		BetterRuinsBlueprintKnowledge.StartServerSide(api);
 	}
 

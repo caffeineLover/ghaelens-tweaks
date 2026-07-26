@@ -184,6 +184,20 @@ internal static class BetterRuinsBlueprintKnowledge
 
 
 
+	//// Returns the persisted schematic codes learned by the supplied server
+	//// player.
+	////
+	//// Chat commands use this server-side view so the listed knowledge is
+	//// authoritative and matches what recipe validation will read.
+	internal static string[] GetLearnedSchematicCodes(IServerPlayer player)
+	{
+		return ReadServerLearnedSet(player)
+			.OrderBy(code => code, StringComparer.Ordinal)
+			.ToArray();
+	}
+
+
+
 	//// Returns whether the server has told this client that blueprint
 	//// learning is enabled for the current connection.
 	////

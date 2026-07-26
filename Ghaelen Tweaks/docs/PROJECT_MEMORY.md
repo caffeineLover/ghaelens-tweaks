@@ -12,7 +12,7 @@ The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation curre
 
 ## Active work
 
-No multi-step implementation is currently in progress. The most recent implementation work added Better Ruins blueprint learning, controlled by `betterruins-blueprint-learning` and enabled by default. Players can right-click Better Ruins schematic blueprints to learn them per player; learned schematic recipes can then be crafted without placing the physical blueprint in the crafting grid.
+No multi-step implementation is currently in progress. The most recent work added `/gtweak schematics`, a player command that reads the caller's server-side Better Ruins blueprint knowledge and prints the memorized schematic list in chat, and prepared release `0.3.3`.
 
 ## Durable technical knowledge
 
@@ -36,6 +36,8 @@ No multi-step implementation is currently in progress. The most recent implement
 - `GridRecipe.Matches` is patched on both client and server so exact, non-consuming Better Ruins schematic ingredients can be treated as virtual only when the matching physical schematic is absent from the crafting grid and the player has learned that schematic.
 - `GridRecipe.ConsumeInput` is patched on both client and server. For a virtual schematic craft, it clones the recipe, nulls only the missing learned schematic ingredient slots, and lets vanilla consume the remaining inputs.
 - Physical Better Ruins schematics in the crafting grid are passed through to vanilla recipe matching and consumption unchanged.
+- `/gtweak schematics` is registered server-side through the Vintage Story `api.ChatCommands` builder API. It requires a player caller and the ordinary `Privilege.chat` permission.
+- The schematics command prints the caller's authoritative server-side learned schematic set. It formats resolvable schematic item names with the stored canonical item code, and falls back to the code if the item cannot be resolved.
 
 ## Architecture and design decisions
 
@@ -77,8 +79,10 @@ None recorded yet.
 - Build was not run after the Better Ruins blueprint-learning implementation because project notes still require explicit build permission.
 - Better Ruins blueprint-learning and `0.3.2` version-bump static checks run on 2026-07-26: parsed `assets/game/lang/en.json`, `assets/ghaelentweaks/config/configlib-patches.json`, `assets/ghaelentweaks/patches/betterruins-blueprint-learning.json`, and `modinfo.json` with PowerShell `ConvertFrom-Json`; `git diff --check` passed with only Git line-ending normalization warnings.
 - Release `0.3.2` pre-tag verification ran `dotnet build "Ghaelen Tweaks.sln"`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package` on 2026-07-26. The initial build exposed two Better Ruins nullable warnings, which were fixed before packaging; the final project-code build was clean aside from existing CakeBuild NuGet advisory warnings.
+- Release `0.3.3` verification ran `git diff --check`, `dotnet build "Ghaelen Tweaks.sln"`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package` on 2026-07-26. The only reported warnings were existing CakeBuild NuGet advisory warnings and Git line-ending normalization warnings.
 - Release `0.3.1` verification ran `dotnet build "Ghaelen Tweaks.sln"`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package`.
 - The build and Cake tasks succeeded. CakeBuild still reports existing NuGet vulnerability warnings for its package dependencies.
+- The release ZIP was created at `Releases/ghaelentweaks_0.3.3.zip`; the ZIP's packaged `modinfo.json` was checked and contained version `0.3.3`, mod id `ghaelentweaks`, and game dependency `1.22.3`.
 - The release ZIP was created at `Releases/ghaelentweaks_0.3.1.zip`; the ZIP's packaged `modinfo.json` was checked and contained version `0.3.1`, mod id `ghaelentweaks`, and game dependency `1.22.3`.
 
 ## Useful commands
@@ -96,6 +100,7 @@ None recorded yet.
 - `Ghaelen Tweaks/src/BetterRuins/BetterRuinsBlueprintKnowledge.cs`: server persistence and client sync for learned Better Ruins schematic codes.
 - `Ghaelen Tweaks/src/BetterRuins/BetterRuinsBlueprintRecipePatches.cs`: Harmony patches for virtual learned schematic recipe matching and consumption.
 - `Ghaelen Tweaks/src/BetterRuins/CollectibleBehaviorBetterRuinsBlueprintReading.cs`: right-click behavior that records Better Ruins schematic knowledge.
+- `Ghaelen Tweaks/src/GhaelenTweaksChatCommands.cs`: server-side `/gtweak` command registration, including `/gtweak schematics`.
 - `Ghaelen Tweaks/src/Patches/PersistentCraftingGridPatches.cs`: Harmony patches for persistent crafting grid behavior.
 - `Ghaelen Tweaks/src/Systems/PalisadeDamageSystem.cs`: server-side palisade damage system.
 - `Ghaelen Tweaks/assets/`: Vintage Story assets and mod data.
@@ -107,6 +112,11 @@ None recorded yet.
 
 ### 2026-07-26
 
+- Added `/gtweak schematics`, a server-side chat command that lists the calling player's memorized Better Ruins schematic blueprints.
+- The command uses the authoritative persisted server knowledge rather than the client's synced preview cache, and it requires only the normal chat privilege.
+- Bumped `modinfo.json` from `0.3.2` to `0.3.3`.
+- Prepared release notes for tag `v0.3.3`.
+- Verified and packaged `0.3.3`; the package task produced `Releases/ghaelentweaks_0.3.3.zip` with the expected packaged `modinfo.json`.
 - Implemented Better Ruins blueprint learning on `master` after the user chose not to create a separate branch.
 - Added `betterruins-blueprint-learning` to the mod config model, Config Lib metadata, English language text, README, and changelog.
 - Added a conditional Better Ruins asset patch that appends `BetterRuinsBlueprintReading` to `betterruins:itemtypes/betterruins/schematic.json`.

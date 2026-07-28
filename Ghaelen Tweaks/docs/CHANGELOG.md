@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Added `display-case-stacking`, enabled by default, so normal and tall display cases can be placed directly on top of other display cases.
+
 ## 0.3.3 - 2026-07-26
 
 ### Added
@@ -64,7 +70,7 @@
 
 ### Added
 
-- Added axe and saw recycling drops for looted clutter barricades: 4 aged firewood with an axe, or 4 aged oak boards with a saw.
+- Added axe and saw recycling support for looted clutter barricades: 4 aged firewood with an axe, or 4 aged boards with a saw.
 
 ### Changed
 

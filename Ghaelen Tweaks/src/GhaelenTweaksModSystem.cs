@@ -9,6 +9,7 @@
  */
 
 using HarmonyLib;
+using GhaelenTweaks.BetterRuins;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Datastructures;
@@ -46,7 +47,9 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		// asset-declared blocks and entities can resolve their behavior names.
 		api.RegisterBlockBehaviorClass("StonePathConversion", typeof(BlockBehaviorStonePathConversion));
 		api.RegisterBlockBehaviorClass("PalisadeFirewoodDrops", typeof(BlockBehaviorPalisadeFirewoodDrops));
-		api.RegisterBlockBehaviorClass("BarricadeRecyclingDrops", typeof(BlockBehaviorBarricadeRecyclingDrops));
+		api.RegisterBlockBehaviorClass(
+			"DisplayCaseStackingSupport",
+			typeof(BlockBehaviorDisplayCaseStackingSupport));
 		api.RegisterCollectibleBehaviorClass(
 			"BetterRuinsBlueprintReading",
 			typeof(CollectibleBehaviorBetterRuinsBlueprintReading));
@@ -62,6 +65,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 
 		harmony = new Harmony(HarmonyId);
 		BetterRuinsBlueprintRecipePatches.Apply(harmony, api.Logger);
+		ClutterFuelPatches.Apply(harmony, api.Logger);
 
 		if (api.Side == EnumAppSide.Client)
 		{
@@ -247,6 +251,11 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 			case "betterruins-blueprint-learning":
 				GhaelenTweaksConfig.Current.BetterRuinsBlueprintLearning =
 					tree.GetBool("value", GhaelenTweaksConfig.Current.BetterRuinsBlueprintLearning);
+				break;
+
+			case "display-case-stacking":
+				GhaelenTweaksConfig.Current.DisplayCaseStacking =
+					tree.GetBool("value", GhaelenTweaksConfig.Current.DisplayCaseStacking);
 				break;
 
 			default:

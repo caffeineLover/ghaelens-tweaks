@@ -1,0 +1,14 @@
+[
+  {
+    "op": "add",
+    "path": "/behaviors/-",
+    "value": { "name": "DisplayCaseStackingSupport" },
+    "file": "game:blocktypes/wood/displaycase.json"
+  },
+  {
+    "op": "add",
+    "path": "/behaviors/-",
+    "value": { "name": "DisplayCaseStackingSupport" },
+    "file": "game:blocktypes/wood/displaycase-tall.json"
+  }
+]

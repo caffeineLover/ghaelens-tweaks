@@ -17,7 +17,7 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.Util;
 
-namespace GhaelenTweaks;
+namespace GhaelenTweaks.BetterRuins;
 
 internal static class BetterRuinsBlueprintRecipePatches
 {

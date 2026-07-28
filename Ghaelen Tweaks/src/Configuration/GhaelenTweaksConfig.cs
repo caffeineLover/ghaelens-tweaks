@@ -80,6 +80,12 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("betterruins-blueprint-learning")]
 	public bool BetterRuinsBlueprintLearning { get; set; } = true;
 
+	//// Controls whether vanilla display cases can be stacked directly on top
+	//// of other vanilla display cases.
+	////
+	[JsonProperty("display-case-stacking")]
+	public bool DisplayCaseStacking { get; set; } = true;
+
 
 
 	//// Normalizes loaded or externally supplied values into the supported

@@ -3,8 +3,8 @@
  * with woodworking tools.
  *
  * The behavior lets axes recover firewood and saws recover oak planks while
- * preserving vanilla drop behavior for all other tools, missing item
- * definitions, and non-recycling cases. The main mod system registers this
+ * preserving vanilla drop behavior for all other tools and missing item
+ * definitions. The main mod system registers this
  * behavior for palisade block variants through assets.
  */
 
@@ -20,7 +20,7 @@ public sealed class BlockBehaviorPalisadeFirewoodDrops : BlockBehavior
 
 
 
-	//// Creates the palisade recycling drop behavior for the block instance
+	//// Creates the palisade dismantling drop behavior for the block instance
 	//// supplied by Vintage Story.
 	////
 	//// Construction does not resolve drop items because item availability is
@@ -39,7 +39,7 @@ public sealed class BlockBehaviorPalisadeFirewoodDrops : BlockBehavior
 	////
 	//// Vintage Story invokes this during block breaking. The method falls
 	//// back to the base behavior whenever the active tool is not one of the
-	//// supported recycling tools or when the target drop item cannot be
+	//// supported woodworking tools or when the target drop item cannot be
 	//// resolved in the current world.
 	////
 	public override ItemStack[] GetDrops(
@@ -81,7 +81,7 @@ public sealed class BlockBehaviorPalisadeFirewoodDrops : BlockBehavior
 
 
 
-	//// Determines how many recyclable materials should come from the current
+	//// Determines how many recovered materials should come from the current
 	//// palisade block variant.
 	////
 	//// Wall pieces encode their size in the block code path. Stakes and any

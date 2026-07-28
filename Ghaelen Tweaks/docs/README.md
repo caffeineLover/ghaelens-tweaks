@@ -40,6 +40,18 @@ Better Ruins blueprints can now be learned per player.
   - Use `/gtweak schematics` to list your memorized Better Ruins schematics.
   - This tweak is conditional and only affects worlds where Better Ruins is installed.
 
+## Display Case Stacking
+
+Display cases can now be placed directly on top of other display cases.
+
+- Vanilla display cases are not solid support blocks, so their falling support check normally prevents direct stacking.
+- This tweak only treats display cases as top support for another display case.
+- From a player perspective:
+  - `display-case-stacking` controls whether the tweak is enabled.
+  - Place a normal or tall display case directly on top of another normal or tall display case.
+  - Display cases are not made into general-purpose shelves for unrelated blocks.
+  - The setting can be edited through Config Lib when it is installed.
+
 ## Packed Dirt And Rammed Earth Speed Buffs
 
 Packed dirt and rammed earth give movement speed buffs, but they stay weaker than stone paths.
@@ -94,7 +106,7 @@ Cats from the Cats mod can now warn you about nearby lore creatures.
 
 ## Palisades
 
-Palisades can now hurt less-aware hostile creatures and can be recycled with woodworking tools.
+Palisades can now hurt less-aware hostile creatures and can be dismantled with woodworking tools.
 
 - Lore creatures take damage when they are on or horizontally next to palisade walls or palisade stakes.
 - Hostile mundane predators such as adult bears, wolves, and hyenas also take damage when they are charging toward a nearby player.
@@ -112,13 +124,14 @@ Palisades can now hurt less-aware hostile creatures and can be recycled with woo
 
 ## Barricades
 
-Looted clutter barricades can now be recycled into aged wood materials.
+Looted clutter barricades can now be recycled into aged wood materials or burned as fuel.
 
 - Barricades are old salvaged clutter, so they return aged materials rather than fresh wood.
 - From a player perspective:
-  - Breaking clutter barricades with an axe drops 4 aged firewood.
-  - Breaking clutter barricades with a saw drops 4 aged oak boards.
-  - Breaking clutter barricades with other tools uses the normal drop behavior.
+  - Crafting clutter barricades with an axe yields 4 aged firewood.
+  - Crafting clutter barricades with a saw yields 4 aged boards.
+  - The axe and saw do not lose durability from these recipes.
+  - Clutter barricades burn as fuel with the same fuel values as aged firewood.
 
 ## Bone Knife
 

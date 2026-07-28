@@ -16,7 +16,7 @@ using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.Server;
 
-namespace GhaelenTweaks;
+namespace GhaelenTweaks.BetterRuins;
 
 public sealed class CollectibleBehaviorBetterRuinsBlueprintReading : CollectibleBehavior
 {

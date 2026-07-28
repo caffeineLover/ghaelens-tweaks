@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-07-26
+Last updated: 2026-07-28
 
 ## Project overview
 
@@ -38,6 +38,7 @@ No multi-step implementation is currently in progress. The most recent work adde
 - Physical Better Ruins schematics in the crafting grid are passed through to vanilla recipe matching and consumption unchanged.
 - `/gtweak schematics` is registered server-side through the Vintage Story `api.ChatCommands` builder API. It requires a player caller and the ordinary `Privilege.chat` permission.
 - The schematics command prints the caller's authoritative server-side learned schematic set. It formats resolvable schematic item names with the stored canonical item code, and falls back to the code if the item cannot be resolved.
+- Vanilla display cases cannot stack directly because their block JSON has `UnstableFalling` and `sidesolid: { all: false }`; the falling placement check asks the lower block's `CanAttachBlockAt(..., BlockFacing.UP, ...)` and fails with `requiresolidground` when the support is not attachable. Ghaelen Tweaks adds `BlockBehaviorDisplayCaseStackingSupport` to normal and tall display cases through `assets/survival/patches/display-case-stacking.json`. The behavior only answers true for display-case-on-display-case top-face attachment when `display-case-stacking` is enabled, so display cases are not made generally solid for unrelated blocks.
 
 ## Architecture and design decisions
 
@@ -51,6 +52,7 @@ No multi-step implementation is currently in progress. The most recent work adde
   - `src/Patches/` for Harmony patch code.
 - Learned Better Ruins schematics use direct Harmony patches instead of generated duplicate recipes. This avoids adding hundreds of duplicate Better Ruins recipes to the recipe registry and keeps physical blueprint behavior unchanged.
 - `assets/ghaelentweaks/patches/betterruins-blueprint-learning.json` conditionally patches Better Ruins' schematic item with the `BetterRuinsBlueprintReading` collectible behavior only when mod id `betterruins` is loaded.
+- `assets/survival/patches/display-case-stacking.json` patches vanilla normal and tall display cases with a registered block behavior rather than changing `sidesolid`. This keeps the tweak narrow and avoids making display cases act as general block support.
 
 ## External interfaces and integrations
 
@@ -109,6 +111,13 @@ None recorded yet.
 - `Ghaelen Tweaks/docs/CODEX_STATE.md`: older persistent session notes that may contain useful historical context.
 
 ## Session history
+
+### 2026-07-28
+
+- Added display case stacking support. New file `src/BlockBehaviors/BlockBehaviorDisplayCaseStackingSupport.cs` lets normal and tall display cases attach to the top face of another display case when the feature toggle is enabled.
+- Registered `DisplayCaseStackingSupport` in `GhaelenTweaksModSystem` and patched `game:blocktypes/wood/displaycase.json` plus `game:blocktypes/wood/displaycase-tall.json` through `assets/survival/patches/display-case-stacking.json`.
+- Added the `display-case-stacking` config property, Config Lib metadata, English language text, README section, and Unreleased changelog entry.
+- Verified the new display-case patch, Config Lib metadata, and English language JSON parse with `ConvertFrom-Json`. Ran `git diff --check`; it reported only existing CRLF normalization warnings. Did not run `dotnet build` because project notes require explicit build permission.
 
 ### 2026-07-26
 

@@ -20,7 +20,7 @@ using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Server;
 
-namespace GhaelenTweaks;
+namespace GhaelenTweaks.BetterRuins;
 
 internal static class BetterRuinsBlueprintKnowledge
 {
@@ -31,7 +31,6 @@ internal static class BetterRuinsBlueprintKnowledge
 	private static readonly HashSet<string> ClientLearnedSchematicCodes = new(StringComparer.Ordinal);
 	private static ICoreServerAPI? serverApi;
 	private static IServerNetworkChannel? serverChannel;
-	private static IClientNetworkChannel? clientChannel;
 	private static PlayerDelegate? playerNowPlayingHandler;
 	private static bool clientFeatureEnabled;
 
@@ -49,7 +48,7 @@ internal static class BetterRuinsBlueprintKnowledge
 		ClientLearnedSchematicCodes.Clear();
 		clientFeatureEnabled = false;
 
-		clientChannel = api.Network
+		api.Network
 			.RegisterChannel(ChannelName)
 			.RegisterMessageType<BetterRuinsBlueprintKnowledgePacket>()
 			.SetMessageHandler<BetterRuinsBlueprintKnowledgePacket>(OnClientKnowledgePacket);
@@ -91,7 +90,6 @@ internal static class BetterRuinsBlueprintKnowledge
 
 		playerNowPlayingHandler = null;
 		serverChannel = null;
-		clientChannel = null;
 		serverApi = null;
 		clientFeatureEnabled = false;
 		ClientLearnedSchematicCodes.Clear();
@@ -246,12 +244,12 @@ internal static class BetterRuinsBlueprintKnowledge
 		schematicCode = string.Empty;
 
 		AssetLocation? collectibleCode = itemStack?.Collectible?.Code;
-		if (!IsBetterRuinsSchematicLocation(collectibleCode))
+		if (collectibleCode == null || !IsBetterRuinsSchematicLocation(collectibleCode))
 		{
 			return false;
 		}
 
-		schematicCode = collectibleCode!.ToShortString();
+		schematicCode = collectibleCode.ToShortString();
 		return true;
 	}
 
@@ -279,19 +277,19 @@ internal static class BetterRuinsBlueprintKnowledge
 		}
 
 		AssetLocation? resolvedCode = ingredient.ResolvedItemStack?.Collectible?.Code;
-		if (IsBetterRuinsSchematicLocation(resolvedCode))
+		if (resolvedCode != null && IsBetterRuinsSchematicLocation(resolvedCode))
 		{
-			schematicCode = resolvedCode!.ToShortString();
+			schematicCode = resolvedCode.ToShortString();
 			return true;
 		}
 
 		AssetLocation? ingredientCode = ingredient.Code;
-		if (!IsBetterRuinsSchematicLocation(ingredientCode))
+		if (ingredientCode == null || !IsBetterRuinsSchematicLocation(ingredientCode))
 		{
 			return false;
 		}
 
-		schematicCode = ingredientCode!.ToShortString();
+		schematicCode = ingredientCode.ToShortString();
 		return true;
 	}
 
@@ -467,5 +465,5 @@ internal sealed class BetterRuinsBlueprintKnowledgePacket
 	public bool FeatureEnabled { get; set; }
 
 	[ProtoMember(2)]
-	public string[] LearnedSchematicCodes { get; set; } = Array.Empty<string>();
+	public string[]? LearnedSchematicCodes { get; set; } = Array.Empty<string>();
 }

@@ -4,6 +4,7 @@
  */
 
 using System.Text;
+using GhaelenTweaks.BetterRuins;
 using Vintagestory.API.Common;
 using Vintagestory.API.Server;
 

@@ -118,6 +118,14 @@
       "comment": "ghaelentweaks:setting-betterruins-blueprint-learning-comment",
       "default": true,
       "sortingWeight": 11
+    },
+    {
+      "type": "boolean",
+      "code": "display-case-stacking",
+      "ingui": "ghaelentweaks:setting-display-case-stacking",
+      "comment": "ghaelentweaks:setting-display-case-stacking-comment",
+      "default": true,
+      "sortingWeight": 12
     }
   ]
 }

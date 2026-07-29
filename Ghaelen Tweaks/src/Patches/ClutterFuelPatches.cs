@@ -1,10 +1,10 @@
 /*
  * Adds firepit fuel properties for selected clutter item-stack variants.
  *
- * Vintage Story stores the specific clutter shape, such as barricade1, on the
- * item stack rather than in the block code. This patch keeps fuel handling
- * narrow to configured clutter types without making every game:clutter item
- * burnable.
+ * Vintage Story stores the specific clutter shape, such as barricade1 or
+ * rubble-wood1, on the item stack rather than in the block code. This patch
+ * keeps fuel handling narrow to configured wooden clutter types without making
+ * every game:clutter item burnable.
  */
 
 using System.Reflection;
@@ -18,16 +18,19 @@ internal static class ClutterFuelPatches
 {
 	private const string ClutterDomain = "game";
 	private const string ClutterPath = "clutter";
+	private const int AgedWoodBurnTemperature = 700;
+	private const int AgedFirewoodBurnDurationSeconds = 24;
 
+	// Direct firepit burn duration is scaled from the same aged firewood
+	// recovery value used by the axe recycling recipes.
 	private static readonly ClutterFuelDefinition[] FuelDefinitions =
 	{
-		new(
-			"barricade",
-			new CombustibleProperties
-			{
-				BurnTemperature = 700,
-				BurnDuration = 24
-			})
+		new("barricade", recoveredFirewood: 4),
+		new("rubble-wood", recoveredFirewood: 2),
+		new("table-ruined", recoveredFirewood: 4),
+		new("crate/crate-small-stacked", recoveredFirewood: 6),
+		new("crate/crate-large-rot", recoveredFirewood: 6),
+		new("chestrubble", recoveredFirewood: 3)
 	};
 
 
@@ -36,6 +39,7 @@ internal static class ClutterFuelPatches
 	////
 	//// The main mod system calls this on both client and server. The patch is
 	//// read-only and affects only combustible-property lookup for item stacks.
+	////
 	internal static void Apply(Harmony harmony, ILogger patchLogger)
 	{
 		try
@@ -68,6 +72,7 @@ internal static class ClutterFuelPatches
 
 	//// Supplies fuel properties for configured game:clutter item-stack types
 	//// when vanilla does not already define combustible properties.
+	////
 	private static void PostfixGetCombustibleProperties(
 		CollectibleObject __instance,
 		ItemStack itemstack,
@@ -104,10 +109,25 @@ internal static class ClutterFuelPatches
 
 	private sealed class ClutterFuelDefinition
 	{
-		public ClutterFuelDefinition(string typePrefix, CombustibleProperties properties)
+
+
+
+		//// Creates one fuel rule for a family of wooden clutter item-stack
+		//// variants.
+		////
+		//// The type prefix is matched against the clutter `type` stack
+		//// attribute. The recovered firewood count deliberately mirrors the
+		//// axe recipe quantity so direct firepit burning and craft-then-burn
+		//// use the same total fuel value.
+		////
+		public ClutterFuelDefinition(string typePrefix, int recoveredFirewood)
 		{
 			TypePrefix = typePrefix;
-			Properties = properties;
+			Properties = new CombustibleProperties
+			{
+				BurnTemperature = AgedWoodBurnTemperature,
+				BurnDuration = AgedFirewoodBurnDurationSeconds * recoveredFirewood
+			};
 		}
 
 
@@ -120,9 +140,18 @@ internal static class ClutterFuelPatches
 
 
 
+		//// Returns whether a clutter stack's `type` attribute belongs to this
+		//// fuel rule.
+		////
+		//// Prefix matching keeps variant families compact, while still
+		//// requiring the outer patch to verify that the stack is game:clutter.
+		////
 		public bool Matches(string clutterType)
 		{
 			return clutterType.StartsWith(TypePrefix, StringComparison.Ordinal);
 		}
+
+
+
 	}
 }

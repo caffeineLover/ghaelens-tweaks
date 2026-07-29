@@ -122,16 +122,21 @@ Palisades can now hurt less-aware hostile creatures and can be dismantled with w
   - Breaking palisades with other tools uses the normal drop behavior.
   - These settings can be edited through Config Lib when it is installed.
 
-## Barricades
+## Wooden Clutter Recycling
 
-Looted clutter barricades can now be recycled into aged wood materials or burned as fuel.
+Selected looted wooden clutter can now be recycled into aged wood materials or
+burned directly as firepit fuel.
 
-- Barricades are old salvaged clutter, so they return aged materials rather than fresh wood.
+- These are old salvaged clutter pieces, so they return aged materials rather than fresh wood.
 - From a player perspective:
-  - Crafting clutter barricades with an axe yields 4 aged firewood.
-  - Crafting clutter barricades with a saw yields 4 aged boards.
+  - Barricades yield 4 aged firewood with an axe or 4 aged boards with a saw.
+  - Wood rubble yields 2 aged firewood with an axe or 2 aged boards with a saw.
+  - Ruined tables yield 4 aged firewood with an axe or 4 aged boards with a saw.
+  - A stack of small crates yields 6 aged firewood with an axe or 6 aged boards with a saw.
+  - A large crate with rot yields 6 aged firewood with an axe or 6 aged boards with a saw, plus 32 rot.
+  - Chest rubble yields 3 aged firewood with an axe or 3 aged boards with a saw.
   - The axe and saw do not lose durability from these recipes.
-  - Clutter barricades burn as fuel with the same fuel values as aged firewood.
+  - These clutter items burn at aged-firewood temperature, with burn time scaled by recovery value.
 
 ## Bone Knife
 

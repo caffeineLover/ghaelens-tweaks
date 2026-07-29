@@ -12,7 +12,7 @@ The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation curre
 
 ## Active work
 
-Release `0.3.4` is being prepared. The most recent unreleased work added display case stacking, reworked barricade clutter recycling into crafting recipes, made barricade clutter usable as firepit fuel, and cleaned up Better Ruins nullable/namespace inspections.
+Release `0.3.5` is being prepared with tag `v0.3.5`. It expands wooden clutter recycling and firepit fuel support beyond barricades. The current implementation adds explicit grid recipes for wood rubble, ruined tables, stacked small crates, large crates with rot, and chest rubble, and changes direct clutter burn duration to scale from the same aged firewood count recovered by axe recycling.
 
 ## Durable technical knowledge
 
@@ -39,6 +39,10 @@ Release `0.3.4` is being prepared. The most recent unreleased work added display
 - `/gtweak schematics` is registered server-side through the Vintage Story `api.ChatCommands` builder API. It requires a player caller and the ordinary `Privilege.chat` permission.
 - The schematics command prints the caller's authoritative server-side learned schematic set. It formats resolvable schematic item names with the stored canonical item code, and falls back to the code if the item cannot be resolved.
 - Vanilla display cases cannot stack directly because their block JSON has `UnstableFalling` and `sidesolid: { all: false }`; the falling placement check asks the lower block's `CanAttachBlockAt(..., BlockFacing.UP, ...)` and fails with `requiresolidground` when the support is not attachable. Ghaelen Tweaks adds `BlockBehaviorDisplayCaseStackingSupport` to normal and tall display cases through `assets/survival/patches/display-case-stacking.json`. The behavior only answers true for display-case-on-display-case top-face attachment when `display-case-stacking` is enabled, so display cases are not made generally solid for unrelated blocks.
+- Vintage Story 1.22.3 clutter item stacks store their specific clutter variant in stack attribute `type`. The wooden clutter recycling recipes use exact attribute matches because `CollectibleObject.Satisfies(...)` compares ingredient stack attributes as a subset of the input stack attributes.
+- Current wooden clutter recycling targets `barricade1..6`, `rubble-wood1..4`, `table-ruined1..6`, `crate/crate-small-stacked`, `crate/crate-large-rot`, and `chestrubble`. Axe recipes return `game:agedfirewood`; saw recipes return `game:plank-aged`; all tool ingredients set `toolDurabilityCost` to `0`.
+- The large rot crate recipes use `returnedStack` on the consumed clutter ingredient to grant 32 `game:rot` in addition to the visible aged wood output. Vintage Story puts returned stacks in player inventory or drops them near the player if inventory space is unavailable.
+- `ClutterFuelPatches` applies direct firepit fuel to selected `game:clutter` stack types at 700 C. Burn duration is `24 seconds * recovered aged firewood count`, so direct burning matches the total fuel value of axe-recycling and then burning the recovered aged firewood.
 
 ## Architecture and design decisions
 
@@ -86,6 +90,8 @@ None recorded yet.
 - The build and Cake tasks succeeded. CakeBuild still reports existing NuGet vulnerability warnings for its package dependencies.
 - The release ZIP was created at `Releases/ghaelentweaks_0.3.3.zip`; the ZIP's packaged `modinfo.json` was checked and contained version `0.3.3`, mod id `ghaelentweaks`, and game dependency `1.22.3`.
 - The release ZIP was created at `Releases/ghaelentweaks_0.3.1.zip`; the ZIP's packaged `modinfo.json` was checked and contained version `0.3.1`, mod id `ghaelentweaks`, and game dependency `1.22.3`.
+- The 2026-07-29 wooden clutter update parsed `clutter-barricade-recycling.json` and `clutter-wood-recycling.json` with PowerShell `ConvertFrom-Json`; the files contained 12 and 24 recipes respectively. `git diff --check` reported only the repository's existing CRLF normalization warnings. `dotnet build` was not run because `docs/CODEX_STATE.md` still requires explicit build permission.
+- Release `0.3.5` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet build "Ghaelen Tweaks.sln"` on 2026-07-29. `git diff --check` reported only the repository's existing CRLF normalization warnings after a release-note trailing-space fix. JSON validation and the solution build passed. The only build warnings were existing CakeBuild NuGet advisory warnings.
 
 ## Useful commands
 
@@ -104,13 +110,26 @@ None recorded yet.
 - `Ghaelen Tweaks/src/BetterRuins/CollectibleBehaviorBetterRuinsBlueprintReading.cs`: right-click behavior that records Better Ruins schematic knowledge.
 - `Ghaelen Tweaks/src/GhaelenTweaksChatCommands.cs`: server-side `/gtweak` command registration, including `/gtweak schematics`.
 - `Ghaelen Tweaks/src/Patches/PersistentCraftingGridPatches.cs`: Harmony patches for persistent crafting grid behavior.
+- `Ghaelen Tweaks/src/Patches/ClutterFuelPatches.cs`: Harmony postfix that adds combustible properties for selected `game:clutter` item-stack variants.
 - `Ghaelen Tweaks/src/Systems/PalisadeDamageSystem.cs`: server-side palisade damage system.
 - `Ghaelen Tweaks/assets/`: Vintage Story assets and mod data.
+- `Ghaelen Tweaks/assets/ghaelentweaks/recipes/grid/clutter-barricade-recycling.json`: explicit axe/saw grid recipes for clutter barricade variants.
+- `Ghaelen Tweaks/assets/ghaelentweaks/recipes/grid/clutter-wood-recycling.json`: explicit axe/saw grid recipes for wood rubble, ruined tables, stacked small crates, large crates with rot, and chest rubble.
 - `Ghaelen Tweaks/assets/ghaelentweaks/patches/betterruins-blueprint-learning.json`: conditional Better Ruins schematic item behavior patch.
 - `Ghaelen Tweaks/assets/survival/patches/tule-handbasket.json`: appends a handbasket recipe named `tule-handbasket` using `thatch` in the vanilla handbasket pattern.
 - `Ghaelen Tweaks/docs/CODEX_STATE.md`: older persistent session notes that may contain useful historical context.
 
 ## Session history
+
+### 2026-07-29
+
+- Diagnosed the user's 2026-07-29 StoryForge screenshots and logs: the active `havoc` profile loaded `ghaelentweaks_0.3.3.zip`, not the newly released `0.3.4` zip, so the barricade recipe/fuel changes were absent from that runtime.
+- Confirmed that vanilla "Wood rubble" is a separate clutter family using `type=rubble-wood1..4`, so it was not covered by the barricade-only `0.3.4` recipes or fuel rule.
+- Added `assets/ghaelentweaks/recipes/grid/clutter-wood-recycling.json` for wood rubble, ruined tables, stacked small crates, and chest rubble. Axe recipes return aged firewood; saw recipes return aged boards; all tool durability costs are zero.
+- Updated `ClutterFuelPatches` so barricades now burn for 96 seconds and the added wooden clutter burns at 700 C with duration scaled from axe recovery value.
+- Updated README, recycling notes, and changelog for the expanded wooden clutter recycling behavior.
+- Added large crate with rot recycling using vanilla clutter `type=crate/crate-large-rot`; both axe and saw recipes return 32 rot as a `returnedStack`, plus 6 aged firewood or 6 aged boards as the visible output.
+- Bumped `modinfo.json` to `0.3.5` and prepared release notes for tag `v0.3.5`.
 
 ### 2026-07-28
 

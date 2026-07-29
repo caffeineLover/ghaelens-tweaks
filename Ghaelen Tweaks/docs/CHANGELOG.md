@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.5 - 2026-07-29
+
+### Added
+
+- Added axe and saw recycling recipes for wood rubble, ruined tables, stacked small crates, large crates with rot, and chest rubble clutter. Axe recipes return aged firewood, saw recipes return aged boards, rot crates also return rot, and neither tool loses durability.
+- Added firepit fuel support for the new wooden clutter groups.
+
+### Changed
+
+- Changed barricade clutter burn duration from 24 seconds to 96 seconds so direct burning matches the value of the four aged firewood recovered by axe recycling.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.3.4` to `0.3.5`.
+
 ## 0.3.4 - 2026-07-29
 
 ### Added

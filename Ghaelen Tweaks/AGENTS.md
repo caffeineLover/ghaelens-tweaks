@@ -29,6 +29,12 @@ unless this `AGENTS.md` contains a more specific instruction that explicitly ove
 
 
 
+## Release Process
+
+After creating a release ZIP, always open File Explorer with the new ZIP selected.
+
+
+
 ## Vintage Story Research
 
 When this project needs Vintage Story game, API, asset, recipe, patch, decompiled code, external documentation, or

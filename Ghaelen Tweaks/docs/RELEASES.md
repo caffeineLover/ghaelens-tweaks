@@ -1,5 +1,22 @@
 # Releases
 
+## Version 0.3.5
+
+**Tag:** `v0.3.5`
+**Released:** 2026-07-29
+
+This release expands clutter recycling to more wooden ruin objects and makes direct clutter burning match recovered fuel value.
+
+### Changes
+
+- Added axe and saw recycling recipes for wood rubble, ruined tables, stacked small crates, large crates with rot, and chest rubble.
+- Axe recipes return aged firewood; saw recipes return aged boards; neither tool loses durability.
+- Large crates with rot also return 32 rot when recycled.
+- Added firepit fuel support for the new wooden clutter groups.
+- Changed barricade clutter burn duration from 24 seconds to 96 seconds so direct burning matches the recovered aged firewood value.
+
+
+
 ## Version 0.3.4
 
 **Tag:** `v0.3.4`

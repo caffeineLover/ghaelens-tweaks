@@ -1,0 +1,324 @@
+[
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "rubble-wood1" } }
+    },
+    "name": "ghaelentweaks:clutter-rubble-wood1-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 2 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "rubble-wood1" } }
+    },
+    "name": "ghaelentweaks:clutter-rubble-wood1-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 2 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "rubble-wood2" } }
+    },
+    "name": "ghaelentweaks:clutter-rubble-wood2-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 2 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "rubble-wood2" } }
+    },
+    "name": "ghaelentweaks:clutter-rubble-wood2-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 2 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "rubble-wood3" } }
+    },
+    "name": "ghaelentweaks:clutter-rubble-wood3-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 2 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "rubble-wood3" } }
+    },
+    "name": "ghaelentweaks:clutter-rubble-wood3-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 2 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "rubble-wood4" } }
+    },
+    "name": "ghaelentweaks:clutter-rubble-wood4-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 2 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "rubble-wood4" } }
+    },
+    "name": "ghaelentweaks:clutter-rubble-wood4-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 2 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined1" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined1-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined1" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined1-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined2" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined2-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined2" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined2-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined3" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined3-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined3" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined3-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined4" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined4-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined4" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined4-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined5" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined5-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined5" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined5-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined6" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined6-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "table-ruined6" } }
+    },
+    "name": "ghaelentweaks:clutter-table-ruined6-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "crate/crate-small-stacked" } }
+    },
+    "name": "ghaelentweaks:clutter-crate-small-stacked-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 6 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "crate/crate-small-stacked" } }
+    },
+    "name": "ghaelentweaks:clutter-crate-small-stacked-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 6 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "chestrubble" } }
+    },
+    "name": "ghaelentweaks:clutter-chestrubble-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 3 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": { "type": "block", "code": "game:clutter", "attributes": { "type": "chestrubble" } }
+    },
+    "name": "ghaelentweaks:clutter-chestrubble-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 3 }
+  },
+  {
+    "ingredientPattern": "AC",
+    "ingredients": {
+      "A": { "type": "item", "tags": ["tool-axe"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": {
+        "type": "block",
+        "code": "game:clutter",
+        "attributes": { "type": "crate/crate-large-rot" },
+        "returnedStack": { "type": "item", "code": "game:rot", "quantity": 32 }
+      }
+    },
+    "name": "ghaelentweaks:clutter-crate-large-rot-axe",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:agedfirewood", "quantity": 6 }
+  },
+  {
+    "ingredientPattern": "SC",
+    "ingredients": {
+      "S": { "type": "item", "tags": ["tool-saw"], "isTool": true, "toolDurabilityCost": 0 },
+      "C": {
+        "type": "block",
+        "code": "game:clutter",
+        "attributes": { "type": "crate/crate-large-rot" },
+        "returnedStack": { "type": "item", "code": "game:rot", "quantity": 32 }
+      }
+    },
+    "name": "ghaelentweaks:clutter-crate-large-rot-saw",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "game:plank-aged", "quantity": 6 }
+  }
+]

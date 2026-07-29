@@ -70,39 +70,80 @@ internal static class ClutterFuelPatches
 
 
 
+	//// Returns whether the stack is one of this mod's dynamic clutter fuels.
+	////
+	//// The answer depends on the stack's `type` attribute, not just the
+	//// collectible code, because all clutter variants share `game:clutter`.
+	////
+	internal static bool IsConfiguredClutterFuel(ItemStack? itemstack)
+	{
+		return GetMatchingDefinition(itemstack?.Collectible?.Code, itemstack) != null;
+	}
+
+
+
+	//// Removes this mod's dynamic clutter fuels from handbook fuel lists.
+	////
+	//// Runtime fuel handling still uses `GetCombustibleProperties`; this
+	//// helper only protects integrations that treat handbook fuel lists as
+	//// static per-collectible data.
+	////
+	internal static void RemoveDynamicClutterFuelStacks(List<ItemStack>? fuels)
+	{
+		fuels?.RemoveAll(IsConfiguredClutterFuel);
+	}
+
+
+
 	//// Supplies fuel properties for configured game:clutter item-stack types
 	//// when vanilla does not already define combustible properties.
 	////
 	private static void PostfixGetCombustibleProperties(
 		CollectibleObject __instance,
 		ItemStack itemstack,
-		ref CombustibleProperties __result)
+		ref CombustibleProperties? __result)
 	{
 		if (__result != null || itemstack == null)
 		{
 			return;
 		}
 
-		AssetLocation? code = __instance.Code;
-		if (code?.Domain != ClutterDomain || code.Path != ClutterPath)
+		ClutterFuelDefinition? definition = GetMatchingDefinition(__instance.Code, itemstack);
+		if (definition == null)
 		{
 			return;
 		}
 
-		string? clutterType = itemstack.Attributes.GetString("type");
+		__result = definition.Properties.Clone();
+	}
+
+
+
+	//// Finds the configured clutter fuel definition for the supplied item
+	//// stack, or null when the stack is not a supported wooden clutter type.
+	////
+	private static ClutterFuelDefinition? GetMatchingDefinition(AssetLocation? code, ItemStack? itemstack)
+	{
+		if (code?.Domain != ClutterDomain || code.Path != ClutterPath)
+		{
+			return null;
+		}
+
+		string? clutterType = itemstack?.Attributes.GetString("type");
 		if (clutterType == null)
 		{
-			return;
+			return null;
 		}
 
 		foreach (ClutterFuelDefinition definition in FuelDefinitions)
 		{
 			if (definition.Matches(clutterType))
 			{
-				__result = definition.Properties.Clone();
-				return;
+				return definition;
 			}
 		}
+
+		return null;
 	}
 
 

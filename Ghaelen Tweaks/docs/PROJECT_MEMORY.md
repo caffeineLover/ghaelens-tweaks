@@ -12,7 +12,7 @@ The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation curre
 
 ## Active work
 
-Release `0.3.5` is being prepared with tag `v0.3.5`. It expands wooden clutter recycling and firepit fuel support beyond barricades. The current implementation adds explicit grid recipes for wood rubble, ruined tables, stacked small crates, large crates with rot, and chest rubble, and changes direct clutter burn duration to scale from the same aged firewood count recovered by axe recycling.
+Release `0.3.6` is being prepared with tag `v0.3.6`. It is a hotfix for a handbook crash triggered by dynamic wooden clutter fuels. The implementation keeps the firepit fuel behavior intact, but filters this mod's dynamic clutter fuel stacks out of generic handbook fuel lists on the client.
 
 ## Durable technical knowledge
 
@@ -43,6 +43,7 @@ Release `0.3.5` is being prepared with tag `v0.3.5`. It expands wooden clutter r
 - Current wooden clutter recycling targets `barricade1..6`, `rubble-wood1..4`, `table-ruined1..6`, `crate/crate-small-stacked`, `crate/crate-large-rot`, and `chestrubble`. Axe recipes return `game:agedfirewood`; saw recipes return `game:plank-aged`; all tool ingredients set `toolDurabilityCost` to `0`.
 - The large rot crate recipes use `returnedStack` on the consumed clutter ingredient to grant 32 `game:rot` in addition to the visible aged wood output. Vintage Story puts returned stacks in player inventory or drops them near the player if inventory space is unavailable.
 - `ClutterFuelPatches` applies direct firepit fuel to selected `game:clutter` stack types at 700 C. Burn duration is `24 seconds * recovered aged firewood count`, so direct burning matches the total fuel value of axe-recycling and then burning the recovered aged firewood.
+- Vintage Story's handbook builds a generic fuel stack list by calling `GetCombustibleProperties(...)` for every stack. Dynamic `game:clutter` fuels can enter that list even though their fuel value depends on stack attributes rather than static `Collectible.CombustibleProps`. `ClutterFuelHandbookPatches` removes this mod's dynamic clutter fuels from `CollectibleBehaviorHandbookTextAndExtraInfo.addCreatedByInfo(...)` fuel lists to avoid crashes in handbook integrations that assume static combustible properties.
 
 ## Architecture and design decisions
 
@@ -92,6 +93,8 @@ None recorded yet.
 - The release ZIP was created at `Releases/ghaelentweaks_0.3.1.zip`; the ZIP's packaged `modinfo.json` was checked and contained version `0.3.1`, mod id `ghaelentweaks`, and game dependency `1.22.3`.
 - The 2026-07-29 wooden clutter update parsed `clutter-barricade-recycling.json` and `clutter-wood-recycling.json` with PowerShell `ConvertFrom-Json`; the files contained 12 and 24 recipes respectively. `git diff --check` reported only the repository's existing CRLF normalization warnings. `dotnet build` was not run because `docs/CODEX_STATE.md` still requires explicit build permission.
 - Release `0.3.5` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet build "Ghaelen Tweaks.sln"` on 2026-07-29. `git diff --check` reported only the repository's existing CRLF normalization warnings after a release-note trailing-space fix. JSON validation and the solution build passed. The only build warnings were existing CakeBuild NuGet advisory warnings.
+- The post-`0.3.5` clutter-fuel handbook compatibility fix was verified with `dotnet build "Ghaelen Tweaks.sln"` on 2026-07-29. The solution build passed; the only warnings were existing CakeBuild NuGet advisory warnings.
+- Release `0.3.6` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, `dotnet build "Ghaelen Tweaks.sln"`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package` on 2026-07-29. The ZIP was created at `Releases/ghaelentweaks_0.3.6.zip`; its packaged `modinfo.json` was checked and contained version `0.3.6`, mod id `ghaelentweaks`, and game dependency `1.22.3`. The only warnings were existing CakeBuild NuGet advisory warnings and Git line-ending normalization warnings.
 
 ## Useful commands
 
@@ -130,6 +133,9 @@ None recorded yet.
 - Updated README, recycling notes, and changelog for the expanded wooden clutter recycling behavior.
 - Added large crate with rot recycling using vanilla clutter `type=crate/crate-large-rot`; both axe and saw recipes return 32 rot as a `returnedStack`, plus 6 aged firewood or 6 aged boards as the visible output.
 - Bumped `modinfo.json` to `0.3.5` and prepared release notes for tag `v0.3.5`.
+- Diagnosed a crash opening the handbook with `ghaelentweaks@0.3.5` and `aculinaryartillery@2.0.0-dev.16`: the stack trace points to A Culinary Artillery processing the handbook `fuels` list, where this mod's dynamic clutter fuel stacks can lack static collectible combustible props.
+- Added `ClutterFuelHandbookPatches`, a client-side Harmony prefix that removes this mod's dynamic clutter fuel stacks from generic handbook fuel lists while preserving runtime `GetCombustibleProperties(...)` behavior for firepits.
+- Bumped `modinfo.json` to `0.3.6`, added release notes for tag `v0.3.6`, and packaged the hotfix as `Releases/ghaelentweaks_0.3.6.zip`.
 
 ### 2026-07-28
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.6 - 2026-07-29
+
+### Fixed
+
+- Added a client-side handbook compatibility patch so dynamic wooden clutter fuels stay burnable in firepits without crashing handbook integrations that expect static combustible properties.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.3.5` to `0.3.6`.
+
 ## 0.3.5 - 2026-07-29
 
 ### Added

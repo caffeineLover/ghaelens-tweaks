@@ -1,5 +1,19 @@
 # Releases
 
+## Version 0.3.6
+
+**Tag:** `v0.3.6`
+**Released:** 2026-07-29
+
+This hotfix keeps wooden clutter burnable in firepits while avoiding a handbook crash with mods that assume fuel entries use static collectible combustible properties.
+
+### Changes
+
+- Added a client-side handbook compatibility patch for dynamic wooden clutter fuels.
+- Firepit fuel behavior for barricades, wood rubble, ruined tables, stacked small crates, large rot crates, and chest rubble remains unchanged.
+
+
+
 ## Version 0.3.5
 
 **Tag:** `v0.3.5`

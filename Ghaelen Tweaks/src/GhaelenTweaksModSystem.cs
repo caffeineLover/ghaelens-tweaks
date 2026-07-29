@@ -69,6 +69,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 
 		if (api.Side == EnumAppSide.Client)
 		{
+			ClutterFuelHandbookPatches.Apply(harmony, api.Logger);
 			PersistentCraftingGridPatches.Apply(harmony, api.Logger);
 		}
 

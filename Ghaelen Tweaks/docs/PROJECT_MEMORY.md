@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-07-28
+Last updated: 2026-07-29
 
 ## Project overview
 
@@ -12,7 +12,7 @@ The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation curre
 
 ## Active work
 
-No multi-step implementation is currently in progress. The most recent work added `/gtweak schematics`, a player command that reads the caller's server-side Better Ruins blueprint knowledge and prints the memorized schematic list in chat, and prepared release `0.3.3`.
+Release `0.3.4` is being prepared. The most recent unreleased work added display case stacking, reworked barricade clutter recycling into crafting recipes, made barricade clutter usable as firepit fuel, and cleaned up Better Ruins nullable/namespace inspections.
 
 ## Durable technical knowledge
 

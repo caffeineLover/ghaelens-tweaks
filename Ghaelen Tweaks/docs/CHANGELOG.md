@@ -1,10 +1,19 @@
 # Changelog
 
-## Unreleased
+## 0.3.4 - 2026-07-29
 
 ### Added
 
 - Added `display-case-stacking`, enabled by default, so normal and tall display cases can be placed directly on top of other display cases.
+- Added JSON crafting recipes for all vanilla clutter barricade variants: axe recipes return 4 aged firewood and saw recipes return 4 aged boards without tool durability loss.
+- Added firepit fuel support for barricade clutter, matching aged firewood fuel values.
+
+### Changed
+
+- Reworked barricade recycling from break drops into crafting recipes and removed the old clutter-wide barricade drop behavior.
+- Clarified palisade documentation as dismantling/reuse rather than clutter recycling.
+- Aligned Better Ruins source namespaces with their `src/BetterRuins` folder and cleaned up nullable/Rider warnings.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.3.3` to `0.3.4`.
 
 ## 0.3.3 - 2026-07-26
 

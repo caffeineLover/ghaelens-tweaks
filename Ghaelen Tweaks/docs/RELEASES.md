@@ -1,5 +1,23 @@
 # Releases
 
+## Version 0.3.4
+
+**Tag:** `v0.3.4`
+**Released:** 2026-07-29
+
+This release adds display case stacking and reworks barricade clutter recycling into crafting recipes with direct fuel support.
+
+### Changes
+
+- Added `display-case-stacking`, enabled by default, so normal and tall display cases can be placed directly on top of other display cases.
+- Added axe and saw crafting recipes for all vanilla clutter barricade variants. Axe recipes return 4 aged firewood, saw recipes return 4 aged boards, and neither tool loses durability.
+- Added firepit fuel support for barricade clutter, matching aged firewood fuel values.
+- Removed the old barricade break-drop block behavior and clutter patch.
+- Clarified palisade documentation as dismantling/reuse rather than clutter recycling.
+- Cleaned up Better Ruins nullable and namespace inspections.
+
+
+
 ## Version 0.3.3
 
 **Tag:** `v0.3.3`

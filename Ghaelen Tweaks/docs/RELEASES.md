@@ -1,5 +1,19 @@
 # Releases
 
+## Version 0.3.7
+
+**Tag:** `v0.3.7`
+**Released:** 2026-08-04
+
+This hotfix extends the handbook crash protection for wooden clutter fuels to another handbook page path used by A Culinary Artillery.
+
+### Changes
+
+- Fixed another A Culinary Artillery handbook crash path by filtering dynamic wooden clutter fuels before "processes into" handbook entries are built.
+- The existing firepit fuel behavior for wooden clutter remains unchanged.
+
+
+
 ## Version 0.3.6
 
 **Tag:** `v0.3.6`

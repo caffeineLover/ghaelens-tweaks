@@ -20,6 +20,7 @@ internal static class ClutterFuelHandbookPatches
 	private const string HandbookBehaviorTypeName =
 		"Vintagestory.GameContent.CollectibleBehaviorHandbookTextAndExtraInfo";
 	private const string AddCreatedByInfoMethodName = "addCreatedByInfo";
+	private const string AddProcessesIntoInfoMethodName = "addProcessesIntoInfo";
 
 
 
@@ -34,20 +35,24 @@ internal static class ClutterFuelHandbookPatches
 		try
 		{
 			Type? handbookBehaviorType = AccessTools.TypeByName(HandbookBehaviorTypeName);
-			MethodInfo? targetMethod = handbookBehaviorType == null
+			MethodInfo? createdByMethod = handbookBehaviorType == null
 				? null
 				: AccessTools.Method(handbookBehaviorType, AddCreatedByInfoMethodName);
+			MethodInfo? processesIntoMethod = handbookBehaviorType == null
+				? null
+				: AccessTools.Method(handbookBehaviorType, AddProcessesIntoInfoMethodName);
 			MethodInfo? prefixMethod = AccessTools.Method(
 				typeof(ClutterFuelHandbookPatches),
-				nameof(PrefixAddCreatedByInfo));
+				nameof(PrefixFilterDynamicClutterFuels));
 
-			if (targetMethod == null || prefixMethod == null)
+			if (createdByMethod == null || processesIntoMethod == null || prefixMethod == null)
 			{
 				patchLogger.Warning("Clutter fuel handbook compatibility patch target was not found.");
 				return;
 			}
 
-			harmony.Patch(targetMethod, prefix: new HarmonyMethod(prefixMethod));
+			harmony.Patch(createdByMethod, prefix: new HarmonyMethod(prefixMethod));
+			harmony.Patch(processesIntoMethod, prefix: new HarmonyMethod(prefixMethod));
 			patchLogger.Notification("Clutter fuel handbook compatibility feature initialized.");
 		}
 		catch (Exception exception)
@@ -62,7 +67,11 @@ internal static class ClutterFuelHandbookPatches
 	//// Removes dynamic clutter fuel stacks from the handbook fuel list before
 	//// vanilla and compatibility patches inspect that list.
 	////
-	private static void PrefixAddCreatedByInfo(List<ItemStack>? fuels)
+	//// Both vanilla handbook relationship methods pass a parameter named
+	//// `fuels`, so one Harmony prefix can sanitize the shared list before
+	//// A Culinary Artillery inspects it for simmering recipes.
+	////
+	private static void PrefixFilterDynamicClutterFuels(List<ItemStack>? fuels)
 	{
 		ClutterFuelPatches.RemoveDynamicClutterFuelStacks(fuels);
 	}

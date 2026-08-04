@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-07-29
+Last updated: 2026-08-04
 
 ## Project overview
 
@@ -12,7 +12,7 @@ The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation curre
 
 ## Active work
 
-Release `0.3.6` is being prepared with tag `v0.3.6`. It is a hotfix for a handbook crash triggered by dynamic wooden clutter fuels. The implementation keeps the firepit fuel behavior intact, but filters this mod's dynamic clutter fuel stacks out of generic handbook fuel lists on the client.
+Release `0.3.7` is being prepared with tag `v0.3.7`. It extends the `0.3.6` handbook hotfix by filtering this mod's dynamic clutter fuel stacks from both vanilla handbook relationship methods before A Culinary Artillery inspects the fuel list.
 
 ## Durable technical knowledge
 
@@ -43,7 +43,7 @@ Release `0.3.6` is being prepared with tag `v0.3.6`. It is a hotfix for a handbo
 - Current wooden clutter recycling targets `barricade1..6`, `rubble-wood1..4`, `table-ruined1..6`, `crate/crate-small-stacked`, `crate/crate-large-rot`, and `chestrubble`. Axe recipes return `game:agedfirewood`; saw recipes return `game:plank-aged`; all tool ingredients set `toolDurabilityCost` to `0`.
 - The large rot crate recipes use `returnedStack` on the consumed clutter ingredient to grant 32 `game:rot` in addition to the visible aged wood output. Vintage Story puts returned stacks in player inventory or drops them near the player if inventory space is unavailable.
 - `ClutterFuelPatches` applies direct firepit fuel to selected `game:clutter` stack types at 700 C. Burn duration is `24 seconds * recovered aged firewood count`, so direct burning matches the total fuel value of axe-recycling and then burning the recovered aged firewood.
-- Vintage Story's handbook builds a generic fuel stack list by calling `GetCombustibleProperties(...)` for every stack. Dynamic `game:clutter` fuels can enter that list even though their fuel value depends on stack attributes rather than static `Collectible.CombustibleProps`. `ClutterFuelHandbookPatches` removes this mod's dynamic clutter fuels from `CollectibleBehaviorHandbookTextAndExtraInfo.addCreatedByInfo(...)` fuel lists to avoid crashes in handbook integrations that assume static combustible properties.
+- Vintage Story's handbook builds a generic fuel stack list by calling `GetCombustibleProperties(...)` for every stack. Dynamic `game:clutter` fuels can enter that list even though their fuel value depends on stack attributes rather than static `Collectible.CombustibleProps`. `ClutterFuelHandbookPatches` removes this mod's dynamic clutter fuels from `CollectibleBehaviorHandbookTextAndExtraInfo.addCreatedByInfo(...)` and `addProcessesIntoInfo(...)` fuel lists to avoid crashes in handbook integrations that assume static combustible properties.
 
 ## Architecture and design decisions
 
@@ -123,6 +123,20 @@ None recorded yet.
 - `Ghaelen Tweaks/docs/CODEX_STATE.md`: older persistent session notes that may contain useful historical context.
 
 ## Session history
+
+### 2026-08-04
+
+- Investigated a submitted crash report from Vintage Story `1.22.6` with `ghaelentweaks@0.3.6` and `aculinaryartillery@2.0.0-dev.16`. The crash still occurred in `ACulinaryArtillery.Util.HandbookInfoExtensions.getCanSimmer(...)`, but this time through ACA's `GetHandbookProcessesIntoPatch` path rather than the older `GetHandbookCreatedByPatch` path.
+- Confirmed the player was not running an old Ghaelen Tweaks version: `client-main.log` loaded `mod@ghaelentweaks_0.3.6.zip`, and `Clutter fuel handbook compatibility feature initialized.` showed the `0.3.6` patch was active.
+- Extended `ClutterFuelHandbookPatches` so the same `fuels` list sanitizer prefixes both `CollectibleBehaviorHandbookTextAndExtraInfo.addCreatedByInfo(...)` and `addProcessesIntoInfo(...)`. This keeps runtime clutter burning intact while protecting both vanilla handbook relationship paths before ACA inspects them.
+- Bumped `modinfo.json` to `0.3.7` and added `0.3.7` entries to `docs/CHANGELOG.md` and `docs/RELEASES.md`.
+
+### 2026-08-02
+
+- Investigated the user's report of a client crash while cutting down a pine tree using the attached StoryForge `havoc` logs. The current `client-main.log` and `client-debug.log` were from 2026-08-02 and loaded `ghaelentweaks_0.3.6.zip`; the `Clutter fuel handbook compatibility feature initialized.` line confirmed the 0.3.6 handbook fuel-list fix applied on the client.
+- The attached `client-crash.log` was older, from 2026-07-29, and still showed the known A Culinary Artillery handbook crash in `ACulinaryArtillery.Util.HandbookInfoExtensions.getCanSimmer(...)`. No fresh 2026-08-02 crash log was present in the active log folder.
+- Around the reported 2026-08-02 tree-cutting window, `client-debug.log` recorded `forestry, 3 Level up` at 13:39:58 and continued receiving player/inventory data afterward. `client-main.log` ended at 13:40:02 with a window resize/minimize notification, not an exception. This provided no evidence that Ghaelen Tweaks caused a pine/tree-breaking crash.
+- A source/content scan found no Ghaelen Tweaks patches for pine trees, vanilla logs, leaves, or normal tree-felling behavior. The only break/drop customization involving wood remains palisade dismantling; the clutter fuel/recycling features target `game:clutter` stacks, not trees.
 
 ### 2026-07-29
 

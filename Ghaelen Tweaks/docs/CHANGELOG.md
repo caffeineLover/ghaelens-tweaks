@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.7 - 2026-08-04
+
+### Fixed
+
+- Extended the client-side handbook compatibility patch so dynamic wooden clutter fuels are filtered from both handbook "created by" and "processes into" fuel lists before A Culinary Artillery inspects them.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.3.6` to `0.3.7`.
+
 ## 0.3.6 - 2026-07-29
 
 ### Fixed

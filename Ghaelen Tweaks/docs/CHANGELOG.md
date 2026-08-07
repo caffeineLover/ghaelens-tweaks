@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.8 - 2026-08-07
+
+### Fixed
+
+- Added an optional A Culinary Artillery simmer-handbook helper patch so dynamic wooden clutter fuels are filtered even when ACA's handbook prefix runs before the vanilla handbook fuel-list sanitizer.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.3.7` to `0.3.8`.
+
 ## 0.3.7 - 2026-08-04
 
 ### Fixed

@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-08-04
+Last updated: 2026-08-07
 
 ## Project overview
 
@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. An unreleased handbook compatibility follow-up now patches A Culinary Artillery's simmer helper directly when ACA is loaded, so the dynamic clutter fuel sanitizer no longer depends only on vanilla handbook patch ordering.
 
 ## Active work
 
-Release `0.3.7` is being prepared with tag `v0.3.7`. It extends the `0.3.6` handbook hotfix by filtering this mod's dynamic clutter fuel stacks from both vanilla handbook relationship methods before A Culinary Artillery inspects the fuel list.
+No active implementation work is currently in progress. The latest completed source change is the `0.3.8` hotfix for a Vintage Story `1.22.6` crash with `ghaelentweaks@0.3.7` and `aculinaryartillery@2.0.0-dev.16`, which prevents ACA's handbook simmer helper from seeing this mod's dynamic clutter fuels when ACA's own handbook prefix runs before the vanilla handbook fuel-list sanitizer.
 
 ## Durable technical knowledge
 
@@ -44,6 +44,7 @@ Release `0.3.7` is being prepared with tag `v0.3.7`. It extends the `0.3.6` hand
 - The large rot crate recipes use `returnedStack` on the consumed clutter ingredient to grant 32 `game:rot` in addition to the visible aged wood output. Vintage Story puts returned stacks in player inventory or drops them near the player if inventory space is unavailable.
 - `ClutterFuelPatches` applies direct firepit fuel to selected `game:clutter` stack types at 700 C. Burn duration is `24 seconds * recovered aged firewood count`, so direct burning matches the total fuel value of axe-recycling and then burning the recovered aged firewood.
 - Vintage Story's handbook builds a generic fuel stack list by calling `GetCombustibleProperties(...)` for every stack. Dynamic `game:clutter` fuels can enter that list even though their fuel value depends on stack attributes rather than static `Collectible.CombustibleProps`. `ClutterFuelHandbookPatches` removes this mod's dynamic clutter fuels from `CollectibleBehaviorHandbookTextAndExtraInfo.addCreatedByInfo(...)` and `addProcessesIntoInfo(...)` fuel lists to avoid crashes in handbook integrations that assume static combustible properties.
+- A Culinary Artillery `2.0.0-dev.16` defines `ACulinaryArtillery.Util.HandbookInfoExtensions.getCanSimmer(List<ItemStack> fuels, ItemStack stack)`. Decompilation on 2026-08-07 showed it orders `fuels` by `fuel.Collectible.CombustibleProps.BurnTemperature` with no null guard. Because ACA can call this helper inside its own Harmony prefix before this mod's vanilla handbook prefix runs, `ClutterFuelHandbookPatches` also optionally prefixes ACA's `getCanSimmer` helper directly when that type is loaded.
 
 ## Architecture and design decisions
 
@@ -95,6 +96,7 @@ None recorded yet.
 - Release `0.3.5` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet build "Ghaelen Tweaks.sln"` on 2026-07-29. `git diff --check` reported only the repository's existing CRLF normalization warnings after a release-note trailing-space fix. JSON validation and the solution build passed. The only build warnings were existing CakeBuild NuGet advisory warnings.
 - The post-`0.3.5` clutter-fuel handbook compatibility fix was verified with `dotnet build "Ghaelen Tweaks.sln"` on 2026-07-29. The solution build passed; the only warnings were existing CakeBuild NuGet advisory warnings.
 - Release `0.3.6` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, `dotnet build "Ghaelen Tweaks.sln"`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package` on 2026-07-29. The ZIP was created at `Releases/ghaelentweaks_0.3.6.zip`; its packaged `modinfo.json` was checked and contained version `0.3.6`, mod id `ghaelentweaks`, and game dependency `1.22.3`. The only warnings were existing CakeBuild NuGet advisory warnings and Git line-ending normalization warnings.
+- Release `0.3.8` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet build "Ghaelen Tweaks.sln"` on 2026-08-07. The whitespace check reported only the repository's existing CRLF normalization warnings. JSON validation and the solution build passed; the only build warnings were existing CakeBuild NuGet advisory warnings. The installed ACA `2.0.0-dev.16` DLL was inspected with a temporary `ilspycmd` tool install under `%TEMP%` to confirm the exact helper body and signature.
 
 ## Useful commands
 
@@ -123,6 +125,15 @@ None recorded yet.
 - `Ghaelen Tweaks/docs/CODEX_STATE.md`: older persistent session notes that may contain useful historical context.
 
 ## Session history
+
+### 2026-08-07
+
+- Investigated a new crash report from Vintage Story `1.22.6` with `ghaelentweaks@0.3.7` and `aculinaryartillery@2.0.0-dev.16`. The latest `client-main.log` confirmed `ghaelentweaks_0.3.7.zip` loaded and initialized `Clutter fuel handbook compatibility feature initialized.`, but the crash still occurred in `ACulinaryArtillery.Util.HandbookInfoExtensions.getCanSimmer(...)`.
+- Confirmed from the stack trace and logs that the new crash path was ACA's `GetHandbookProcessesIntoPatch.Prefix(...)`, meaning ACA can inspect the `fuels` list before this mod's vanilla `addProcessesIntoInfo(...)` prefix sanitizes it.
+- Inspected the installed ACA `2.0.0-dev.16` DLL from the StoryForge `havoc` cache. Reflection found `HandbookInfoExtensions.getCanSimmer(List<ItemStack> fuels, ItemStack stack)`, and decompilation showed the helper sorts by `fuel.Collectible.CombustibleProps.BurnTemperature` without null checks.
+- Updated `ClutterFuelHandbookPatches` so its vanilla handbook prefixes use `Priority.First` and so it optionally prefixes ACA's `getCanSimmer` helper directly when ACA is loaded. The direct helper patch removes this mod's dynamic clutter fuels before ACA sorts the fuel list, independent of vanilla handbook prefix order.
+- Bumped `modinfo.json` to `0.3.8`, moved the changelog entry to `0.3.8 - 2026-08-07`, and added the `docs/RELEASES.md` entry for tag `v0.3.8`.
+- Release `0.3.8` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet build "Ghaelen Tweaks.sln"`. The checks passed with only the existing CRLF normalization and CakeBuild NuGet advisory warnings.
 
 ### 2026-08-04
 

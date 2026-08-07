@@ -19,8 +19,10 @@ internal static class ClutterFuelHandbookPatches
 {
 	private const string HandbookBehaviorTypeName =
 		"Vintagestory.GameContent.CollectibleBehaviorHandbookTextAndExtraInfo";
+	private const string AcaHandbookInfoExtensionsTypeName = "ACulinaryArtillery.Util.HandbookInfoExtensions";
 	private const string AddCreatedByInfoMethodName = "addCreatedByInfo";
 	private const string AddProcessesIntoInfoMethodName = "addProcessesIntoInfo";
+	private const string AcaGetCanSimmerMethodName = "getCanSimmer";
 
 
 
@@ -34,32 +36,110 @@ internal static class ClutterFuelHandbookPatches
 	{
 		try
 		{
-			Type? handbookBehaviorType = AccessTools.TypeByName(HandbookBehaviorTypeName);
-			MethodInfo? createdByMethod = handbookBehaviorType == null
-				? null
-				: AccessTools.Method(handbookBehaviorType, AddCreatedByInfoMethodName);
-			MethodInfo? processesIntoMethod = handbookBehaviorType == null
-				? null
-				: AccessTools.Method(handbookBehaviorType, AddProcessesIntoInfoMethodName);
 			MethodInfo? prefixMethod = AccessTools.Method(
 				typeof(ClutterFuelHandbookPatches),
 				nameof(PrefixFilterDynamicClutterFuels));
 
-			if (createdByMethod == null || processesIntoMethod == null || prefixMethod == null)
+			if (prefixMethod == null)
 			{
 				patchLogger.Warning("Clutter fuel handbook compatibility patch target was not found.");
 				return;
 			}
 
-			harmony.Patch(createdByMethod, prefix: new HarmonyMethod(prefixMethod));
-			harmony.Patch(processesIntoMethod, prefix: new HarmonyMethod(prefixMethod));
-			patchLogger.Notification("Clutter fuel handbook compatibility feature initialized.");
+			PatchVanillaHandbookFuelLists(harmony, patchLogger, prefixMethod);
+			PatchAcaCanSimmerFuelList(harmony, patchLogger, prefixMethod);
 		}
 		catch (Exception exception)
 		{
 			patchLogger.Warning(
 				$"Clutter fuel handbook compatibility feature could not patch handbook fuel lists: {exception.Message}");
 		}
+	}
+
+
+
+	//// Patches the vanilla handbook relationship methods that receive the
+	//// shared fuel list built from all known item stacks.
+	////
+	//// This is the broad compatibility boundary for vanilla and most
+	//// handbook integrations. The prefix uses first priority so the list is
+	//// filtered before other prefixes inspect the same parameter.
+	////
+	private static void PatchVanillaHandbookFuelLists(
+		Harmony harmony,
+		ILogger patchLogger,
+		MethodInfo prefixMethod)
+	{
+		Type? handbookBehaviorType = AccessTools.TypeByName(HandbookBehaviorTypeName);
+		MethodInfo? createdByMethod = handbookBehaviorType == null
+			? null
+			: AccessTools.Method(handbookBehaviorType, AddCreatedByInfoMethodName);
+		MethodInfo? processesIntoMethod = handbookBehaviorType == null
+			? null
+			: AccessTools.Method(handbookBehaviorType, AddProcessesIntoInfoMethodName);
+
+		if (createdByMethod == null || processesIntoMethod == null)
+		{
+			patchLogger.Warning("Clutter fuel handbook compatibility patch target was not found.");
+			return;
+		}
+
+		harmony.Patch(createdByMethod, prefix: CreateFuelSanitizerHarmonyMethod(prefixMethod));
+		harmony.Patch(processesIntoMethod, prefix: CreateFuelSanitizerHarmonyMethod(prefixMethod));
+		patchLogger.Notification("Clutter fuel handbook compatibility feature initialized.");
+	}
+
+
+
+	//// Patches A Culinary Artillery's simmer-capability helper when that mod
+	//// is loaded in the same client.
+	////
+	//// ACA can call this helper from its own prefix before this mod's vanilla
+	//// handbook prefix has a chance to run. Sanitizing at the helper boundary
+	//// removes that patch-order dependency without taking a compile-time
+	//// dependency on ACA's assembly.
+	////
+	private static void PatchAcaCanSimmerFuelList(
+		Harmony harmony,
+		ILogger patchLogger,
+		MethodInfo prefixMethod)
+	{
+		Type? acaHandbookInfoExtensionsType = AccessTools.TypeByName(AcaHandbookInfoExtensionsTypeName);
+		if (acaHandbookInfoExtensionsType == null)
+		{
+			return;
+		}
+
+		MethodInfo? acaCanSimmerMethod = AccessTools.Method(
+			acaHandbookInfoExtensionsType,
+			AcaGetCanSimmerMethodName,
+			new[] { typeof(List<ItemStack>), typeof(ItemStack) });
+
+		if (acaCanSimmerMethod == null)
+		{
+			patchLogger.Warning("A Culinary Artillery simmer handbook compatibility patch target was not found.");
+			return;
+		}
+
+		harmony.Patch(acaCanSimmerMethod, prefix: CreateFuelSanitizerHarmonyMethod(prefixMethod));
+		patchLogger.Notification("A Culinary Artillery simmer handbook compatibility feature initialized.");
+	}
+
+
+
+	//// Creates a Harmony prefix descriptor that runs before ordinary
+	//// same-method prefixes.
+	////
+	//// The compatibility patch must sanitize shared mutable fuel lists before
+	//// other handbook patches sort or dereference their static combustible
+	//// properties.
+	////
+	private static HarmonyMethod CreateFuelSanitizerHarmonyMethod(MethodInfo prefixMethod)
+	{
+		return new HarmonyMethod(prefixMethod)
+		{
+			priority = Priority.First
+		};
 	}
 
 

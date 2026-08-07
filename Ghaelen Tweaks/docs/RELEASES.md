@@ -1,5 +1,19 @@
 # Releases
 
+## Version 0.3.8
+
+**Tag:** `v0.3.8`
+**Released:** 2026-08-07
+
+This hotfix removes the remaining A Culinary Artillery handbook crash path caused by patch ordering around dynamic wooden clutter fuels.
+
+### Changes
+
+- Fixed the A Culinary Artillery simmer-handbook helper path so dynamic wooden clutter fuels are filtered even when ACA's handbook prefix runs before the vanilla handbook fuel-list sanitizer.
+- The existing firepit fuel behavior for wooden clutter remains unchanged.
+
+
+
 ## Version 0.3.7
 
 **Tag:** `v0.3.7`

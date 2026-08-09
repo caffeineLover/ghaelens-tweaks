@@ -356,7 +356,7 @@ public sealed class ItemMarkingChalk : Item
 
 		BlockFacing playerFacing = ResolvePlayerForwardFacing(byEntity, blockSel);
 		BlockFacing desiredFacing = ResolveHorizontalArrowFacing(playerFacing, mode.ArrowDirection);
-		decorBits.Rotation = ResolveHorizontalArrowRotation(blockSel.Face, desiredFacing);
+		decorBits.Rotation = ResolveHorizontalArrowRotation(desiredFacing);
 
 		return decorBits;
 	}
@@ -409,14 +409,15 @@ public sealed class ItemMarkingChalk : Item
 	//// Converts a desired world direction into Vintage Story surfacelayer
 	//// rotation bits for a floor or ceiling mark.
 	////
-	//// The top and bottom faces use different default UV axes.  The formulas
-	//// below come from the 1.22.3 `SurfaceLayerTesselator` face mappings.
+	//// Vintage Story stores this as `DecorBits.Rotation` and passes it to the
+	//// surfacelayer tesselator as `decorRotationData`.  For horizontal arrow
+	//// marks, the working mapping mirrors the desired horizontal angle index.
+	//// The tempting `index + 1` formula is identical for east and west, but
+	//// reverses north and south.
 	////
-	private static int ResolveHorizontalArrowRotation(BlockFacing markedFace, BlockFacing desiredFacing)
+	private static int ResolveHorizontalArrowRotation(BlockFacing desiredFacing)
 	{
-		return markedFace == BlockFacing.DOWN
-			? GameMath.Mod(1 - desiredFacing.HorizontalAngleIndex, 4)
-			: GameMath.Mod(desiredFacing.HorizontalAngleIndex + 1, 4);
+		return GameMath.Mod(1 - desiredFacing.HorizontalAngleIndex, 4);
 	}
 
 

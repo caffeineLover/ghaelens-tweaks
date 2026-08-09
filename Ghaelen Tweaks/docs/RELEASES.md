@@ -1,5 +1,21 @@
 # Releases
 
+## Version 0.4.8
+
+**Tag:** `v0.4.8`
+
+**Released:** 2026-08-09
+
+This hotfix corrects the floor-arrow rotation formula after testing showed up/down were still reversed.
+
+### Changes
+
+- Fixed floor and ceiling arrow rotation so north/south directions use the same Vintage Story surfacelayer mapping as
+  east/west directions.
+- Documented why the previous formula made right and left look correct while reversing up and down.
+
+
+
 ## Version 0.4.7
 
 **Tag:** `v0.4.7`

@@ -179,6 +179,11 @@ Initial implementation:
   horizontal eye-to-hit vector. Vintage Story's top and bottom face UV axes differ, so the rotation mapping is
   face-specific. Fall back to the opposite of `BlockFacing.HorizontalFromYaw(...)` only for near-vertical clicks whose
   horizontal camera-ray projection is too small to classify.
+- Vintage Story Reference `1.22.3` shows `BlockFacing.HorizontalAngleIndex` uses east `0`, north `1`, west `2`, and
+  south `3`; `DecorBits.Rotation` is passed to `SurfaceLayerTesselator` through `vars.decorRotationData`. For top and
+  bottom surfacelayer arrows, convert desired world direction with `GameMath.Mod(1 - HorizontalAngleIndex, 4)`. The
+  rejected `HorizontalAngleIndex + 1` formula is identical for east and west but swaps north and south, which is why
+  right/left could test correctly while up/down remained reversed.
 - When placing a rotated floor or ceiling arrow, remove older Ghaelen Tweaks chalk decor in the same face subcell with a
   different rotation so redraws replace the old mark instead of stacking on top of it.
 - Use the same exact sub-face decor index path for erasing that placement uses for drawing. Erasing searches nearby

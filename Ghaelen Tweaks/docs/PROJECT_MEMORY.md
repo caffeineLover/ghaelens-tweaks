@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.4.7` fixes the remaining marking chalk right-arrow floor and ceiling orientation case.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.4.8` fixes the marking chalk top-face up/down rotation reversal.
 
 ## Active work
 
-No active implementation work is currently in progress. The latest completed source change orients floor and ceiling marking chalk arrows from the clicked camera ray while preserving the tested wall-arrow cell mapping.
+No active implementation work is currently in progress. The latest completed source change orients floor and ceiling marking chalk arrows from the clicked camera ray and uses the documented surfacelayer rotation formula for horizontal faces.
 
 ## Durable technical knowledge
 
@@ -35,6 +35,11 @@ No active implementation work is currently in progress. The latest completed sou
   near-vertical clicks. The first `0.4.5` local test showed `HorizontalFromYaw(...)` itself produced a 180-degree
   reversal, and the first `0.4.6` local test showed body/yaw state could still make arrow-right render as arrow-left
   on floors while the wall cell remained correct.
+- For marking chalk floor and ceiling arrow rotations, use `GameMath.Mod(1 - desiredFacing.HorizontalAngleIndex, 4)`.
+  Vintage Story Reference `1.22.3` confirms `HorizontalAngleIndex` is east `0`, north `1`, west `2`, south `3`, and
+  `DecorBits.Rotation` becomes `SurfaceLayerTesselator`'s `decorRotationData`. The rejected top-face formula
+  `desiredFacing.HorizontalAngleIndex + 1` produces the same rotations for east/west but swaps north/south, explaining
+  why the `0.4.7` local test had right/left correct while up/down were reversed.
 - Marking chalk erase mode is the last tool mode so existing saved draw-mode indices keep their meaning. Shift/crouch right-click also erases regardless of the selected draw mode. Successful erasing searches nearby sub-face decor cells on the clicked face, calls exact `BreakDecor(..., decorIndex)` only for `ghaelentweaks:markingchalk-*` decor, and restores one active-stick use capped at the configured maximum.
 - Marking chalk surfacelayer art follows vanilla cave art: one 96x96 spritesheet per color, with `col` and `row` block variants selecting a 16x16 cell. Standalone per-symbol surfacelayer textures rendered as filled squares during the first in-game test.
 - Marking chalk placement removes older Ghaelen Tweaks chalk decor in the same face subcell but with a different rotation after a successful placement. Decor rotation is part of the storage key, so this prevents rotated floor/ceiling redraws from stacking multiple marks in one subcell.
@@ -93,7 +98,7 @@ None recorded yet.
 - The Git repository root is one level above the mod project folder, while `AGENTS.md`, `docs/`, and `src/` are inside `Ghaelen Tweaks/`. Future agents should be explicit about whether a path is repository-root-relative or mod-project-relative.
 - Build verification was not run after the source-layout move or coding-standards comment pass because existing project notes say not to run builds unless explicitly instructed. The 2026-07-15 release was explicitly requested, so build and package verification were run for version `0.3.1`.
 - Marking chalk stacks from `0.4.2` or `0.4.3` saves may still carry a shared `markingChalkUsesLeft` attribute until the player next draws or erases with that stack. The `0.4.4` code migrates that case by splitting one active stick from the fresh remainder or clearing the attribute when the active stick is full.
-- Marking chalk floor and ceiling arrows placed before `0.4.7` may keep their old orientation until erased and redrawn.
+- Marking chalk floor and ceiling arrows placed before `0.4.8` may keep their old orientation until erased and redrawn.
 
 ## Open questions
 
@@ -175,6 +180,9 @@ None recorded yet.
 - The first `0.4.6` local test showed the remaining right-arrow floor case: selected arrow-right rendered correctly on
   a wall but as arrow-left on a floor, while the other checked modes looked correct. Release `0.4.7` resolves the
   player-relative floor/ceiling basis from the clicked camera ray instead of relying only on entity yaw.
+- The first `0.4.7` local test showed up/down were reversed while right/left were correct. Vintage Story Reference
+  research showed the previous top-face rotation formula matched the corrected formula for east/west only, but inverted
+  north/south. Release `0.4.8` uses `GameMath.Mod(1 - desiredFacing.HorizontalAngleIndex, 4)` for horizontal faces.
 - Removed `EntityBehaviorCatLoreGuardian.OnEntityReceiveDamage`, so Ghaelen Tweaks no longer cancels cat fall damage or lore-creature damage. The cat behavior still applies proximity glow on the client and warning yowls on the server.
 - Removed the `cat-impervious-to-lore-creatures` config property, Config Lib setting, English language labels, and README player-facing documentation. Added an Unreleased changelog entry for the removed immunity guardrail.
 - Researched Vintage Story Reference `1.22.3` PetAI `5.1.1`, Cats `5.0.1`, and WolfTaming `5.0.1`: PetAI loads/stores `petconfig.json`, defaults `FalldamageOff = true`, and cancels fall damage in `EntityBehaviorTameable.OnEntityReceiveDamage`; Cats and WolfTaming attach `tameable` and do not override that fall-damage path.

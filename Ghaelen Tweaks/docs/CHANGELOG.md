@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.4.8 - 2026-08-09
+
+### Fixed
+
+- Fixed marking chalk floor arrows that still reversed up/down while right/left appeared correct by using the correct
+  top-face surfacelayer rotation mapping.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.7` to `0.4.8`.
+
 ## 0.4.7 - 2026-08-09
 
 ### Fixed

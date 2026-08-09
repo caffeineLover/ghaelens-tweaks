@@ -2,9 +2,22 @@
 
 ## Unreleased
 
+## 0.4.0 - 2026-08-09
+
+### Added
+
+- Added marking chalk for placing colored decor navigation marks on valid stone, ore, brick, log/trunk, packed dirt, dry packed dirt, and rammed earth block faces.
+- Added marking chalk modes for arrows, X marks, dots, ladders, stairs, danger marks, and exit marks. Arrow marks point in the direction the player is facing when placed.
+- Added plain marking chalk crafting from vanilla chalk stones and dyeing support for vanilla dyes through barrels or fired bowls containing 1 L of dye.
+- Added `marking-chalk-uses` and `marking-chalk-dye-batch-size` config settings, with Config Lib controls when Config Lib is installed.
+
 ### Removed
 
 - Removed cat lore-creature and fall-damage immunity, including the `cat-impervious-to-lore-creatures` config and Config Lib setting. Cat glow and yowl warnings remain unchanged.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.3.8` to `0.4.0`.
 
 ## 0.3.8 - 2026-08-07
 

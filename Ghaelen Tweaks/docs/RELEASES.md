@@ -1,5 +1,25 @@
 # Releases
 
+## Version 0.4.0
+
+**Tag:** `v0.4.0`
+
+**Released:** 2026-08-09
+
+This release adds marking chalk for mine and trail navigation marks, and removes the old cat damage-immunity guardrail.
+
+### Changes
+
+- Added marking chalk, a configurable-use item that places colored decor marks without replacing the marked block.
+- Added mark modes for arrows, X marks, dots, ladders, stairs, danger marks, and exit marks.
+- Marking chalk works on valid solid stone, ore, brick, log/trunk, packed dirt, dry packed dirt, and rammed earth block faces.
+- Added plain marking chalk crafting from vanilla chalk stones.
+- Added barrel and fired-bowl dyeing with 1 L of vanilla dye; `dye-woad` produces blue marking chalk.
+- Added `marking-chalk-uses` and `marking-chalk-dye-batch-size` config settings with Config Lib controls.
+- Removed cat lore-creature and fall-damage immunity, including the removed config setting. Cat glow and yowl warnings remain unchanged.
+
+
+
 ## Version 0.3.8
 
 **Tag:** `v0.3.8`
@@ -110,7 +130,7 @@ This release adds per-player memorization for Better Ruins schematic blueprints,
 
 ## Version 0.3.1
 
-**Tag:** `Tule-Handbasket`  
+**Tag:** `Tule-Handbasket`
 **Released:** 2026-07-15
 
 This release adds a new handbasket recipe for players harvesting tule.

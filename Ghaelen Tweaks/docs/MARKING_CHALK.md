@@ -140,7 +140,11 @@ chalk decor from the clicked face without affecting vanilla cave art or other de
 Marks must support walls, floors, and ceilings.
 
 Arrow selection is explicit. The tool-mode selector exposes arrow up, arrow right, arrow down, and arrow left as
-separate marks instead of deriving arrow direction from the player's facing direction.
+separate marks.
+
+Wall arrow marks use the selected direction directly on the wall face. Floor and ceiling arrow marks use the selected
+direction relative to the player's facing at placement time: arrow up means forward, arrow right means the player's
+right, arrow down means backward, and arrow left means the player's left.
 
 Non-directional symbols such as X, dot, ladder, stairs, danger, and exit avoid orientation ambiguity and should work on
 all valid faces.
@@ -171,6 +175,10 @@ Initial implementation:
   squares during the first in-game test.
 - Map right and left arrow modes to the opposite-looking source cells. In-game surfacelayer rendering mirrored
   horizontal arrows on tested wall faces, so the swapped mapping makes the placed mark match the selected tool icon.
+- For floor and ceiling arrow marks, use the up-arrow spritesheet cell and set `DecorBits.Rotation` from the player's
+  yaw. Vintage Story's top and bottom face UV axes differ, so the rotation mapping is face-specific.
+- When placing a rotated floor or ceiling arrow, remove older Ghaelen Tweaks chalk decor in the same face subcell with a
+  different rotation so redraws replace the old mark instead of stacking on top of it.
 - Use the same exact sub-face decor index path for erasing that placement uses for drawing. Erasing searches nearby
   subcells on the clicked face, removes only `ghaelentweaks:markingchalk-*` decor so players do not have to hit the
   original placement cell perfectly, and refunds one active-stick use capped at the configured maximum.

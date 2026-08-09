@@ -63,6 +63,7 @@ Marking chalk can now place colored navigation marks on mine and trail surfaces.
   - Right-click a valid block face with marking chalk to place the selected mark.
   - Use the tool-mode selector to choose arrow up, arrow right, arrow down, arrow left, X, dot, ladder, stairs,
     danger, exit, or erase mode.
+  - On floors and ceilings, arrow modes orient from the direction you are facing when you draw the mark.
   - Crouch or hold Shift while right-clicking to erase nearby marking chalk marks on the clicked face.
   - Erasing refunds one use to the active chalk stick, capped at the configured maximum.
   - Marking chalk works on solid stone, ore, brick, log/trunk, packed dirt, dry packed dirt, and rammed earth faces.

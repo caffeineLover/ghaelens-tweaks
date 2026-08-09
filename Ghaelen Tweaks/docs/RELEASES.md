@@ -1,5 +1,20 @@
 # Releases
 
+## Version 0.4.5
+
+**Tag:** `v0.4.5`
+
+**Released:** 2026-08-09
+
+This hotfix corrects marking chalk arrow direction on floors and ceilings.
+
+### Changes
+
+- Fixed floor and ceiling arrow marks so arrow up/right/down/left are oriented from the player's facing direction when placed.
+- Fixed redrawing a floor or ceiling arrow in the same decor cell so the new rotated mark replaces the old one instead of stacking on top of it.
+
+
+
 ## Version 0.4.4
 
 **Tag:** `v0.4.4`

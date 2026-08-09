@@ -24,18 +24,39 @@ public sealed class ItemMarkingChalk : Item
 	private const string ModeAttribute = "markingChalkMode";
 	private const string UsesLeftAttribute = "markingChalkUsesLeft";
 	private const string MarkingChalkDecorPrefix = "markingchalk-";
+	private const string ArrowUpCellVariant = "1-1";
 	private const int EraseSearchRadius = 2;
 	private static readonly AssetLocation DrawSound = new("game", "sounds/player/chalkdraw");
 	private SkillItem[] toolModes = Array.Empty<SkillItem>();
 
 	private static readonly MarkingChalkMode[] ModeDefinitions =
 	{
-		new("arrow-up", "1-1", "ghaelentweaks:marking-chalk-mode-arrow-up", "markingchalk-arrow-up.svg"),
+		new(
+			"arrow-up",
+			ArrowUpCellVariant,
+			"ghaelentweaks:marking-chalk-mode-arrow-up",
+			"markingchalk-arrow-up.svg",
+			ArrowDirection: MarkingChalkArrowDirection.Up),
 		// In-game surfacelayer rendering mirrors horizontal arrow cells on tested wall faces.  Keep right and left
 		// mapped to opposite source cells so the placed mark matches the selected toolbar icon.
-		new("arrow-right", "4-1", "ghaelentweaks:marking-chalk-mode-arrow-right", "markingchalk-arrow-right.svg"),
-		new("arrow-down", "3-1", "ghaelentweaks:marking-chalk-mode-arrow-down", "markingchalk-arrow-down.svg"),
-		new("arrow-left", "2-1", "ghaelentweaks:marking-chalk-mode-arrow-left", "markingchalk-arrow-left.svg"),
+		new(
+			"arrow-right",
+			"4-1",
+			"ghaelentweaks:marking-chalk-mode-arrow-right",
+			"markingchalk-arrow-right.svg",
+			ArrowDirection: MarkingChalkArrowDirection.Right),
+		new(
+			"arrow-down",
+			"3-1",
+			"ghaelentweaks:marking-chalk-mode-arrow-down",
+			"markingchalk-arrow-down.svg",
+			ArrowDirection: MarkingChalkArrowDirection.Down),
+		new(
+			"arrow-left",
+			"2-1",
+			"ghaelentweaks:marking-chalk-mode-arrow-left",
+			"markingchalk-arrow-left.svg",
+			ArrowDirection: MarkingChalkArrowDirection.Left),
 		new("x", "5-1", "ghaelentweaks:marking-chalk-mode-x", "markingchalk-x.svg"),
 		new("dot", "6-1", "ghaelentweaks:marking-chalk-mode-dot", "markingchalk-dot.svg"),
 		new("ladder", "1-2", "ghaelentweaks:marking-chalk-mode-ladder", "markingchalk-ladder.svg"),
@@ -162,17 +183,21 @@ public sealed class ItemMarkingChalk : Item
 			return;
 		}
 
-		Block? decorBlock = ResolveDecorBlock(byEntity, slot.Itemstack);
+		MarkingChalkMode mode = GetSelectedMode(slot.Itemstack);
+		Block? decorBlock = ResolveDecorBlock(byEntity, slot.Itemstack, blockSel, mode);
 		if (decorBlock == null)
 		{
 			return;
 		}
 
-		if (!blockAccessor.SetDecor(decorBlock, blockSel.Position, blockSel.ToDecorIndex()))
+		int decorIndex = ResolveDecorIndex(byEntity, blockSel, mode);
+		List<int>? staleDecorIndexes = FindOtherMarkingChalkDecorsAtSubposition(blockAccessor, blockSel, decorIndex);
+		if (!blockAccessor.SetDecor(decorBlock, blockSel.Position, decorIndex))
 		{
 			return;
 		}
 
+		RemoveDecorIndexes(blockAccessor, blockSel.Position, staleDecorIndexes);
 		ConsumeUse(slot, byPlayer);
 		PlayChalkSound(byEntity, blockSel, byPlayer);
 	}
@@ -268,14 +293,17 @@ public sealed class ItemMarkingChalk : Item
 
 	//// Resolves the decor block matching this chalk color and selected glyph.
 	////
-	private Block? ResolveDecorBlock(EntityAgent byEntity, ItemStack itemStack)
+	private Block? ResolveDecorBlock(
+		EntityAgent byEntity,
+		ItemStack itemStack,
+		BlockSelection blockSel,
+		MarkingChalkMode mode)
 	{
 		string color = itemStack.Collectible.Variant.TryGetValue("color", out string? colorVariant)
 			? colorVariant
 			: "white";
 
-		int modeIndex = GetModeIndex(itemStack);
-		string? cell = ModeDefinitions[modeIndex].CellVariant;
+		string? cell = ResolveDecorCellVariant(blockSel, mode);
 		if (cell == null)
 		{
 			return null;
@@ -291,6 +319,149 @@ public sealed class ItemMarkingChalk : Item
 		}
 
 		return block;
+	}
+
+
+
+	//// Resolves the actual spritesheet cell needed for the selected face.
+	////
+	//// Wall marks use the tested cells directly.  Floors and ceilings use the
+	//// up-arrow cell plus decor rotation so left/right/down modes can be
+	//// oriented from the player's viewpoint instead of the world's fixed floor
+	//// UV axes.
+	////
+	private static string? ResolveDecorCellVariant(BlockSelection blockSel, MarkingChalkMode mode)
+	{
+		return IsFloorOrCeilingFace(blockSel.Face) && mode.ArrowDirection != MarkingChalkArrowDirection.None
+			? ArrowUpCellVariant
+			: mode.CellVariant;
+	}
+
+
+
+	//// Resolves the decor face, subcell, and optional rotation for placement.
+	////
+	//// `BlockSelection.ToDecorIndex()` preserves the clicked subcell but has
+	//// no rotation.  For horizontal drawing planes, arrow modes add rotation
+	//// bits so the mark points forward, right, back, or left relative to the
+	//// player at placement time.
+	////
+	private static int ResolveDecorIndex(EntityAgent byEntity, BlockSelection blockSel, MarkingChalkMode mode)
+	{
+		DecorBits decorBits = new(blockSel.ToDecorIndex());
+		if (!IsFloorOrCeilingFace(blockSel.Face) || mode.ArrowDirection == MarkingChalkArrowDirection.None)
+		{
+			return decorBits;
+		}
+
+		BlockFacing playerFacing = BlockFacing.HorizontalFromYaw(byEntity.Pos.Yaw);
+		BlockFacing desiredFacing = ResolveHorizontalArrowFacing(playerFacing, mode.ArrowDirection);
+		decorBits.Rotation = ResolveHorizontalArrowRotation(blockSel.Face, desiredFacing);
+
+		return decorBits;
+	}
+
+
+
+	//// Resolves a tool-mode arrow to a world-facing direction on floors and
+	//// ceilings.
+	////
+	//// These modes are intentionally viewpoint-relative on horizontal planes:
+	//// up means away from the player, left means the player's left, and so on.
+	////
+	private static BlockFacing ResolveHorizontalArrowFacing(
+		BlockFacing playerFacing,
+		MarkingChalkArrowDirection arrowDirection)
+	{
+		return arrowDirection switch
+		{
+			MarkingChalkArrowDirection.Right => playerFacing.GetCW(),
+			MarkingChalkArrowDirection.Down => playerFacing.Opposite,
+			MarkingChalkArrowDirection.Left => playerFacing.GetCCW(),
+			_ => playerFacing
+		};
+	}
+
+
+
+	//// Converts a desired world direction into Vintage Story surfacelayer
+	//// rotation bits for a floor or ceiling mark.
+	////
+	//// The top and bottom faces use different default UV axes.  The formulas
+	//// below come from the 1.22.3 `SurfaceLayerTesselator` face mappings.
+	////
+	private static int ResolveHorizontalArrowRotation(BlockFacing markedFace, BlockFacing desiredFacing)
+	{
+		return markedFace == BlockFacing.DOWN
+			? GameMath.Mod(1 - desiredFacing.HorizontalAngleIndex, 4)
+			: GameMath.Mod(desiredFacing.HorizontalAngleIndex + 1, 4);
+	}
+
+
+
+	//// Checks whether the selected face is a floor or ceiling drawing plane.
+	////
+	private static bool IsFloorOrCeilingFace(BlockFacing face)
+	{
+		return face == BlockFacing.UP || face == BlockFacing.DOWN;
+	}
+
+
+
+	//// Finds older marking chalk entries that occupy the same face subcell
+	//// with a different rotation.
+	////
+	//// Decor rotation is part of the storage key.  Without this cleanup,
+	//// redrawing a horizontal arrow in another direction could leave two
+	//// chalk marks stacked in the same 16x16 decor cell.
+	////
+	private static List<int>? FindOtherMarkingChalkDecorsAtSubposition(
+		IBlockAccessor blockAccessor,
+		BlockSelection blockSel,
+		int decorIndex)
+	{
+		Dictionary<int, Block>? decors = blockAccessor.GetSubDecors(blockSel.Position);
+		if (decors == null || decors.Count == 0)
+		{
+			return null;
+		}
+
+		DecorBits targetBits = new(decorIndex);
+		List<int>? staleDecorIndexes = null;
+		foreach ((int existingDecorIndex, Block decorBlock) in decors)
+		{
+			DecorBits existingBits = new(existingDecorIndex);
+			if (existingDecorIndex == decorIndex
+			    || existingBits.Face != targetBits.Face
+			    || existingBits.SubPosition != targetBits.SubPosition
+			    || !IsMarkingChalkDecor(decorBlock))
+			{
+				continue;
+			}
+
+			staleDecorIndexes ??= new List<int>();
+			staleDecorIndexes.Add(existingDecorIndex);
+		}
+
+		return staleDecorIndexes;
+	}
+
+
+
+	//// Removes decor entries that were superseded by a successful placement.
+	////
+	private static void RemoveDecorIndexes(IBlockAccessor blockAccessor, BlockPos position, List<int>? decorIndexes)
+	{
+		if (decorIndexes == null || decorIndexes.Count == 0)
+		{
+			return;
+		}
+
+		Block airBlock = blockAccessor.GetBlock(0);
+		foreach (int decorIndex in decorIndexes)
+		{
+			blockAccessor.SetDecor(airBlock, position, decorIndex);
+		}
 	}
 
 
@@ -391,6 +562,15 @@ public sealed class ItemMarkingChalk : Item
 	private static bool IsEraseMode(ItemStack itemStack)
 	{
 		return ModeDefinitions[GetModeIndex(itemStack)].Erases;
+	}
+
+
+
+	//// Gets the selected mode stored on a chalk stack.
+	////
+	private static MarkingChalkMode GetSelectedMode(ItemStack itemStack)
+	{
+		return ModeDefinitions[GetModeIndex(itemStack)];
 	}
 
 
@@ -615,5 +795,15 @@ public sealed class ItemMarkingChalk : Item
 		string? CellVariant,
 		string LangCode,
 		string IconPath,
-		bool Erases = false);
+		bool Erases = false,
+		MarkingChalkArrowDirection ArrowDirection = MarkingChalkArrowDirection.None);
+
+	private enum MarkingChalkArrowDirection
+	{
+		None,
+		Up,
+		Right,
+		Down,
+		Left
+	}
 }

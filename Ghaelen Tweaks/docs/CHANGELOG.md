@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 0.4.5 - 2026-08-09
+
+### Fixed
+
+- Fixed marking chalk arrow direction on floors and ceilings so arrow modes orient from the player's facing at
+  placement time instead of the surface layer's fixed horizontal UV axes.
+- Fixed redrawing a rotated floor or ceiling arrow in the same decor subcell so the new chalk mark replaces the old
+  rotated mark instead of stacking with it.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.4` to `0.4.5`.
+
 ## 0.4.4 - 2026-08-09
 
 ### Fixed

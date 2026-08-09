@@ -166,6 +166,8 @@ Initial implementation:
 - Store mark art as one 96x96 spritesheet per color and resolve tool modes to `col`/`row` decor variants. Vintage
   Story's `surfacelayer` decor path expects this cell-based format; standalone per-symbol textures rendered as filled
   squares during the first in-game test.
+- Map right and left arrow modes to the opposite-looking source cells. In-game surfacelayer rendering mirrored
+  horizontal arrows on tested wall faces, so the swapped mapping makes the placed mark match the selected tool icon.
 - Use the same exact sub-face decor index path for erasing that placement uses for drawing. Erasing searches nearby
   subcells on the clicked face, removes only `ghaelentweaks:markingchalk-*` decor so players do not have to hit the
   original placement cell perfectly, and refunds one active-stick use capped at the configured maximum.

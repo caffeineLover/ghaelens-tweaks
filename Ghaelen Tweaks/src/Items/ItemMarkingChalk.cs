@@ -31,9 +31,11 @@ public sealed class ItemMarkingChalk : Item
 	private static readonly MarkingChalkMode[] ModeDefinitions =
 	{
 		new("arrow-up", "1-1", "ghaelentweaks:marking-chalk-mode-arrow-up", "markingchalk-arrow-up.svg"),
-		new("arrow-right", "2-1", "ghaelentweaks:marking-chalk-mode-arrow-right", "markingchalk-arrow-right.svg"),
+		// In-game surfacelayer rendering mirrors horizontal arrow cells on tested wall faces.  Keep right and left
+		// mapped to opposite source cells so the placed mark matches the selected toolbar icon.
+		new("arrow-right", "4-1", "ghaelentweaks:marking-chalk-mode-arrow-right", "markingchalk-arrow-right.svg"),
 		new("arrow-down", "3-1", "ghaelentweaks:marking-chalk-mode-arrow-down", "markingchalk-arrow-down.svg"),
-		new("arrow-left", "4-1", "ghaelentweaks:marking-chalk-mode-arrow-left", "markingchalk-arrow-left.svg"),
+		new("arrow-left", "2-1", "ghaelentweaks:marking-chalk-mode-arrow-left", "markingchalk-arrow-left.svg"),
 		new("x", "5-1", "ghaelentweaks:marking-chalk-mode-x", "markingchalk-x.svg"),
 		new("dot", "6-1", "ghaelentweaks:marking-chalk-mode-dot", "markingchalk-dot.svg"),
 		new("ladder", "1-2", "ghaelentweaks:marking-chalk-mode-ladder", "markingchalk-ladder.svg"),

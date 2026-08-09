@@ -1,5 +1,20 @@
 # Releases
 
+## Version 0.4.3
+
+**Tag:** `v0.4.3`
+
+**Released:** 2026-08-09
+
+This hotfix corrects horizontal marking chalk arrows and refines the danger glyph.
+
+### Changes
+
+- Fixed right and left arrow modes placing the opposite horizontal arrow in game.
+- Adjusted the danger glyph so the exclamation dot remains visually separate from the triangle base.
+
+
+
 ## Version 0.4.2
 
 **Tag:** `v0.4.2`

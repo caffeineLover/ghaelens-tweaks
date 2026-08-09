@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.4.3 - 2026-08-09
+
+### Fixed
+
+- Fixed marking chalk right and left arrow modes placing the opposite horizontal arrow in game.
+- Adjusted the marking chalk danger glyph so the exclamation dot stays separated from the triangle base.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.2` to `0.4.3`.
+
 ## 0.4.2 - 2026-08-09
 
 ### Added

@@ -1,8 +1,16 @@
 # Vintage Story Project Standards
 
-Standards version: 0.1.2
+Standards version: 0.2.0
 
 This profile applies to Vintage Story mod projects.
+
+---
+
+## Prefer Content Mods
+
+Prefer JSON patches, assets, and other content-mod mechanisms over a code mod when they can express the required
+behavior cleanly and maintainably.  Use a code mod when the content system cannot implement the behavior reliably or
+would make the solution unnecessarily obscure or fragile.
 
 ---
 
@@ -20,6 +28,10 @@ Provide a fallback such as direct configuration-file loading or sensible built-i
 
 Vintage Story mod projects may consult the shared **Vintage Story Reference** solution for decompiled game assemblies,
 assets, selected mods, and decompiled code-mod sources.
+
+The Reference project is located at `../Vintage Story Reference`, resolved from the consuming mod project's repository
+root.  If that relative path does not exist, ask the user for the correct location rather than searching broadly or
+guessing another path.
 
 Use the Reference project that matches the mod's target game version.  Retrieve only the information needed for the
 current task; do not broadly ingest or analyze the entire Reference from an ordinary mod project.

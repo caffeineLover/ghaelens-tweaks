@@ -1,5 +1,20 @@
 # Releases
 
+## Version 0.4.7
+
+**Tag:** `v0.4.7`
+
+**Released:** 2026-08-09
+
+This hotfix corrects the remaining right-arrow floor and ceiling orientation case.
+
+### Changes
+
+- Fixed right-arrow marks on floors and ceilings so the player-relative direction is resolved from the clicked camera
+  ray instead of relying only on entity body yaw.
+
+
+
 ## Version 0.4.6
 
 **Tag:** `v0.4.6`

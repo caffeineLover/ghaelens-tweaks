@@ -354,7 +354,7 @@ public sealed class ItemMarkingChalk : Item
 			return decorBits;
 		}
 
-		BlockFacing playerFacing = ResolvePlayerForwardFacing(byEntity);
+		BlockFacing playerFacing = ResolvePlayerForwardFacing(byEntity, blockSel);
 		BlockFacing desiredFacing = ResolveHorizontalArrowFacing(playerFacing, mode.ArrowDirection);
 		decorBits.Rotation = ResolveHorizontalArrowRotation(blockSel.Face, desiredFacing);
 
@@ -363,15 +363,23 @@ public sealed class ItemMarkingChalk : Item
 
 
 
-	//// Resolves the player's actual horizontal look direction for horizontal
+	//// Resolves the player's actual horizontal aim direction for horizontal
 	//// plane arrow placement.
 	////
-	//// Vintage Story's `HorizontalFromYaw` is block-placement oriented here.
-	//// Its result is opposite the direction the player is looking, so floor
-	//// and ceiling arrows need the opposite facing to match player intent.
+	//// The selected floor or ceiling point is the most direct evidence of the
+	//// camera ray.  Use the horizontal eye-to-hit vector when possible, and
+	//// fall back to yaw only for near-vertical clicks where that projection is
+	//// too small to classify.
 	////
-	private static BlockFacing ResolvePlayerForwardFacing(EntityAgent byEntity)
+	private static BlockFacing ResolvePlayerForwardFacing(EntityAgent byEntity, BlockSelection blockSel)
 	{
+		Vec3d eyePosition = byEntity.Pos.XYZ.AddCopy(byEntity.LocalEyePos);
+		Vec3d aimVector = blockSel.FullPosition.SubCopy(eyePosition);
+		if (aimVector.X * aimVector.X + aimVector.Z * aimVector.Z > 0.0001)
+		{
+			return BlockFacing.FromVector(aimVector.X, 0.0, aimVector.Z);
+		}
+
 		return BlockFacing.HorizontalFromYaw(byEntity.Pos.Yaw).Opposite;
 	}
 

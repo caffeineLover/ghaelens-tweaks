@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.4.6` fixes the remaining marking chalk floor and ceiling arrow reversal.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.4.7` fixes the remaining marking chalk right-arrow floor and ceiling orientation case.
 
 ## Active work
 
-No active implementation work is currently in progress. The latest completed source change orients floor and ceiling marking chalk arrows from the player's facing at placement time while preserving the tested wall-arrow cell mapping.
+No active implementation work is currently in progress. The latest completed source change orients floor and ceiling marking chalk arrows from the clicked camera ray while preserving the tested wall-arrow cell mapping.
 
 ## Durable technical knowledge
 
@@ -30,7 +30,11 @@ No active implementation work is currently in progress. The latest completed sou
 - Marking chalk uses `ItemMarkingChalk` in `src/Items/ItemMarkingChalk.cs`. It places `ghaelentweaks:markingchalk-{color}-{col}-{row}` decor blocks with `IBlockAccessor.SetDecor(..., blockSel.ToDecorIndex())`, so the target block remains unchanged and the adjacent block space is not occupied.
 - Marking chalk is stackable while sticks are fresh. A partially used stick stores its remaining uses in stack attribute `markingChalkUsesLeft` and is split into a one-item stack so the fresh remainder is not visually or mechanically treated as partially used. If inventory cannot accept the fresh remainder during the split, it drops near the player.
 - Marking chalk mode selection uses stack attribute `markingChalkMode`. Current modes are arrow up, arrow right, arrow down, arrow left, X, dot, ladder, stairs, danger, and exit. Wall arrow modes map to `col`/`row` spritesheet cells directly; right and left modes intentionally map to the opposite-looking source cells because in-game surfacelayer rendering mirrors horizontal arrows on tested wall faces. Floor and ceiling arrow modes use the up-arrow cell plus `DecorBits.Rotation` derived from the player's actual forward direction, because top/bottom face UV axes are fixed to world directions and made arrow-left look like arrow-up in the 2026-08-09 `0.4.4` local test.
-- For marking chalk floor and ceiling arrows, use `BlockFacing.HorizontalFromYaw(byEntity.Pos.Yaw).Opposite` for the player's actual forward direction. The first `0.4.5` local test showed `HorizontalFromYaw(...)` itself produced a 180-degree reversal: arrow-left rendered as arrow-right on the floor, and arrow-up rendered as arrow-down.
+- For marking chalk floor and ceiling arrows, derive the player's actual forward direction from the horizontal
+  eye-to-hit vector when possible. Fall back to `BlockFacing.HorizontalFromYaw(byEntity.Pos.Yaw).Opposite` only for
+  near-vertical clicks. The first `0.4.5` local test showed `HorizontalFromYaw(...)` itself produced a 180-degree
+  reversal, and the first `0.4.6` local test showed body/yaw state could still make arrow-right render as arrow-left
+  on floors while the wall cell remained correct.
 - Marking chalk erase mode is the last tool mode so existing saved draw-mode indices keep their meaning. Shift/crouch right-click also erases regardless of the selected draw mode. Successful erasing searches nearby sub-face decor cells on the clicked face, calls exact `BreakDecor(..., decorIndex)` only for `ghaelentweaks:markingchalk-*` decor, and restores one active-stick use capped at the configured maximum.
 - Marking chalk surfacelayer art follows vanilla cave art: one 96x96 spritesheet per color, with `col` and `row` block variants selecting a 16x16 cell. Standalone per-symbol surfacelayer textures rendered as filled squares during the first in-game test.
 - Marking chalk placement removes older Ghaelen Tweaks chalk decor in the same face subcell but with a different rotation after a successful placement. Decor rotation is part of the storage key, so this prevents rotated floor/ceiling redraws from stacking multiple marks in one subcell.
@@ -89,7 +93,7 @@ None recorded yet.
 - The Git repository root is one level above the mod project folder, while `AGENTS.md`, `docs/`, and `src/` are inside `Ghaelen Tweaks/`. Future agents should be explicit about whether a path is repository-root-relative or mod-project-relative.
 - Build verification was not run after the source-layout move or coding-standards comment pass because existing project notes say not to run builds unless explicitly instructed. The 2026-07-15 release was explicitly requested, so build and package verification were run for version `0.3.1`.
 - Marking chalk stacks from `0.4.2` or `0.4.3` saves may still carry a shared `markingChalkUsesLeft` attribute until the player next draws or erases with that stack. The `0.4.4` code migrates that case by splitting one active stick from the fresh remainder or clearing the attribute when the active stick is full.
-- Marking chalk floor and ceiling arrows placed before `0.4.5` may keep their old fixed-UV orientation until erased and redrawn.
+- Marking chalk floor and ceiling arrows placed before `0.4.7` may keep their old orientation until erased and redrawn.
 
 ## Open questions
 
@@ -168,6 +172,9 @@ None recorded yet.
 - The first `0.4.3` local test confirmed the danger symbol looks good. The exit symbol was still unclear, and stacked chalk showed a shared use count across all items in the stack. Release `0.4.4` replaces the exit cell with a symmetric doorway marker and changes use tracking so the first partial use splits one stick away from the fresh stack.
 - The first `0.4.4` local test confirmed the exit glyph and stack-use split improved, but arrow-left on a floor rendered like arrow-up while the same mode looked correct on a wall. Release `0.4.5` uses decor rotation bits for floor/ceiling arrows and clears same-subcell rotated chalk overlaps.
 - The first `0.4.5` local test showed the floor/ceiling arrows were still 180 degrees off: selected arrow-left rendered as arrow-right on the floor, and selected arrow-up rendered as arrow-down. Release `0.4.6` fixes that by using the opposite of `BlockFacing.HorizontalFromYaw(...)` as the player-forward direction before applying arrow mode rotation.
+- The first `0.4.6` local test showed the remaining right-arrow floor case: selected arrow-right rendered correctly on
+  a wall but as arrow-left on a floor, while the other checked modes looked correct. Release `0.4.7` resolves the
+  player-relative floor/ceiling basis from the clicked camera ray instead of relying only on entity yaw.
 - Removed `EntityBehaviorCatLoreGuardian.OnEntityReceiveDamage`, so Ghaelen Tweaks no longer cancels cat fall damage or lore-creature damage. The cat behavior still applies proximity glow on the client and warning yowls on the server.
 - Removed the `cat-impervious-to-lore-creatures` config property, Config Lib setting, English language labels, and README player-facing documentation. Added an Unreleased changelog entry for the removed immunity guardrail.
 - Researched Vintage Story Reference `1.22.3` PetAI `5.1.1`, Cats `5.0.1`, and WolfTaming `5.0.1`: PetAI loads/stores `petconfig.json`, defaults `FalldamageOff = true`, and cancels fall damage in `EntityBehaviorTameable.OnEntityReceiveDamage`; Cats and WolfTaming attach `tameable` and do not override that fall-damage path.

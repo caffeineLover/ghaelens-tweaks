@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.4.7 - 2026-08-09
+
+### Fixed
+
+- Fixed marking chalk right-arrow floor and ceiling marks using stale body-yaw direction instead of the clicked camera
+  ray when resolving player-relative orientation.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.6` to `0.4.7`.
+
 ## 0.4.6 - 2026-08-09
 
 ### Fixed

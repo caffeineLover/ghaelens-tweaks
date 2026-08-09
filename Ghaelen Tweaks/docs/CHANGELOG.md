@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Fixed
+
+- Fixed marking chalk overlay textures rendering as filled squares by switching the decor art to the same spritesheet
+  cell format used by vanilla cave art.
+
+### Changed
+
+- Replaced the single yaw-based marking chalk arrow mode with explicit arrow up, arrow right, arrow down, and arrow left
+  tool modes.
+
 ## 0.4.0 - 2026-08-09
 
 ### Added

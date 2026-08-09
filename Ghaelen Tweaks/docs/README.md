@@ -61,8 +61,8 @@ Marking chalk can now place colored navigation marks on mine and trail surfaces.
 - From a player perspective:
   - Craft plain marking chalk from vanilla chalk stones.
   - Right-click a valid block face with marking chalk to place the selected mark.
-  - Use the tool-mode selector to choose arrow, X, dot, ladder, stairs, danger, or exit marks.
-  - Arrow marks point in the direction the player is facing when placed.
+  - Use the tool-mode selector to choose arrow up, arrow right, arrow down, arrow left, X, dot, ladder, stairs,
+    danger, or exit marks.
   - Marking chalk works on solid stone, ore, brick, log/trunk, packed dirt, dry packed dirt, and rammed earth faces.
   - Each chalk stick has 32 uses by default, controlled by `marking-chalk-uses`.
   - Dye a batch of plain marking chalk with 1 L of vanilla dye in a barrel or with a fired bowl containing dye.

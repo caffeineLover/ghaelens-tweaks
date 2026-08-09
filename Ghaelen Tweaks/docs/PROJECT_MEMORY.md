@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Current unreleased work includes initial marking chalk support for placing preset colored decor marks on mineable navigation surfaces.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Current unreleased work fixes marking chalk overlay rendering and arrow-mode selection after the first in-game `0.4.0` test.
 
 ## Active work
 
-No active implementation work is currently in progress. The latest completed source change adds the initial preset-glyph marking chalk feature.
+No active implementation work is currently in progress. The latest completed source change fixes marking chalk test feedback: decor glyphs rendered as filled squares, and arrow selection was too implicit.
 
 ## Durable technical knowledge
 
@@ -27,9 +27,10 @@ No active implementation work is currently in progress. The latest completed sou
 - The palisade damage config toggle is `enable-palisade-damage-to-hostiles`; despite the concise setting name, the affected entities are lore creatures plus charging adult bears, wolves, and hyenas.
 - Cat Lore Warning only applies cat glow and yowl warning behavior. Ghaelen Tweaks does not cancel cat damage and no longer has a `cat-impervious-to-lore-creatures` config setting.
 - Vintage Story Reference `1.22.3` PetAI `5.1.1` defaults `PetConfig.FalldamageOff` to `true`, and `EntityBehaviorTameable.OnEntityReceiveDamage` cancels `EnumDamageSource.Fall` damage for tameable entities while that PetAI config is enabled. Cats `5.0.1` and WolfTaming `5.0.1` attach the `tameable` behavior and do not add their own fall-damage override, so tamed cats and dogs inherit PetAI's default fall-damage immunity unless `petconfig.json` turns it off.
-- Marking chalk uses `ItemMarkingChalk` in `src/Items/ItemMarkingChalk.cs`. It places `ghaelentweaks:markingchalk-{color}-{symbol}` decor blocks with `IBlockAccessor.SetDecor(..., blockSel.ToDecorIndex())`, so the target block remains unchanged and the adjacent block space is not occupied.
+- Marking chalk uses `ItemMarkingChalk` in `src/Items/ItemMarkingChalk.cs`. It places `ghaelentweaks:markingchalk-{color}-{col}-{row}` decor blocks with `IBlockAccessor.SetDecor(..., blockSel.ToDecorIndex())`, so the target block remains unchanged and the adjacent block space is not occupied.
 - Marking chalk is stackable. It tracks the currently active stick's remaining uses in stack attribute `markingChalkUsesLeft`; when the count reaches zero, one item is removed and the next stick starts without a use-count attribute. Manual splits of a partially used stack can copy that active-stick use count.
-- Marking chalk mode selection uses stack attribute `markingChalkMode`. Initial modes are arrow, X, dot, ladder, stairs, danger, and exit. Arrow marks resolve to `arrow-north/east/south/west` from `BlockFacing.HorizontalFromYaw(...)`.
+- Marking chalk mode selection uses stack attribute `markingChalkMode`. Current modes are arrow up, arrow right, arrow down, arrow left, X, dot, ladder, stairs, danger, and exit. Modes map directly to `col`/`row` spritesheet cells instead of deriving arrow direction from player yaw.
+- Marking chalk surfacelayer art follows vanilla cave art: one 96x96 spritesheet per color, with `col` and `row` block variants selecting a 16x16 cell. Standalone per-symbol surfacelayer textures rendered as filled squares during the first in-game test.
 - Marking chalk valid surfaces are intentionally narrow: solid Stone/Ore/Brick material faces, trunk/log-like Wood paths beginning `log-`, `logsection-`, `logquad-`, or `lognarrow-`, and prepared Soil paths beginning `packeddirt`, `drypackeddirt`, or `rammed-`.
 - Marking chalk config keys are `marking-chalk-uses` (default 32, clamped 1..512) and `marking-chalk-dye-batch-size` (default 16, clamped 1..64). Config Lib metadata lives in `assets/ghaelentweaks/config/configlib-patches.json`.
 - Marking chalk dyeing supports vanilla liquid dyes `black`, `blue`, `gray`, `green`, `orange`, `pink`, `purple`, `red`, `white`, and `yellow`; `dye-woad` outputs blue marking chalk because vanilla `dye-woad` and `dye-blue` are visually identical in 1.22.3.
@@ -147,12 +148,15 @@ None recorded yet.
 
 ### 2026-08-09
 
-- Added initial marking chalk support on the primary local branch (`master`; no separate local `main` branch exists). New stackable `marking-chalk-{color}` items place hidden surfacelayer decor blocks `markingchalk-{color}-{symbol}` on valid solid stone/ore/brick, log/trunk, packed dirt, dry packed dirt, and rammed earth faces.
-- Added tool modes for arrow, X, dot, ladder, stairs, danger, and exit glyphs. Arrow mode selects a cardinal arrow variant from the player's yaw so floor and ceiling arrows can point in world directions.
+- Added initial marking chalk support on the primary local branch (`master`; no separate local `main` branch exists). New stackable `marking-chalk-{color}` items place hidden surfacelayer decor blocks on valid solid stone/ore/brick, log/trunk, packed dirt, dry packed dirt, and rammed earth faces.
+- Added tool modes for arrow, X, dot, ladder, stairs, danger, and exit glyphs. The first implementation used a single arrow mode that selected a cardinal arrow variant from the player's yaw.
 - Added configurable marking chalk use count (`marking-chalk-uses`, default 32) and dye batch size (`marking-chalk-dye-batch-size`, default 16), plus Config Lib metadata and English language text.
 - Added recipes: one vanilla `stone-chalk` crafts four plain marking chalk sticks; bowl recipes consume 1 L dye from a fired bowl and recolor the configured batch size while leaving the bowl; barrel recipes consume 1 L dye and recolor the configured batch. `dye-woad` outputs blue marking chalk.
 - Added generated item and mark textures: 10 item PNGs and 100 transparent decor glyph PNGs, plus SVG mode icons.
 - Updated `docs/MARKING_CHALK.md` from brainstorm draft to the first implementation note. Verified new strict JSON with `ConvertFrom-Json`, checked sample textures visually, and ran `git diff --check`; build was not run because explicit build permission was not given.
+- After the first in-game test, screenshots at `C:\Users\p\Pictures\Vintagestory\2026-08-09_09-30-43.png` and `2026-08-09_09-31-00.png` showed marking chalk arrow and X decor rendering as filled squares. The likely cause was using standalone symbol PNGs with `drawtype: surfacelayer`; vanilla cave-art surfacelayer blocks use `col` and `row` variants over a spritesheet.
+- Reworked marking chalk decor blocks to `markingchalk-{color}-{col}-{row}` and generated one 96x96 spritesheet per color with explicit cells for arrow up, arrow right, arrow down, arrow left, X, dot, ladder, stairs, danger, and exit.
+- Replaced the single yaw-derived arrow mode with explicit arrow up, arrow right, arrow down, and arrow left tool modes and SVG icons so players can directly select the arrow they want.
 - Removed `EntityBehaviorCatLoreGuardian.OnEntityReceiveDamage`, so Ghaelen Tweaks no longer cancels cat fall damage or lore-creature damage. The cat behavior still applies proximity glow on the client and warning yowls on the server.
 - Removed the `cat-impervious-to-lore-creatures` config property, Config Lib setting, English language labels, and README player-facing documentation. Added an Unreleased changelog entry for the removed immunity guardrail.
 - Researched Vintage Story Reference `1.22.3` PetAI `5.1.1`, Cats `5.0.1`, and WolfTaming `5.0.1`: PetAI loads/stores `petconfig.json`, defaults `FalldamageOff = true`, and cancels fall damage in `EntityBehaviorTameable.OnEntityReceiveDamage`; Cats and WolfTaming attach `tameable` and do not override that fall-damage path.

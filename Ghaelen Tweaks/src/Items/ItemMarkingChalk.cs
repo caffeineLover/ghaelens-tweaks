@@ -28,13 +28,16 @@ public sealed class ItemMarkingChalk : Item
 
 	private static readonly MarkingChalkMode[] ModeDefinitions =
 	{
-		new("arrow", "arrow", "ghaelentweaks:marking-chalk-mode-arrow", "markingchalk-arrow.svg"),
-		new("x", "x", "ghaelentweaks:marking-chalk-mode-x", "markingchalk-x.svg"),
-		new("dot", "dot", "ghaelentweaks:marking-chalk-mode-dot", "markingchalk-dot.svg"),
-		new("ladder", "ladder", "ghaelentweaks:marking-chalk-mode-ladder", "markingchalk-ladder.svg"),
-		new("stairs", "stairs", "ghaelentweaks:marking-chalk-mode-stairs", "markingchalk-stairs.svg"),
-		new("danger", "danger", "ghaelentweaks:marking-chalk-mode-danger", "markingchalk-danger.svg"),
-		new("exit", "exit", "ghaelentweaks:marking-chalk-mode-exit", "markingchalk-exit.svg")
+		new("arrow-up", "1-1", "ghaelentweaks:marking-chalk-mode-arrow-up", "markingchalk-arrow-up.svg"),
+		new("arrow-right", "2-1", "ghaelentweaks:marking-chalk-mode-arrow-right", "markingchalk-arrow-right.svg"),
+		new("arrow-down", "3-1", "ghaelentweaks:marking-chalk-mode-arrow-down", "markingchalk-arrow-down.svg"),
+		new("arrow-left", "4-1", "ghaelentweaks:marking-chalk-mode-arrow-left", "markingchalk-arrow-left.svg"),
+		new("x", "5-1", "ghaelentweaks:marking-chalk-mode-x", "markingchalk-x.svg"),
+		new("dot", "6-1", "ghaelentweaks:marking-chalk-mode-dot", "markingchalk-dot.svg"),
+		new("ladder", "1-2", "ghaelentweaks:marking-chalk-mode-ladder", "markingchalk-ladder.svg"),
+		new("stairs", "2-2", "ghaelentweaks:marking-chalk-mode-stairs", "markingchalk-stairs.svg"),
+		new("danger", "3-2", "ghaelentweaks:marking-chalk-mode-danger", "markingchalk-danger.svg"),
+		new("exit", "4-2", "ghaelentweaks:marking-chalk-mode-exit", "markingchalk-exit.svg")
 	};
 
 
@@ -256,8 +259,8 @@ public sealed class ItemMarkingChalk : Item
 			: "white";
 
 		int modeIndex = GameMath.Clamp(itemStack.Attributes.GetInt(ModeAttribute, 0), 0, ModeDefinitions.Length - 1);
-		string symbol = GetDecorSymbol(ModeDefinitions[modeIndex], byEntity);
-		AssetLocation blockCode = new("ghaelentweaks", $"markingchalk-{color}-{symbol}");
+		string cell = ModeDefinitions[modeIndex].CellVariant;
+		AssetLocation blockCode = new("ghaelentweaks", $"markingchalk-{color}-{cell}");
 
 		Block? block = byEntity.World.GetBlock(blockCode);
 		if (block == null || block.IsMissing)
@@ -267,25 +270,6 @@ public sealed class ItemMarkingChalk : Item
 		}
 
 		return block;
-	}
-
-
-
-	//// Converts the selected mode into a decor symbol variant.
-	////
-	//// Arrow mode is directional. It uses the player's yaw so floor and
-	//// ceiling arrows point in a world direction instead of only using the
-	//// clicked face.
-	////
-	private static string GetDecorSymbol(MarkingChalkMode mode, EntityAgent byEntity)
-	{
-		if (mode.DecorSymbol != "arrow")
-		{
-			return mode.DecorSymbol;
-		}
-
-		BlockFacing direction = BlockFacing.HorizontalFromYaw((float)byEntity.Pos.Yaw);
-		return $"arrow-{direction.Code}";
 	}
 
 
@@ -398,7 +382,7 @@ public sealed class ItemMarkingChalk : Item
 
 	private readonly record struct MarkingChalkMode(
 		string Code,
-		string DecorSymbol,
+		string CellVariant,
 		string LangCode,
 		string IconPath);
 }

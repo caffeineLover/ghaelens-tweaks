@@ -1,6 +1,6 @@
 # Marking Chalk
 
-Status: Initial preset-mark implementation added.
+Status: Initial preset-mark implementation added; first test feedback addressed.
 
 This document tracks the proposed marking chalk tweak for Ghaelen Tweaks.
 
@@ -119,7 +119,10 @@ color is stored as bowl liquid content rather than as a wildcard grid ingredient
 
 Initial glyph set:
 
-- Arrow.
+- Arrow up.
+- Arrow right.
+- Arrow down.
+- Arrow left.
 - X.
 - Dot.
 - Ladder.
@@ -131,12 +134,10 @@ Initial glyph set:
 
 Marks must support walls, floors, and ceilings.
 
-For floor and ceiling arrows, the arrow should point in a world direction based on the player's facing direction at
-placement time. This avoids ambiguous wall-local labels such as left or right.
+Arrow selection is explicit. The tool-mode selector exposes arrow up, arrow right, arrow down, and arrow left as
+separate marks instead of deriving arrow direction from the player's facing direction.
 
-Wall, floor, and ceiling arrows all use the same player-facing world-direction model for the initial implementation.
-
-Non-directional symbols such as X, dot, ladder, stairs, danger, and home avoid orientation ambiguity and should work on
+Non-directional symbols such as X, dot, ladder, stairs, danger, and exit avoid orientation ambiguity and should work on
 all valid faces.
 
 ## Technical Direction
@@ -152,12 +153,15 @@ Vintage Story already has the pieces this feature needs:
 Initial implementation:
 
 - Add a marking chalk item family with color variants.
-- Add a marking decor block family with color and symbol variants.
+- Add a marking decor block family with color, column, and row variants matching vanilla cave-art surfacelayer cells.
 - Default each marking chalk item to `32` uses, configurable through `marking-chalk-uses`.
 - Default dyeing recipes to a batch size of `16`, configurable through `marking-chalk-dye-batch-size`.
 - Use custom C# item behavior rather than vanilla `ArtPigment` so the item can choose a color-specific decor block,
   track fixed uses, restrict surfaces to the agreed list, and reserve room for a future freehand mode.
 - Adjust resolved grid and barrel dye recipe quantities at runtime so the batch size config affects both dyeing routes.
+- Store mark art as one 96x96 spritesheet per color and resolve tool modes to `col`/`row` decor variants. Vintage
+  Story's `surfacelayer` decor path expects this cell-based format; standalone per-symbol textures rendered as filled
+  squares during the first in-game test.
 
 The first implementation should include only the preset-mark behavior. Freehand mode is intentionally deferred.
 

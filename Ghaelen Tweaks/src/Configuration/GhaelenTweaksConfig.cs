@@ -80,6 +80,16 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("display-case-stacking")]
 	public bool DisplayCaseStacking { get; set; } = true;
 
+	//// Sets how many marks each marking chalk stick can draw.
+	////
+	[JsonProperty("marking-chalk-uses")]
+	public int MarkingChalkUses { get; set; } = 32;
+
+	//// Sets how many plain marking chalk sticks are dyed by one litre of dye.
+	////
+	[JsonProperty("marking-chalk-dye-batch-size")]
+	public int MarkingChalkDyeBatchSize { get; set; } = 16;
+
 
 
 	//// Normalizes loaded or externally supplied values into the supported
@@ -98,6 +108,8 @@ public sealed class GhaelenTweaksConfig
 		AboveGroundRadiusForLoreYowl = ClampRadius(AboveGroundRadiusForLoreYowl);
 		PalisadeDamageAmount = ClampDamage(PalisadeDamageAmount);
 		PalisadeDamageCooldownSeconds = ClampPalisadeDamageCooldown(PalisadeDamageCooldownSeconds);
+		MarkingChalkUses = ClampMarkingChalkUses(MarkingChalkUses);
+		MarkingChalkDyeBatchSize = ClampMarkingChalkDyeBatchSize(MarkingChalkDyeBatchSize);
 	}
 
 
@@ -168,5 +180,33 @@ public sealed class GhaelenTweaksConfig
 		}
 
 		return cooldownSeconds > 10 ? 10 : cooldownSeconds;
+	}
+
+
+
+	//// Clamps marking chalk uses to a practical positive range.
+	////
+	private static int ClampMarkingChalkUses(int uses)
+	{
+		if (uses < 1)
+		{
+			return 1;
+		}
+
+		return uses > 512 ? 512 : uses;
+	}
+
+
+
+	//// Clamps marking chalk dye batches to a practical stack-sized range.
+	////
+	private static int ClampMarkingChalkDyeBatchSize(int batchSize)
+	{
+		if (batchSize < 1)
+		{
+			return 1;
+		}
+
+		return batchSize > 64 ? 64 : batchSize;
 	}
 }

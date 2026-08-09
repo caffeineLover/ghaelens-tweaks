@@ -52,6 +52,23 @@ Display cases can now be placed directly on top of other display cases.
   - Display cases are not made into general-purpose shelves for unrelated blocks.
   - The setting can be edited through Config Lib when it is installed.
 
+## Marking Chalk
+
+Marking chalk can now place colored navigation marks on mine and trail surfaces.
+
+- This uses Vintage Story decor, so the marked block remains unchanged and the mark does not occupy the neighboring
+  block space.
+- From a player perspective:
+  - Craft plain marking chalk from vanilla chalk stones.
+  - Right-click a valid block face with marking chalk to place the selected mark.
+  - Use the tool-mode selector to choose arrow, X, dot, ladder, stairs, danger, or exit marks.
+  - Arrow marks point in the direction the player is facing when placed.
+  - Marking chalk works on solid stone, ore, brick, log/trunk, packed dirt, dry packed dirt, and rammed earth faces.
+  - Each chalk stick has 32 uses by default, controlled by `marking-chalk-uses`.
+  - Dye a batch of plain marking chalk with 1 L of vanilla dye in a barrel or with a fired bowl containing dye.
+  - The dye batch size defaults to 16 and is controlled by `marking-chalk-dye-batch-size`.
+  - `dye-woad` produces blue marking chalk.
+
 ## Packed Dirt And Rammed Earth Speed Buffs
 
 Packed dirt and rammed earth give movement speed buffs, but they stay weaker than stone paths.

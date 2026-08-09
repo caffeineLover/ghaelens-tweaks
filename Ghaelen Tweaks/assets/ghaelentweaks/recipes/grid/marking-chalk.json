@@ -1,0 +1,210 @@
+[
+  {
+    "ingredientPattern": "C",
+    "ingredients": {
+      "C": { "type": "item", "code": "game:stone-chalk" }
+    },
+    "name": "ghaelentweaks:marking-chalk-plain",
+    "width": 1,
+    "height": 1,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 4 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-black-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-black" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-black", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-blue-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-blue" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-blue", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-gray-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-gray" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-gray", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-green-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-green" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-green", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-orange-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-orange" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-orange", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-pink-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-pink" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-pink", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-purple-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-purple" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-purple", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-red-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-red" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-red", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-white-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-white" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-yellow-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-yellow" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-yellow", "quantity": 16 }
+  },
+  {
+    "ingredientPattern": "BC",
+    "ingredients": {
+      "B": { "type": "block", "code": "game:bowl-*-fired" },
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    },
+    "name": "ghaelentweaks:marking-chalk-dye-woad-bowl",
+    "width": 2,
+    "height": 1,
+    "attributes": {
+      "liquidContainerProps": {
+        "requiresContent": { "type": "item", "code": "game:dye-woad" },
+        "requiresLitres": 1
+      }
+    },
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-blue", "quantity": 16 }
+  }
+]

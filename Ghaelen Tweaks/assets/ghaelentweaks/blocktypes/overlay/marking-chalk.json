@@ -1,0 +1,74 @@
+{
+  "code": "markingchalk",
+  "behaviors": [
+    {
+      "name": "Decor",
+      "properties": {
+        "sides": [ "north", "east", "south", "west", "up", "down" ],
+        "notFullFace": true,
+        "thickness": 0.0
+      }
+    }
+  ],
+  "attributes": {
+    "handbook": {
+      "exclude": true
+    }
+  },
+  "vertexFlags": {
+    "zOffset": 1
+  },
+  "renderpass": "Decor",
+  "variantgroups": [
+    {
+      "code": "color",
+      "states": [
+        "white",
+        "black",
+        "blue",
+        "gray",
+        "green",
+        "orange",
+        "pink",
+        "purple",
+        "red",
+        "yellow"
+      ]
+    },
+    {
+      "code": "symbol",
+      "states": [
+        "arrow-north",
+        "arrow-east",
+        "arrow-south",
+        "arrow-west",
+        "x",
+        "dot",
+        "ladder",
+        "stairs",
+        "danger",
+        "exit"
+      ]
+    }
+  ],
+  "drawtype": "surfacelayer",
+  "doNotRenderAtLod2": true,
+  "randomizeRotations": false,
+  "shapeInventory": {
+    "base": "block/basic/layers/0voxel-up",
+    "rotateX": 90
+  },
+  "sidesolid": { "all": false },
+  "sideopaque": { "all": false },
+  "blockmaterial": "Cloth",
+  "replaceable": 5500,
+  "resistance": 0,
+  "lightAbsorption": 0,
+  "textures": {
+    "all": {
+      "base": "block/overlay/markingchalk/{color}/{symbol}"
+    }
+  },
+  "drops": [],
+  "materialDensity": 400
+}

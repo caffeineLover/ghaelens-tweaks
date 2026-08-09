@@ -1,0 +1,38 @@
+[
+  {
+    "code": "marking-chalk-dye-standard",
+    "sealHours": 0,
+    "ingredients": [
+      {
+        "type": "item",
+        "code": "game:dye-*",
+        "name": "color",
+        "litres": 1,
+        "consumelitres": 1,
+        "allowedVariants": [
+          "black",
+          "blue",
+          "gray",
+          "green",
+          "orange",
+          "pink",
+          "purple",
+          "red",
+          "white",
+          "yellow"
+        ]
+      },
+      { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    ],
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-{color}", "stackSize": 16 }
+  },
+  {
+    "code": "marking-chalk-dye-woad",
+    "sealHours": 0,
+    "ingredients": [
+      { "type": "item", "code": "game:dye-woad", "litres": 1, "consumelitres": 1 },
+      { "type": "item", "code": "ghaelentweaks:marking-chalk-white", "quantity": 16 }
+    ],
+    "output": { "type": "item", "code": "ghaelentweaks:marking-chalk-blue", "stackSize": 16 }
+  }
+]

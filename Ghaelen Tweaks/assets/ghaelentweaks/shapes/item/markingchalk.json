@@ -1,0 +1,28 @@
+{
+  "editor": {
+    "allAngles": false,
+    "singleTexture": false
+  },
+  "textureWidth": 16,
+  "textureHeight": 16,
+  "textures": {
+    "material": "item/markingchalk/white"
+  },
+  "elements": [
+    {
+      "name": "chalk",
+      "from": [ 3.0, 0.0, 6.5 ],
+      "to": [ 13.0, 2.0, 9.5 ],
+      "rotationOrigin": [ 8.0, 1.0, 8.0 ],
+      "rotationY": -28.0,
+      "faces": {
+        "north": { "texture": "#material", "uv": [ 2.0, 6.0, 14.0, 9.0 ] },
+        "east": { "texture": "#material", "uv": [ 12.0, 6.0, 15.0, 9.0 ] },
+        "south": { "texture": "#material", "uv": [ 2.0, 9.0, 14.0, 12.0 ] },
+        "west": { "texture": "#material", "uv": [ 1.0, 6.0, 4.0, 9.0 ] },
+        "up": { "texture": "#material", "uv": [ 2.0, 3.0, 14.0, 6.0 ] },
+        "down": { "texture": "#material", "uv": [ 2.0, 12.0, 14.0, 15.0 ] }
+      }
+    }
+  ]
+}

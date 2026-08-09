@@ -118,6 +118,32 @@
       "comment": "ghaelentweaks:setting-display-case-stacking-comment",
       "default": true,
       "sortingWeight": 11
+    },
+    {
+      "type": "number",
+      "code": "marking-chalk-uses",
+      "ingui": "ghaelentweaks:setting-marking-chalk-uses",
+      "comment": "ghaelentweaks:setting-marking-chalk-uses-comment",
+      "default": 32,
+      "range": {
+        "min": 1,
+        "max": 512,
+        "step": 1
+      },
+      "sortingWeight": 12
+    },
+    {
+      "type": "number",
+      "code": "marking-chalk-dye-batch-size",
+      "ingui": "ghaelentweaks:setting-marking-chalk-dye-batch-size",
+      "comment": "ghaelentweaks:setting-marking-chalk-dye-batch-size-comment",
+      "default": 16,
+      "range": {
+        "min": 1,
+        "max": 64,
+        "step": 1
+      },
+      "sortingWeight": 13
     }
   ]
 }

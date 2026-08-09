@@ -53,6 +53,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		api.RegisterCollectibleBehaviorClass(
 			"BetterRuinsBlueprintReading",
 			typeof(CollectibleBehaviorBetterRuinsBlueprintReading));
+		api.RegisterItemClass("ItemMarkingChalk", typeof(ItemMarkingChalk));
 		api.RegisterEntityBehaviorClass("catloreguardian", typeof(EntityBehaviorCatLoreGuardian));
 
 		LoadConfig(api);
@@ -115,16 +116,17 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 	//// Applies configuration-dependent recipe state after Vintage Story has
 	//// loaded and resolved recipes.
 	////
-	//// The tule handbasket recipe is declared as a normal JSON patch so it can
-	//// use the vanilla recipe loader. Once recipes exist in the world
-	//// registry, this hook applies the mod config to the recipe's runtime
-	//// Enabled flag without changing vanilla cattail or papyrus recipes.
+	//// The tule handbasket and marking chalk recipes are declared as normal
+	//// JSON content so they can use the vanilla recipe loader. Once recipes
+	//// exist in the world registry, this hook applies the mod config to the
+	//// recipe runtime state.
 	////
 	public override void AssetsFinalize(ICoreAPI api)
 	{
 		base.AssetsFinalize(api);
 
 		ApplyTuleHandbasketRecipeSetting(api);
+		MarkingChalkRecipeSettings.Apply(api);
 	}
 
 
@@ -254,6 +256,16 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 					tree.GetBool("value", GhaelenTweaksConfig.Current.DisplayCaseStacking);
 				break;
 
+			case "marking-chalk-uses":
+				GhaelenTweaksConfig.Current.MarkingChalkUses =
+					tree.GetInt("value", GhaelenTweaksConfig.Current.MarkingChalkUses);
+				break;
+
+			case "marking-chalk-dye-batch-size":
+				GhaelenTweaksConfig.Current.MarkingChalkDyeBatchSize =
+					tree.GetInt("value", GhaelenTweaksConfig.Current.MarkingChalkDyeBatchSize);
+				break;
+
 			default:
 				changed = false;
 				break;
@@ -266,6 +278,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 			if (api != null)
 			{
 				ApplyTuleHandbasketRecipeSetting(api);
+				MarkingChalkRecipeSettings.Apply(api);
 
 				if (settingCode == "betterruins-blueprint-learning")
 				{

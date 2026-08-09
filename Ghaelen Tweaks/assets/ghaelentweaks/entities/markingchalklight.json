@@ -1,0 +1,13 @@
+{
+  "code": "markingchalklight",
+  "class": "EntityMarkingChalkLight",
+  "tags": [ "inanimate" ],
+  "hitboxSize": { "x": 0.01, "y": 0.01 },
+  "client": {
+    "renderer": "Dummy",
+    "behaviors": []
+  },
+  "server": {
+    "behaviors": []
+  }
+}

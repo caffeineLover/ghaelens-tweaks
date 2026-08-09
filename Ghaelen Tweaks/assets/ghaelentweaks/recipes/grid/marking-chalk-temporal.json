@@ -1,0 +1,122 @@
+[
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-white" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-white",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-white" }
+  },
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-black" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-black",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-black" }
+  },
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-blue" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-blue",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-blue" }
+  },
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-gray" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-gray",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-gray" }
+  },
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-green" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-green",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-green" }
+  },
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-orange" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-orange",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-orange" }
+  },
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-pink" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-pink",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-pink" }
+  },
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-purple" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-purple",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-purple" }
+  },
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-red" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-red",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-red" }
+  },
+  {
+    "ingredientPattern": "CG",
+    "ingredients": {
+      "C": { "type": "item", "code": "ghaelentweaks:marking-chalk-yellow" },
+      "G": { "type": "item", "code": "game:gear-temporal" }
+    },
+    "name": "ghaelentweaks:marking-chalk-temporal-yellow",
+    "width": 2,
+    "height": 1,
+    "shapeless": true,
+    "output": { "type": "item", "code": "ghaelentweaks:temporal-marking-chalk-yellow" }
+  }
+]

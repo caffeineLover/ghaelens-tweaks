@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.4.8` fixes the marking chalk top-face up/down rotation reversal.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.4.9` adds marking chalk full-face paint, temporal glow variants, and crisper ladder art.
 
 ## Active work
 
-No active implementation work is currently in progress. The latest completed source change orients floor and ceiling marking chalk arrows from the clicked camera ray and uses the documented surfacelayer rotation formula for horizontal faces.
+No active implementation work is currently in progress. The latest completed source change adds full-face paint marks and temporal marking chalk light markers while keeping the corrected floor and ceiling arrow orientation from `0.4.8`.
 
 ## Durable technical knowledge
 
@@ -27,9 +27,9 @@ No active implementation work is currently in progress. The latest completed sou
 - The palisade damage config toggle is `enable-palisade-damage-to-hostiles`; despite the concise setting name, the affected entities are lore creatures plus charging adult bears, wolves, and hyenas.
 - Cat Lore Warning only applies cat glow and yowl warning behavior. Ghaelen Tweaks does not cancel cat damage and no longer has a `cat-impervious-to-lore-creatures` config setting.
 - Vintage Story Reference `1.22.3` PetAI `5.1.1` defaults `PetConfig.FalldamageOff` to `true`, and `EntityBehaviorTameable.OnEntityReceiveDamage` cancels `EnumDamageSource.Fall` damage for tameable entities while that PetAI config is enabled. Cats `5.0.1` and WolfTaming `5.0.1` attach the `tameable` behavior and do not add their own fall-damage override, so tamed cats and dogs inherit PetAI's default fall-damage immunity unless `petconfig.json` turns it off.
-- Marking chalk uses `ItemMarkingChalk` in `src/Items/ItemMarkingChalk.cs`. It places `ghaelentweaks:markingchalk-{color}-{col}-{row}` decor blocks with `IBlockAccessor.SetDecor(..., blockSel.ToDecorIndex())`, so the target block remains unchanged and the adjacent block space is not occupied.
+- Marking chalk uses `ItemMarkingChalk` in `src/Items/ItemMarkingChalk.cs`. It places `ghaelentweaks:markingchalk-{color}-{col}-{row}` decor blocks with `IBlockAccessor.SetDecor(..., blockSel.ToDecorIndex())`, so the target block remains unchanged and the adjacent block space is not occupied. Paint-face mode instead places `ghaelentweaks:markingchalk-paint-{color}` with `new DecorBits(blockSel.Face)` to fill the clicked face as decor.
 - Marking chalk is stackable while sticks are fresh. A partially used stick stores its remaining uses in stack attribute `markingChalkUsesLeft` and is split into a one-item stack so the fresh remainder is not visually or mechanically treated as partially used. If inventory cannot accept the fresh remainder during the split, it drops near the player.
-- Marking chalk mode selection uses stack attribute `markingChalkMode`. Current modes are arrow up, arrow right, arrow down, arrow left, X, dot, ladder, stairs, danger, and exit. Wall arrow modes map to `col`/`row` spritesheet cells directly; right and left modes intentionally map to the opposite-looking source cells because in-game surfacelayer rendering mirrors horizontal arrows on tested wall faces. Floor and ceiling arrow modes use the up-arrow cell plus `DecorBits.Rotation` derived from the player's actual forward direction, because top/bottom face UV axes are fixed to world directions and made arrow-left look like arrow-up in the 2026-08-09 `0.4.4` local test.
+- Marking chalk mode selection uses stack attribute `markingChalkMode`. Current modes are arrow up, arrow right, arrow down, arrow left, X, dot, ladder, stairs, danger, exit, erase, and paint face. Wall arrow modes map to `col`/`row` spritesheet cells directly; right and left modes intentionally map to the opposite-looking source cells because in-game surfacelayer rendering mirrors horizontal arrows on tested wall faces. Floor and ceiling arrow modes use the up-arrow cell plus `DecorBits.Rotation` derived from the player's actual forward direction, because top/bottom face UV axes are fixed to world directions and made arrow-left look like arrow-up in the 2026-08-09 `0.4.4` local test.
 - For marking chalk floor and ceiling arrows, derive the player's actual forward direction from the horizontal
   eye-to-hit vector when possible. Fall back to `BlockFacing.HorizontalFromYaw(byEntity.Pos.Yaw).Opposite` only for
   near-vertical clicks. The first `0.4.5` local test showed `HorizontalFromYaw(...)` itself produced a 180-degree
@@ -40,7 +40,10 @@ No active implementation work is currently in progress. The latest completed sou
   `DecorBits.Rotation` becomes `SurfaceLayerTesselator`'s `decorRotationData`. The rejected top-face formula
   `desiredFacing.HorizontalAngleIndex + 1` produces the same rotations for east/west but swaps north/south, explaining
   why the `0.4.7` local test had right/left correct while up/down were reversed.
-- Marking chalk erase mode is the last tool mode so existing saved draw-mode indices keep their meaning. Shift/crouch right-click also erases regardless of the selected draw mode. Successful erasing searches nearby sub-face decor cells on the clicked face, calls exact `BreakDecor(..., decorIndex)` only for `ghaelentweaks:markingchalk-*` decor, and restores one active-stick use capped at the configured maximum.
+- Marking chalk erase mode remains at its original index so existing saved draw-mode indices keep their meaning; paint-face mode is appended after it. Shift/crouch right-click also erases regardless of the selected draw mode. Successful erasing searches nearby sub-face decor cells on the clicked face, calls exact `BreakDecor(..., decorIndex)` only for `ghaelentweaks:markingchalk-*` decor, and restores the erased mark's use cost capped at the configured maximum. If no nearby glyph is found, erase falls back to face-only paint decor on the clicked face.
+- Paint-face mode costs 4 uses by default, capped to the configured maximum when `marking-chalk-uses` is below 4. Erasing a paint-face mark refunds the same capped cost.
+- Temporal marking chalk is a separate item family `temporal-marking-chalk-{color}` made by crafting matching marking chalk with `game:gear-temporal`. Temporal glyphs use `markingchalk-temporal-{color}-{col}-{row}` decor and temporal paint uses `markingchalk-paint-temporal-{color}` decor.
+- Temporal marking chalk decor has glow vertex flags for the visible overlay, but actual level-2 colored light is supplied by hidden `EntityMarkingChalkLight` entities. Vintage Story Reference `1.22.3` shows `SetDecor(...)` marks chunk decor dirty, not the normal block-light placement path, so the hidden entity is the persistent light source and self-removes if its temporal decor is gone.
 - Marking chalk surfacelayer art follows vanilla cave art: one 96x96 spritesheet per color, with `col` and `row` block variants selecting a 16x16 cell. Standalone per-symbol surfacelayer textures rendered as filled squares during the first in-game test.
 - Marking chalk placement removes older Ghaelen Tweaks chalk decor in the same face subcell but with a different rotation after a successful placement. Decor rotation is part of the storage key, so this prevents rotated floor/ceiling redraws from stacking multiple marks in one subcell.
 - Marking chalk valid surfaces are intentionally narrow: solid Stone/Ore/Brick material faces, trunk/log-like Wood paths beginning `log-`, `logsection-`, `logquad-`, or `lognarrow-`, and prepared Soil paths beginning `packeddirt`, `drypackeddirt`, or `rammed-`.
@@ -91,7 +94,9 @@ No active implementation work is currently in progress. The latest completed sou
 
 ## Known failed approaches
 
-None recorded yet.
+- Do not rely on `lightHsvByType` alone for temporal marking chalk decor. Decor placement through `SetDecor(...)`
+  renders the overlay but does not behave like placing a normal light-emitting block, so `0.4.9` uses hidden dynamic
+  light entities tied to temporal decor entries.
 
 ## Bugs, risks, and limitations
 
@@ -137,7 +142,8 @@ None recorded yet.
 - `Ghaelen Tweaks/Ghaelen Tweaks.csproj`: C# mod project.
 - `Ghaelen Tweaks/src/GhaelenTweaksModSystem.cs`: main mod system registration and lifecycle.
 - `Ghaelen Tweaks/src/Configuration/GhaelenTweaksConfig.cs`: mod configuration model.
-- `Ghaelen Tweaks/src/Items/ItemMarkingChalk.cs`: marking chalk item behavior for preset glyph placement, tool modes, surface filtering, and stackable use tracking.
+- `Ghaelen Tweaks/src/Items/ItemMarkingChalk.cs`: marking chalk item behavior for preset glyph placement, paint-face placement, temporal light marker spawning, tool modes, surface filtering, and stackable use tracking.
+- `Ghaelen Tweaks/src/Entities/EntityMarkingChalkLight.cs`: invisible persistent dynamic-light marker used by temporal marking chalk decor.
 - `Ghaelen Tweaks/src/Systems/MarkingChalkRecipeSettings.cs`: applies configured marking chalk dye batch size to resolved grid and barrel recipes.
 - `Ghaelen Tweaks/src/BetterRuins/BetterRuinsBlueprintKnowledge.cs`: server persistence and client sync for learned Better Ruins schematic codes.
 - `Ghaelen Tweaks/src/BetterRuins/BetterRuinsBlueprintRecipePatches.cs`: Harmony patches for virtual learned schematic recipe matching and consumption.
@@ -150,8 +156,13 @@ None recorded yet.
 - `Ghaelen Tweaks/assets/ghaelentweaks/recipes/grid/clutter-barricade-recycling.json`: explicit axe/saw grid recipes for clutter barricade variants.
 - `Ghaelen Tweaks/assets/ghaelentweaks/recipes/grid/clutter-wood-recycling.json`: explicit axe/saw grid recipes for wood rubble, ruined tables, stacked small crates, large crates with rot, and chest rubble.
 - `Ghaelen Tweaks/assets/ghaelentweaks/recipes/grid/marking-chalk.json`: plain marking chalk recipe and bowl dyeing recipes.
+- `Ghaelen Tweaks/assets/ghaelentweaks/recipes/grid/marking-chalk-temporal.json`: temporal gear recipes for temporal marking chalk.
 - `Ghaelen Tweaks/assets/ghaelentweaks/recipes/barrel/marking-chalk.json`: barrel dyeing recipes for marking chalk.
 - `Ghaelen Tweaks/assets/ghaelentweaks/blocktypes/overlay/marking-chalk.json`: hidden surfacelayer decor blocks for placed marking chalk glyphs.
+- `Ghaelen Tweaks/assets/ghaelentweaks/blocktypes/overlay/marking-chalk-temporal.json`: temporal glyph decor variants.
+- `Ghaelen Tweaks/assets/ghaelentweaks/blocktypes/overlay/marking-chalk-paint.json`: full-face paint decor variants.
+- `Ghaelen Tweaks/assets/ghaelentweaks/blocktypes/overlay/marking-chalk-paint-temporal.json`: temporal full-face paint decor variants.
+- `Ghaelen Tweaks/assets/ghaelentweaks/entities/markingchalklight.json`: hidden entity type backing temporal chalk light.
 - `Ghaelen Tweaks/docs/MARKING_CHALK.md`: living marking chalk design and implementation note.
 - `Ghaelen Tweaks/assets/ghaelentweaks/patches/betterruins-blueprint-learning.json`: conditional Better Ruins schematic item behavior patch.
 - `Ghaelen Tweaks/assets/survival/patches/tule-handbasket.json`: appends a handbasket recipe named `tule-handbasket` using `thatch` in the vanilla handbasket pattern.
@@ -183,6 +194,11 @@ None recorded yet.
 - The first `0.4.7` local test showed up/down were reversed while right/left were correct. Vintage Story Reference
   research showed the previous top-face rotation formula matched the corrected formula for east/west only, but inverted
   north/south. Release `0.4.8` uses `GameMath.Mod(1 - desiredFacing.HorizontalAngleIndex, 4)` for horizontal faces.
+- Release `0.4.9` adds paint-face mode, temporal marking chalk, and crisper ladder art. Paint-face mode uses face-only
+  `DecorBits` and costs 4 uses, capped to the configured maximum when the stick's max uses is lower. Temporal marking
+  chalk uses separate temporal decor block families plus hidden `EntityMarkingChalkLight` entities because Vintage
+  Story Reference `1.22.3` shows `SetDecor(...)` only marks chunk decor dirty and does not reliably trigger normal
+  block-light placement.
 - Removed `EntityBehaviorCatLoreGuardian.OnEntityReceiveDamage`, so Ghaelen Tweaks no longer cancels cat fall damage or lore-creature damage. The cat behavior still applies proximity glow on the client and warning yowls on the server.
 - Removed the `cat-impervious-to-lore-creatures` config property, Config Lib setting, English language labels, and README player-facing documentation. Added an Unreleased changelog entry for the removed immunity guardrail.
 - Researched Vintage Story Reference `1.22.3` PetAI `5.1.1`, Cats `5.0.1`, and WolfTaming `5.0.1`: PetAI loads/stores `petconfig.json`, defaults `FalldamageOff = true`, and cancels fall damage in `EntityBehaviorTameable.OnEntityReceiveDamage`; Cats and WolfTaming attach `tameable` and do not override that fall-damage path.

@@ -1,0 +1,37 @@
+{
+  "code": "temporal-marking-chalk",
+  "class": "ItemMarkingChalk",
+  "variantgroups": [
+    {
+      "code": "color",
+      "states": [
+        "white",
+        "black",
+        "blue",
+        "gray",
+        "green",
+        "orange",
+        "pink",
+        "purple",
+        "red",
+        "yellow"
+      ]
+    }
+  ],
+  "creativeinventory": {
+    "general": [ "*" ],
+    "items": [ "*" ]
+  },
+  "maxstacksize": 64,
+  "shape": { "base": "item/markingchalk" },
+  "textures": {
+    "material": { "base": "item/markingchalk/{color}" }
+  },
+  "attributes": {
+    "displaycaseable": true,
+    "shelvable": true,
+    "handbook": {
+      "groupBy": [ "temporal-marking-chalk-*" ]
+    }
+  }
+}

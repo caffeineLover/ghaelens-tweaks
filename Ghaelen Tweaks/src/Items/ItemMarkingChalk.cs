@@ -24,9 +24,17 @@ public sealed class ItemMarkingChalk : Item
 	private const string ModeAttribute = "markingChalkMode";
 	private const string UsesLeftAttribute = "markingChalkUsesLeft";
 	private const string MarkingChalkDecorPrefix = "markingchalk-";
+	private const string TemporalMarkingChalkItemPrefix = "temporal-marking-chalk-";
+	private const string TemporalMarkingChalkDecorPrefix = "markingchalk-temporal-";
+	private const string MarkingChalkPaintDecorPrefix = "markingchalk-paint-";
+	private const string TemporalMarkingChalkPaintDecorPrefix = "markingchalk-paint-temporal-";
 	private const string ArrowUpCellVariant = "1-1";
+	private const int FullFacePaintUseCost = 4;
+	private const int TemporalChalkLightLevel = 2;
 	private const int EraseSearchRadius = 2;
 	private static readonly AssetLocation DrawSound = new("game", "sounds/player/chalkdraw");
+	private static readonly AssetLocation MarkingChalkLightEntityCode =
+		new("ghaelentweaks", EntityMarkingChalkLight.EntityCodePath);
 	private SkillItem[] toolModes = Array.Empty<SkillItem>();
 
 	private static readonly MarkingChalkMode[] ModeDefinitions =
@@ -63,7 +71,14 @@ public sealed class ItemMarkingChalk : Item
 		new("stairs", "2-2", "ghaelentweaks:marking-chalk-mode-stairs", "markingchalk-stairs.svg"),
 		new("danger", "3-2", "ghaelentweaks:marking-chalk-mode-danger", "markingchalk-danger.svg"),
 		new("exit", "4-2", "ghaelentweaks:marking-chalk-mode-exit", "markingchalk-exit.svg"),
-		new("erase", null, "ghaelentweaks:marking-chalk-mode-erase", "markingchalk-erase.svg", true)
+		new("erase", null, "ghaelentweaks:marking-chalk-mode-erase", "markingchalk-erase.svg", true),
+		new(
+			"paint-face",
+			null,
+			"ghaelentweaks:marking-chalk-mode-paint-face",
+			"markingchalk-paint-face.svg",
+			PaintsFullFace: true,
+			UseCost: FullFacePaintUseCost)
 	};
 
 
@@ -166,9 +181,10 @@ public sealed class ItemMarkingChalk : Item
 		IBlockAccessor blockAccessor = byEntity.World.BlockAccessor;
 		if (ShouldErase(byEntity, slot.Itemstack))
 		{
-			if (TryEraseMark(blockAccessor, blockSel))
+			if (TryEraseMark(blockAccessor, blockSel, out ErasedMark erasedMark))
 			{
-				RestoreUse(slot, byPlayer);
+				RemoveTemporalLightMarker(byEntity.World, blockSel.Position, erasedMark.DecorIndex);
+				RestoreUses(slot, byPlayer, GetRefundUseCost(erasedMark.DecorBlock));
 				PlayChalkSound(byEntity, blockSel, byPlayer);
 			}
 
@@ -184,6 +200,15 @@ public sealed class ItemMarkingChalk : Item
 		}
 
 		MarkingChalkMode mode = GetSelectedMode(slot.Itemstack);
+		int useCost = GetUseCost(mode);
+		if (GetUsesLeft(slot.Itemstack) < useCost)
+		{
+			(byPlayer as IServerPlayer)?.SendIngameError(
+				"markingchalk-not-enough-uses",
+				Lang.Get("ghaelentweaks:marking-chalk-not-enough-uses", useCost));
+			return;
+		}
+
 		Block? decorBlock = ResolveDecorBlock(byEntity, slot.Itemstack, blockSel, mode);
 		if (decorBlock == null)
 		{
@@ -197,8 +222,22 @@ public sealed class ItemMarkingChalk : Item
 			return;
 		}
 
+		foreach (int staleDecorIndex in staleDecorIndexes ?? Enumerable.Empty<int>())
+		{
+			RemoveTemporalLightMarker(byEntity.World, blockSel.Position, staleDecorIndex);
+		}
+
+		if (IsTemporalChalk(slot.Itemstack))
+		{
+			SpawnTemporalLightMarker(byEntity.World, blockSel, decorIndex, GetChalkColor(slot.Itemstack));
+		}
+		else
+		{
+			RemoveTemporalLightMarker(byEntity.World, blockSel.Position, decorIndex);
+		}
+
 		RemoveDecorIndexes(blockAccessor, blockSel.Position, staleDecorIndexes);
-		ConsumeUse(slot, byPlayer);
+		ConsumeUses(slot, byPlayer, useCost);
 		PlayChalkSound(byEntity, blockSel, byPlayer);
 	}
 
@@ -299,17 +338,18 @@ public sealed class ItemMarkingChalk : Item
 		BlockSelection blockSel,
 		MarkingChalkMode mode)
 	{
-		string color = itemStack.Collectible.Variant.TryGetValue("color", out string? colorVariant)
-			? colorVariant
-			: "white";
+		string color = GetChalkColor(itemStack);
+		string blockPathPrefix = ResolveDecorBlockPathPrefix(itemStack, mode);
 
 		string? cell = ResolveDecorCellVariant(blockSel, mode);
-		if (cell == null)
+		if (cell == null && !mode.PaintsFullFace)
 		{
 			return null;
 		}
 
-		AssetLocation blockCode = new("ghaelentweaks", $"markingchalk-{color}-{cell}");
+		AssetLocation blockCode = mode.PaintsFullFace
+			? new AssetLocation("ghaelentweaks", $"{blockPathPrefix}{color}")
+			: new AssetLocation("ghaelentweaks", $"{blockPathPrefix}{color}-{cell}");
 
 		Block? block = byEntity.World.GetBlock(blockCode);
 		if (block == null || block.IsMissing)
@@ -323,6 +363,25 @@ public sealed class ItemMarkingChalk : Item
 
 
 
+	//// Resolves the decor block family used by ordinary, temporal, and
+	//// full-face chalk marks.
+	////
+	private static string ResolveDecorBlockPathPrefix(ItemStack itemStack, MarkingChalkMode mode)
+	{
+		if (mode.PaintsFullFace)
+		{
+			return IsTemporalChalk(itemStack)
+				? TemporalMarkingChalkPaintDecorPrefix
+				: MarkingChalkPaintDecorPrefix;
+		}
+
+		return IsTemporalChalk(itemStack)
+			? TemporalMarkingChalkDecorPrefix
+			: MarkingChalkDecorPrefix;
+	}
+
+
+
 	//// Resolves the actual spritesheet cell needed for the selected face.
 	////
 	//// Wall marks use the tested cells directly.  Floors and ceilings use the
@@ -332,6 +391,11 @@ public sealed class ItemMarkingChalk : Item
 	////
 	private static string? ResolveDecorCellVariant(BlockSelection blockSel, MarkingChalkMode mode)
 	{
+		if (mode.PaintsFullFace)
+		{
+			return null;
+		}
+
 		return IsFloorOrCeilingFace(blockSel.Face) && mode.ArrowDirection != MarkingChalkArrowDirection.None
 			? ArrowUpCellVariant
 			: mode.CellVariant;
@@ -348,6 +412,11 @@ public sealed class ItemMarkingChalk : Item
 	////
 	private static int ResolveDecorIndex(EntityAgent byEntity, BlockSelection blockSel, MarkingChalkMode mode)
 	{
+		if (mode.PaintsFullFace)
+		{
+			return new DecorBits(blockSel.Face);
+		}
+
 		DecorBits decorBits = new(blockSel.ToDecorIndex());
 		if (!IsFloorOrCeilingFace(blockSel.Face) || mode.ArrowDirection == MarkingChalkArrowDirection.None)
 		{
@@ -496,8 +565,10 @@ public sealed class ItemMarkingChalk : Item
 	//// subcells and removes only Ghaelen Tweaks chalk decor, leaving other
 	//// mods' decor and vanilla cave art untouched.
 	////
-	private static bool TryEraseMark(IBlockAccessor blockAccessor, BlockSelection blockSel)
+	private static bool TryEraseMark(IBlockAccessor blockAccessor, BlockSelection blockSel, out ErasedMark erasedMark)
 	{
+		erasedMark = default;
+
 		Dictionary<int, Block>? decors = blockAccessor.GetSubDecors(blockSel.Position);
 		if (decors == null || decors.Count == 0)
 		{
@@ -507,12 +578,22 @@ public sealed class ItemMarkingChalk : Item
 		int targetSubPosition = new DecorBits(blockSel.ToDecorIndex()).SubPosition;
 		int bestDistance = int.MaxValue;
 		int? bestDecorIndex = null;
+		Block? bestDecorBlock = null;
+		int? fallbackPaintDecorIndex = null;
+		Block? fallbackPaintDecorBlock = null;
 
 		foreach ((int decorIndex, Block decorBlock) in decors)
 		{
 			DecorBits decorBits = new(decorIndex);
 			if (decorBits.Face != blockSel.Face.Index || !IsMarkingChalkDecor(decorBlock))
 			{
+				continue;
+			}
+
+			if (decorBits.SubPosition == 0 && IsPaintMarkingChalkDecor(decorBlock))
+			{
+				fallbackPaintDecorIndex ??= decorIndex;
+				fallbackPaintDecorBlock ??= decorBlock;
 				continue;
 			}
 
@@ -524,10 +605,24 @@ public sealed class ItemMarkingChalk : Item
 
 			bestDistance = distance;
 			bestDecorIndex = decorIndex;
+			bestDecorBlock = decorBlock;
 		}
 
-		return bestDecorIndex.HasValue
-		       && blockAccessor.BreakDecor(blockSel.Position, blockSel.Face, bestDecorIndex.Value);
+		if (!bestDecorIndex.HasValue && fallbackPaintDecorIndex.HasValue)
+		{
+			bestDecorIndex = fallbackPaintDecorIndex;
+			bestDecorBlock = fallbackPaintDecorBlock;
+		}
+
+		if (!bestDecorIndex.HasValue
+		    || bestDecorBlock == null
+		    || !blockAccessor.BreakDecor(blockSel.Position, blockSel.Face, bestDecorIndex.Value))
+		{
+			return false;
+		}
+
+		erasedMark = new ErasedMark(bestDecorIndex.Value, bestDecorBlock);
+		return true;
 	}
 
 
@@ -542,6 +637,158 @@ public sealed class ItemMarkingChalk : Item
 		return code != null
 		       && code.Domain == "ghaelentweaks"
 		       && code.Path.StartsWith(MarkingChalkDecorPrefix, StringComparison.Ordinal);
+	}
+
+
+
+	//// Checks whether a decor block is a temporal chalk mark that should own
+	//// a hidden light marker.
+	////
+	internal static bool IsTemporalMarkingChalkDecor(Block decorBlock)
+	{
+		AssetLocation? code = decorBlock.Code;
+		if (code == null || code.Domain != "ghaelentweaks")
+		{
+			return false;
+		}
+
+		return code.Path.StartsWith(TemporalMarkingChalkDecorPrefix, StringComparison.Ordinal)
+		       || code.Path.StartsWith(TemporalMarkingChalkPaintDecorPrefix, StringComparison.Ordinal);
+	}
+
+
+
+	//// Checks whether a decor block is a full-face chalk paint mark.
+	////
+	private static bool IsPaintMarkingChalkDecor(Block decorBlock)
+	{
+		AssetLocation? code = decorBlock.Code;
+
+		return code != null
+		       && code.Domain == "ghaelentweaks"
+		       && code.Path.StartsWith(MarkingChalkPaintDecorPrefix, StringComparison.Ordinal);
+	}
+
+
+
+	//// Checks whether a held chalk stack belongs to the temporal item family.
+	////
+	private static bool IsTemporalChalk(ItemStack itemStack)
+	{
+		AssetLocation? code = itemStack.Collectible.Code;
+
+		return code != null
+		       && code.Domain == "ghaelentweaks"
+		       && code.Path.StartsWith(TemporalMarkingChalkItemPrefix, StringComparison.Ordinal);
+	}
+
+
+
+	//// Gets the color variant on a chalk stack, falling back to white for
+	//// malformed or legacy stacks.
+	////
+	private static string GetChalkColor(ItemStack itemStack)
+	{
+		return itemStack.Collectible.Variant.TryGetValue("color", out string? colorVariant)
+			? colorVariant
+			: "white";
+	}
+
+
+
+	//// Spawns the hidden marker entity that supplies dynamic colored light
+	//// for temporal chalk decor.
+	////
+	private static void SpawnTemporalLightMarker(
+		IWorldAccessor world,
+		BlockSelection blockSel,
+		int decorIndex,
+		string color)
+	{
+		if (world.Side != EnumAppSide.Server)
+		{
+			return;
+		}
+
+		RemoveTemporalLightMarker(world, blockSel.Position, decorIndex);
+
+		EntityProperties? entityType = world.GetEntityType(MarkingChalkLightEntityCode);
+		if (entityType == null)
+		{
+			world.Logger.Warning($"Missing marking chalk light entity type {MarkingChalkLightEntityCode}.");
+			return;
+		}
+
+		Entity entity = world.ClassRegistry.CreateEntity(entityType);
+		if (entity is not EntityMarkingChalkLight lightEntity)
+		{
+			world.Logger.Warning($"Entity type {MarkingChalkLightEntityCode} did not create a chalk light marker.");
+			return;
+		}
+
+		Vec3d position = ResolveTemporalLightPosition(blockSel);
+		lightEntity.Pos.SetPos(position.X, position.Y, position.Z);
+		lightEntity.PositionBeforeFalling.Set(position.X, position.Y, position.Z);
+		lightEntity.Configure(blockSel.Position, decorIndex, GetTemporalLightHsv(color));
+		world.SpawnEntity(lightEntity);
+	}
+
+
+
+	//// Removes any hidden temporal chalk light marker tied to the given decor
+	//// index.
+	////
+	private static void RemoveTemporalLightMarker(IWorldAccessor world, BlockPos targetPos, int decorIndex)
+	{
+		if (world.Side != EnumAppSide.Server)
+		{
+			return;
+		}
+
+		Vec3d searchPosition = targetPos.ToVec3d().Add(0.5, 0.5, 0.5);
+		foreach (Entity entity in world.GetEntitiesAround(
+			         searchPosition,
+			         2f,
+			         2f,
+			         candidate => candidate is EntityMarkingChalkLight lightEntity
+			                      && lightEntity.Matches(targetPos, decorIndex)))
+		{
+			entity.Die(EnumDespawnReason.Removed);
+		}
+	}
+
+
+
+	//// Places temporal light just outside the clicked face so the light reads
+	//// as coming from the chalk overlay.
+	////
+	private static Vec3d ResolveTemporalLightPosition(BlockSelection blockSel)
+	{
+		Vec3i normal = blockSel.Face.Normali;
+
+		return blockSel.FullPosition.AddCopy(
+			normal.X * 0.03,
+			normal.Y * 0.03,
+			normal.Z * 0.03);
+	}
+
+
+
+	//// Maps marking chalk color names to Vintage Story dynamic-light HSV.
+	////
+	private static byte[] GetTemporalLightHsv(string color)
+	{
+		return color switch
+		{
+			"blue" => new byte[] { 38, 7, TemporalChalkLightLevel },
+			"green" => new byte[] { 22, 7, TemporalChalkLightLevel },
+			"orange" => new byte[] { 4, 7, TemporalChalkLightLevel },
+			"pink" => new byte[] { 54, 5, TemporalChalkLightLevel },
+			"purple" => new byte[] { 46, 7, TemporalChalkLightLevel },
+			"red" => new byte[] { 0, 7, TemporalChalkLightLevel },
+			"yellow" => new byte[] { 10, 7, TemporalChalkLightLevel },
+			_ => new byte[] { 0, 0, TemporalChalkLightLevel }
+		};
 	}
 
 
@@ -681,14 +928,15 @@ public sealed class ItemMarkingChalk : Item
 
 
 
-	//// Consumes one configured chalk use from the active stick.
+	//// Consumes the selected mark's configured use cost from the active
+	//// stick.
 	////
 	//// Fresh sticks stay stackable until one is used.  The first partial use
 	//// splits a single stick into the active slot and moves the untouched
 	//// remainder elsewhere in the player inventory, so the visible use count
 	//// cannot appear to apply to every stick in the original stack.
 	////
-	private static void ConsumeUse(ItemSlot slot, IPlayer byPlayer)
+	private static void ConsumeUses(ItemSlot slot, IPlayer byPlayer, int useCost)
 	{
 		ItemStack? itemStack = slot.Itemstack;
 		if (itemStack == null)
@@ -696,7 +944,7 @@ public sealed class ItemMarkingChalk : Item
 			return;
 		}
 
-		int usesLeft = GetUsesLeft(itemStack) - 1;
+		int usesLeft = GetUsesLeft(itemStack) - Math.Max(1, useCost);
 		if (usesLeft <= 0)
 		{
 			slot.TakeOut(1);
@@ -754,12 +1002,12 @@ public sealed class ItemMarkingChalk : Item
 
 
 
-	//// Restores one use to the active stick after successfully erasing a mark.
+	//// Restores the erased mark's use cost to the active stick.
 	////
 	//// The refund is capped at the configured maximum so erasing old marks or
 	//// another player's marks cannot overfill a chalk stick.
 	////
-	private static void RestoreUse(ItemSlot slot, IPlayer byPlayer)
+	private static void RestoreUses(ItemSlot slot, IPlayer byPlayer, int restoredUses)
 	{
 		ItemStack? itemStack = slot.Itemstack;
 		if (itemStack == null)
@@ -774,7 +1022,7 @@ public sealed class ItemMarkingChalk : Item
 
 		int maxUses = GetMaxUses();
 		int usesLeft = GetUsesLeft(itemStack);
-		int restoredUsesLeft = usesLeft + 1;
+		int restoredUsesLeft = usesLeft + Math.Max(1, restoredUses);
 		if (restoredUsesLeft >= maxUses)
 		{
 			itemStack.Attributes.RemoveAttribute(UsesLeftAttribute);
@@ -790,6 +1038,29 @@ public sealed class ItemMarkingChalk : Item
 
 		itemStack.Attributes.SetInt(UsesLeftAttribute, restoredUsesLeft);
 		slot.MarkDirty();
+	}
+
+
+
+	//// Gets the use cost for a selected chalk mode.
+	////
+	//// The cost is capped at the configured maximum so very low-use configs
+	//// can still draw every available mark by spending the whole stick.
+	////
+	private static int GetUseCost(MarkingChalkMode mode)
+	{
+		return GameMath.Clamp(mode.UseCost, 0, GetMaxUses());
+	}
+
+
+
+	//// Gets the erase refund for a removed chalk decor block.
+	////
+	private static int GetRefundUseCost(Block decorBlock)
+	{
+		return IsPaintMarkingChalkDecor(decorBlock)
+			? GameMath.Clamp(FullFacePaintUseCost, 1, GetMaxUses())
+			: 1;
 	}
 
 
@@ -813,13 +1084,19 @@ public sealed class ItemMarkingChalk : Item
 		return Math.Max(1, GhaelenTweaksConfig.Current.MarkingChalkUses);
 	}
 
+
+
 	private readonly record struct MarkingChalkMode(
 		string Code,
 		string? CellVariant,
 		string LangCode,
 		string IconPath,
 		bool Erases = false,
-		MarkingChalkArrowDirection ArrowDirection = MarkingChalkArrowDirection.None);
+		MarkingChalkArrowDirection ArrowDirection = MarkingChalkArrowDirection.None,
+		bool PaintsFullFace = false,
+		int UseCost = 1);
+
+	private readonly record struct ErasedMark(int DecorIndex, Block DecorBlock);
 
 	private enum MarkingChalkArrowDirection
 	{

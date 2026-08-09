@@ -1,5 +1,23 @@
 # Releases
 
+## Version 0.4.9
+
+**Tag:** `v0.4.9`
+
+**Released:** 2026-08-09
+
+This release expands marking chalk with full-face paint marks, temporal glow variants, and a crisper ladder symbol.
+
+### Changes
+
+- Added paint-face mode for marking chalk. It paints the entire clicked face and costs 4 uses, or the whole stick when
+  `marking-chalk-uses` is configured below 4.
+- Added temporal marking chalk. Craft any marking chalk with a temporal gear to create a temporal variant whose placed
+  glyphs and paint marks emit level-2 colored light.
+- Tightened the ladder glyph so it reads more clearly on placed chalk marks.
+
+
+
 ## Version 0.4.8
 
 **Tag:** `v0.4.8`

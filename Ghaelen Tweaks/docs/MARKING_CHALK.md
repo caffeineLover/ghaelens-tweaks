@@ -1,6 +1,6 @@
 # Marking Chalk
 
-Status: Initial preset-mark implementation added; erase mode added.
+Status: Preset-mark implementation added; erase, paint-face, and temporal glow support added.
 
 This document tracks the proposed marking chalk tweak for Ghaelen Tweaks.
 
@@ -13,12 +13,14 @@ This document tracks the proposed marking chalk tweak for Ghaelen Tweaks.
 - Keep the first implementation based on preset glyphs, not freehand drawing or typed text.
 - Give each marking chalk item a fixed number of uses.
 - Expose marking chalk use count and dyeing batch size through Ghaelen Tweaks configuration.
+- Let players paint an entire valid block face when a compact symbol is not visible enough.
+- Let players spend a temporal gear to make marks that emit a small colored glow.
 
 ## Non-goals
 
 - Freehand drawing.
 - Arbitrary player-entered text.
-- Large paintings or decorative art sets beyond compact navigation marks.
+- Freeform large paintings or decorative art sets beyond navigation marks and simple full-face paint.
 - Changing the underlying marked block.
 
 ## Player Workflow
@@ -28,8 +30,13 @@ This document tracks the proposed marking chalk tweak for Ghaelen Tweaks.
 - The placed mark uses the same color as the held marking chalk.
 - The underlying block remains unchanged.
 - The mark should not occupy the adjacent block space and should not interfere with torches, ladders, supports, water, or mining.
-- Crouch or hold Shift while right-clicking a chalk mark to remove it and refund one use to the active chalk stick.
+- Crouch or hold Shift while right-clicking a chalk mark to remove it and refund its use cost to the active chalk stick.
 - Select the erase tool mode and right-click a chalk mark for the same erase behavior without holding Shift.
+- Select paint-face mode to color the entire clicked face. This costs 4 uses, or the whole stick when the configured
+  use count is below 4.
+- Erasing a full-face paint mark refunds the paint mark's use cost, capped at the configured maximum.
+- Craft any marking chalk with a temporal gear to create temporal marking chalk of the same color. Placed temporal
+  glyphs and paint marks emit level-2 colored light matching the chalk color.
 - The item is stackable while sticks are fresh. When a player first uses a stick from a stack, that stick splits into
   its own one-item stack and tracks only that stick's remaining uses.
 - If the player inventory cannot accept the untouched remainder during that split, the remainder drops near the player.
@@ -131,9 +138,11 @@ Initial glyph set:
 - Stairs.
 - Danger.
 - Exit marker.
+- Full-face paint.
 
 The tool-mode selector also includes an erase mode. Erase mode and Shift/crouch right-click both remove nearby marking
-chalk decor from the clicked face without affecting vanilla cave art or other decor.
+chalk decor from the clicked face without affecting vanilla cave art or other decor. Erasing refunds the removed mark's
+use cost to the active chalk stick, capped at the configured maximum.
 
 ## Orientation
 
@@ -147,7 +156,7 @@ direction relative to the player's facing at placement time: arrow up means forw
 right, arrow down means backward, and arrow left means the player's left.
 
 Non-directional symbols such as X, dot, ladder, stairs, danger, and exit avoid orientation ambiguity and should work on
-all valid faces.
+all valid faces. Full-face paint uses the clicked face directly and has no orientation.
 
 ## Technical Direction
 
@@ -163,6 +172,11 @@ Initial implementation:
 
 - Add a marking chalk item family with color variants.
 - Add a marking decor block family with color, column, and row variants matching vanilla cave-art surfacelayer cells.
+- Add a separate full-face paint decor family without column and row variants. It uses `new DecorBits(blockSel.Face)`
+  instead of `BlockSelection.ToDecorIndex()` so it fills the clicked face as decor without replacing the block.
+- Add a temporal marking chalk item family. Temporal glyph and paint decor use the same visible art plus glow vertex
+  flags, while a hidden `markingchalklight` entity supplies persistent level-2 colored dynamic light because
+  `SetDecor(...)` marks chunk decor dirty but does not reliably run the normal block-light placement path.
 - Default each marking chalk item to `32` uses, configurable through `marking-chalk-uses`.
 - Default dyeing recipes to a batch size of `16`, configurable through `marking-chalk-dye-batch-size`.
 - Use custom C# item behavior rather than vanilla `ArtPigment` so the item can choose a color-specific decor block,
@@ -188,9 +202,10 @@ Initial implementation:
   different rotation so redraws replace the old mark instead of stacking on top of it.
 - Use the same exact sub-face decor index path for erasing that placement uses for drawing. Erasing searches nearby
   subcells on the clicked face, removes only `ghaelentweaks:markingchalk-*` decor so players do not have to hit the
-  original placement cell perfectly, and refunds one active-stick use capped at the configured maximum.
+  original placement cell perfectly, and refunds the removed mark's use cost capped at the configured maximum. If no
+  nearby sub-face glyph is found, erasing falls back to full-face paint decor on the clicked face.
 
-The first implementation should include only the preset-mark behavior. Freehand mode is intentionally deferred.
+The implemented baseline remains preset-mark and decor based. Freehand mode is intentionally deferred.
 
 ## Freehand Drawing Assessment
 

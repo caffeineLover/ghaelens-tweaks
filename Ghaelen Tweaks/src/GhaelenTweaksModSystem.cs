@@ -54,6 +54,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 			"BetterRuinsBlueprintReading",
 			typeof(CollectibleBehaviorBetterRuinsBlueprintReading));
 		api.RegisterItemClass("ItemMarkingChalk", typeof(ItemMarkingChalk));
+		api.RegisterEntity("EntityMarkingChalkLight", typeof(EntityMarkingChalkLight));
 		api.RegisterEntityBehaviorClass("catloreguardian", typeof(EntityBehaviorCatLoreGuardian));
 
 		LoadConfig(api);

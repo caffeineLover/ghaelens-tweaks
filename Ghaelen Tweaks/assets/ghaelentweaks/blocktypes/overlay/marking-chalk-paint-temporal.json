@@ -1,0 +1,69 @@
+{
+  "code": "markingchalk-paint-temporal",
+  "behaviors": [
+    {
+      "name": "Decor",
+      "properties": {
+        "sides": [ "north", "east", "south", "west", "up", "down" ],
+        "thickness": 0.0
+      }
+    }
+  ],
+  "attributes": {
+    "handbook": {
+      "exclude": true
+    }
+  },
+  "vertexFlags": {
+    "zOffset": 1,
+    "glowLevel": 96
+  },
+  "renderpass": "Decor",
+  "lightHsvByType": {
+    "*-blue": [ 38, 7, 2 ],
+    "*-green": [ 22, 7, 2 ],
+    "*-orange": [ 4, 7, 2 ],
+    "*-pink": [ 54, 5, 2 ],
+    "*-purple": [ 46, 7, 2 ],
+    "*-red": [ 0, 7, 2 ],
+    "*-yellow": [ 10, 7, 2 ],
+    "*": [ 0, 0, 2 ]
+  },
+  "variantgroups": [
+    {
+      "code": "color",
+      "states": [
+        "white",
+        "black",
+        "blue",
+        "gray",
+        "green",
+        "orange",
+        "pink",
+        "purple",
+        "red",
+        "yellow"
+      ]
+    }
+  ],
+  "drawtype": "surfacelayer",
+  "doNotRenderAtLod2": true,
+  "randomizeRotations": false,
+  "shapeInventory": {
+    "base": "game:block/basic/layers/0voxel-up",
+    "rotateX": 90
+  },
+  "sidesolid": { "all": false },
+  "sideopaque": { "all": false },
+  "blockmaterial": "Cloth",
+  "replaceable": 5500,
+  "resistance": 0,
+  "lightAbsorption": 0,
+  "textures": {
+    "all": {
+      "base": "block/overlay/markingchalk/paint/{color}"
+    }
+  },
+  "drops": [],
+  "materialDensity": 400
+}

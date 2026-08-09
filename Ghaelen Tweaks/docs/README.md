@@ -94,9 +94,7 @@ Cats from the Cats mod can now warn you about nearby lore creatures.
 
 - Cats glow when a lore creature is nearby, with a stronger glow as the nearest lore creature gets closer.
 - Cats yowl when a lore creature first enters the configured warning radius.
-- Cats can be protected from lore-creature damage and fall damage.
 - From a player perspective:
-  - `cat-impervious-to-lore-creatures` controls lore-creature and fall-damage immunity.
   - `underground-radius-for-lore-glow` controls the underground glow radius; `0` disables underground glow.
   - `underground-radius-for-lore-yowl` controls the underground yowl radius; `0` disables underground yowl.
   - `above-ground-radius-for-lore-glow` controls the above-ground glow radius; `0` disables above-ground glow.

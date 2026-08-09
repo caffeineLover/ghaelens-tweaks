@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-08-07
+Last updated: 2026-08-09
 
 ## Project overview
 
@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. An unreleased handbook compatibility follow-up now patches A Culinary Artillery's simmer helper directly when ACA is loaded, so the dynamic clutter fuel sanitizer no longer depends only on vanilla handbook patch ordering.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Current unreleased work removes the Cat Lore Warning damage guardrail: guardian cats still glow and yowl near lore creatures, but Ghaelen Tweaks no longer adds its own cat fall-damage or lore-creature damage cancellation and no longer exposes `cat-impervious-to-lore-creatures`.
 
 ## Active work
 
-No active implementation work is currently in progress. The latest completed source change is the `0.3.8` hotfix for a Vintage Story `1.22.6` crash with `ghaelentweaks@0.3.7` and `aculinaryartillery@2.0.0-dev.16`, which prevents ACA's handbook simmer helper from seeing this mod's dynamic clutter fuels when ACA's own handbook prefix runs before the vanilla handbook fuel-list sanitizer.
+No active implementation work is currently in progress. The latest completed source change removes the Cat Lore Warning immunity guardrail while leaving glow and yowl warnings intact.
 
 ## Durable technical knowledge
 
@@ -25,6 +25,8 @@ No active implementation work is currently in progress. The latest completed sou
 - Vintage Story 1.22.3 `survival/recipes/grid/basket.json` uses the 3x2 pattern `L_L	LLL` or `P_P	PPP`, with quantity 2 per occupied slot, for cattail and papyrus handbaskets.
 - Vintage Story 1.22.3 `RecipeBase.Enabled` can be changed at runtime. `InventoryCraftingGrid` checks `gridRecipe.Enabled` before matching recipes, so the tule handbasket config toggles the patched recipe by setting that flag after assets finalize and on Config Lib events.
 - The palisade damage config toggle is `enable-palisade-damage-to-hostiles`; despite the concise setting name, the affected entities are lore creatures plus charging adult bears, wolves, and hyenas.
+- Cat Lore Warning only applies cat glow and yowl warning behavior. Ghaelen Tweaks does not cancel cat damage and no longer has a `cat-impervious-to-lore-creatures` config setting.
+- Vintage Story Reference `1.22.3` PetAI `5.1.1` defaults `PetConfig.FalldamageOff` to `true`, and `EntityBehaviorTameable.OnEntityReceiveDamage` cancels `EnumDamageSource.Fall` damage for tameable entities while that PetAI config is enabled. Cats `5.0.1` and WolfTaming `5.0.1` attach the `tameable` behavior and do not add their own fall-damage override, so tamed cats and dogs inherit PetAI's default fall-damage immunity unless `petconfig.json` turns it off.
 - For Vintage Story 1.22.4 research, the sibling Vintage Story Reference index contains BetterRuins `0.6.3` from Mod DB. Its `modinfo.json` declares `"type": "content"`, so there is no Better Ruins assembly to patch for blueprint behavior.
 - Better Ruins `0.6.3` defines reusable blueprint/schematic items in `assets/betterruins/itemtypes/betterruins/schematic.json` as `betterruins:br-schematic-{type}`. The variant list has 30 types: `door`, `bed`, `book`, `chest`, `crate`, `gaslamp`, `jonaslamp`, `banner`, `table`, `stone`, `wood`, `ancient`, `candle`, `road`, `jonaspart`, `jonasassembly`, `mechanical`, `roofing`, `textureflipper`, `palisade`, `farmer`, `shipwright`, `weaver`, `artisan`, `pipes`, `gravedigger`, `cartwright`, `alchemist`, `carpenter`, and `toymaker`.
 - Better Ruins schematic-gated recipes live under `assets/betterruins/recipes/grid/schematic-*/*.json`. A 2026-07-25 audit found 886 `br-schematic-*` recipe references and all checked references use `"consume": false`.
@@ -97,6 +99,7 @@ None recorded yet.
 - The post-`0.3.5` clutter-fuel handbook compatibility fix was verified with `dotnet build "Ghaelen Tweaks.sln"` on 2026-07-29. The solution build passed; the only warnings were existing CakeBuild NuGet advisory warnings.
 - Release `0.3.6` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, `dotnet build "Ghaelen Tweaks.sln"`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package` on 2026-07-29. The ZIP was created at `Releases/ghaelentweaks_0.3.6.zip`; its packaged `modinfo.json` was checked and contained version `0.3.6`, mod id `ghaelentweaks`, and game dependency `1.22.3`. The only warnings were existing CakeBuild NuGet advisory warnings and Git line-ending normalization warnings.
 - Release `0.3.8` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet build "Ghaelen Tweaks.sln"` on 2026-08-07. The whitespace check reported only the repository's existing CRLF normalization warnings. JSON validation and the solution build passed; the only build warnings were existing CakeBuild NuGet advisory warnings. The installed ACA `2.0.0-dev.16` DLL was inspected with a temporary `ilspycmd` tool install under `%TEMP%` to confirm the exact helper body and signature.
+- The 2026-08-09 cat immunity removal parsed `assets/game/lang/en.json` and `assets/ghaelentweaks/config/configlib-patches.json` with PowerShell `ConvertFrom-Json`. A targeted `rg` scan found no active source or asset references to `CatImpervious`, `cat-impervious`, `OnEntityReceiveDamage`, or `damage = 0`; `git diff --check` reported only the repository's existing CRLF normalization warnings. `dotnet build` was not run because explicit build permission was not given.
 
 ## Useful commands
 
@@ -125,6 +128,13 @@ None recorded yet.
 - `Ghaelen Tweaks/docs/CODEX_STATE.md`: older persistent session notes that may contain useful historical context.
 
 ## Session history
+
+### 2026-08-09
+
+- Removed `EntityBehaviorCatLoreGuardian.OnEntityReceiveDamage`, so Ghaelen Tweaks no longer cancels cat fall damage or lore-creature damage. The cat behavior still applies proximity glow on the client and warning yowls on the server.
+- Removed the `cat-impervious-to-lore-creatures` config property, Config Lib setting, English language labels, and README player-facing documentation. Added an Unreleased changelog entry for the removed immunity guardrail.
+- Researched Vintage Story Reference `1.22.3` PetAI `5.1.1`, Cats `5.0.1`, and WolfTaming `5.0.1`: PetAI loads/stores `petconfig.json`, defaults `FalldamageOff = true`, and cancels fall damage in `EntityBehaviorTameable.OnEntityReceiveDamage`; Cats and WolfTaming attach `tameable` and do not override that fall-damage path.
+- Verified edited JSON files parse with `ConvertFrom-Json`, verified no active source or asset references to the removed immunity setting remain with `rg`, and ran `git diff --check`; only the repository's existing CRLF normalization warnings were reported. Did not run `dotnet build` because the project notes require explicit build permission.
 
 ### 2026-08-07
 

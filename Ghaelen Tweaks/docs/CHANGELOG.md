@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Removed
+
+- Removed cat lore-creature and fall-damage immunity, including the `cat-impervious-to-lore-creatures` config and Config Lib setting. Cat glow and yowl warnings remain unchanged.
+
 ## 0.3.8 - 2026-08-07
 
 ### Fixed

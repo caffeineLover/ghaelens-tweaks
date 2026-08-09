@@ -21,12 +21,6 @@ public sealed class GhaelenTweaksConfig
 	////
 	public static GhaelenTweaksConfig Current { get; set; } = new();
 
-	//// Controls whether the cat guardian behavior cancels lore-creature and
-	//// fall damage.
-	////
-	[JsonProperty("cat-impervious-to-lore-creatures")]
-	public bool CatImperviousToLoreCreatures { get; set; } = true;
-
 	//// Sets the underground lore-creature detection radius used for cat glow.
 	////
 	[JsonProperty("underground-radius-for-lore-glow")]

@@ -1,7 +1,5 @@
 {
   "ghaelentweaks:blockhelp-make-stone-path": "Make stone path",
-  "ghaelentweaks:setting-cat-impervious-to-lore-creatures": "Cat impervious to lore creatures",
-  "ghaelentweaks:setting-cat-impervious-to-lore-creatures-comment": "Cats ignore lore-creature damage and fall damage.",
   "ghaelentweaks:setting-underground-radius-for-lore-glow": "Underground radius for lore glow",
   "ghaelentweaks:setting-underground-radius-for-lore-glow-comment": "Underground lore creature detection radius for cat glow. Set to 0 to disable.",
   "ghaelentweaks:setting-underground-radius-for-lore-yowl": "Underground radius for lore yowl",

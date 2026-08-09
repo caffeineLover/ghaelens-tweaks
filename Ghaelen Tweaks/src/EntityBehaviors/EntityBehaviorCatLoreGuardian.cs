@@ -4,9 +4,8 @@
  *
  * The behavior runs on both sides: the client side applies proximity-based
  * glow and light values, while the server side detects newly nearby lore
- * creatures and plays the warning yowl. It also cancels configured incoming
- * damage from lore creatures and falls so cats can safely act as warning
- * companions.
+ * creatures and plays the warning yowl. It does not change ordinary cat
+ * damage handling.
  */
 
 using Vintagestory.API.Common;
@@ -126,37 +125,6 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 
 			loreWasInYowlRange = loreIsInYowlRange;
 		}
-	}
-
-
-
-	//// Cancels configured damage that would make guardian cats unreliable as
-	//// lore-creature warning companions.
-	////
-	//// Vintage Story invokes this during damage processing. The behavior
-	//// cancels fall damage and damage attributed to lore creatures, then
-	//// clears the source entities so downstream damage handling does not keep
-	//// references to an attack that no longer applies.
-	////
-	public override void OnEntityReceiveDamage(DamageSource damageSource, ref float damage)
-	{
-		base.OnEntityReceiveDamage(damageSource, ref damage);
-
-		if (!GhaelenTweaksConfig.Current.CatImperviousToLoreCreatures)
-		{
-			return;
-		}
-
-		if (damageSource.Source != EnumDamageSource.Fall
-			&& !IsLoreCreature(damageSource.GetCauseEntity())
-			&& !IsLoreCreature(damageSource.SourceEntity))
-		{
-			return;
-		}
-
-		damage = 0;
-		damageSource.CauseEntity = null;
-		damageSource.SourceEntity = null;
 	}
 
 
@@ -316,15 +284,4 @@ public sealed class EntityBehaviorCatLoreGuardian : EntityBehavior
 
 
 
-	//// Delegates lore-creature classification to the shared entity predicate
-	//// helper.
-	////
-	//// Damage handling uses this wrapper to keep its source checks readable
-	//// while still sharing the same hacked-creature exclusions as the rest of
-	//// the mod.
-	////
-	private static bool IsLoreCreature(Entity? candidate)
-	{
-		return GhaelenTweaksEntityPredicates.IsLoreCreature(candidate);
-	}
 }

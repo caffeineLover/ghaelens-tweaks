@@ -199,11 +199,6 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		// silently mutating the wrong runtime option.
 		switch (settingCode)
 		{
-			case "cat-impervious-to-lore-creatures":
-				GhaelenTweaksConfig.Current.CatImperviousToLoreCreatures =
-					tree.GetBool("value", GhaelenTweaksConfig.Current.CatImperviousToLoreCreatures);
-				break;
-
 			case "underground-radius-for-lore-glow":
 				GhaelenTweaksConfig.Current.UndergroundRadiusForLoreGlow =
 					tree.GetFloat("value", GhaelenTweaksConfig.Current.UndergroundRadiusForLoreGlow);

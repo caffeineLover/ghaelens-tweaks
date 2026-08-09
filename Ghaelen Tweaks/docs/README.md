@@ -67,6 +67,7 @@ Marking chalk can now place colored navigation marks on mine and trail surfaces.
   - Erasing refunds one use to the active chalk stick, capped at the configured maximum.
   - Marking chalk works on solid stone, ore, brick, log/trunk, packed dirt, dry packed dirt, and rammed earth faces.
   - Each chalk stick has 32 uses by default, controlled by `marking-chalk-uses`.
+  - Using a stick from a stack splits the partially used stick away from the remaining fresh sticks.
   - Dye a batch of plain marking chalk with 1 L of vanilla dye in a barrel or with a fired bowl containing dye.
   - The dye batch size defaults to 16 and is controlled by `marking-chalk-dye-batch-size`.
   - `dye-woad` produces blue marking chalk.

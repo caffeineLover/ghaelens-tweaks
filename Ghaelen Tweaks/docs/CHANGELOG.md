@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 0.4.4 - 2026-08-09
+
+### Fixed
+
+- Replaced the marking chalk exit glyph with a simpler symmetric doorway marker for better in-game readability.
+- Fixed marking chalk stacks so the first partial use splits one active stick away from the fresh remainder instead of
+  showing the whole stack as partially used.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.3` to `0.4.4`.
+
 ## 0.4.3 - 2026-08-09
 
 ### Fixed

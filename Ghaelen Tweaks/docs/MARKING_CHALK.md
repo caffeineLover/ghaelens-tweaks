@@ -30,8 +30,9 @@ This document tracks the proposed marking chalk tweak for Ghaelen Tweaks.
 - The mark should not occupy the adjacent block space and should not interfere with torches, ladders, supports, water, or mining.
 - Crouch or hold Shift while right-clicking a chalk mark to remove it and refund one use to the active chalk stick.
 - Select the erase tool mode and right-click a chalk mark for the same erase behavior without holding Shift.
-- The item is stackable. A stack tracks the currently active stick's remaining uses; when that stick is exhausted, the
-  stack loses one item and the next stick starts fresh.
+- The item is stackable while sticks are fresh. When a player first uses a stick from a stack, that stick splits into
+  its own one-item stack and tracks only that stick's remaining uses.
+- If the player inventory cannot accept the untouched remainder during that split, the remainder drops near the player.
 
 Future direction: marking chalk should eventually behave like a prospecting pick with high-level tool modes. One mode
 places preset navigation marks as described in this initial spec. A second mode will support freehand drawing.
@@ -162,6 +163,8 @@ Initial implementation:
 - Default dyeing recipes to a batch size of `16`, configurable through `marking-chalk-dye-batch-size`.
 - Use custom C# item behavior rather than vanilla `ArtPigment` so the item can choose a color-specific decor block,
   track fixed uses, restrict surfaces to the agreed list, and reserve room for a future freehand mode.
+- Keep fresh marking chalk stackable, but split a partially used active stick away from the fresh remainder so the
+  remaining-use attribute never appears to apply to every stick in the original stack.
 - Adjust resolved grid and barrel dye recipe quantities at runtime so the batch size config affects both dyeing routes.
 - Store mark art as one 96x96 spritesheet per color and resolve tool modes to `col`/`row` decor variants. Vintage
   Story's `surfacelayer` decor path expects this cell-based format; standalone per-symbol textures rendered as filled
@@ -206,6 +209,3 @@ This is a different feature from decor-based preset marks and should not be part
 ## Open Questions
 
 - Whether black marking chalk should also be craftable directly from charcoal in addition to dyeing with `dye-black`.
-- Whether partially used chalk stacks need stricter split/merge behavior. The first implementation tracks uses on the
-  active stick in the stack, which keeps dyed chalk stackable but means a manually split partially used stack can copy
-  the active-stick use count.

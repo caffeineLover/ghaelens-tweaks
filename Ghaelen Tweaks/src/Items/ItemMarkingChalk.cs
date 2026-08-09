@@ -3,9 +3,9 @@
  *
  * Marking chalk places thin decor glyphs on valid solid block faces without
  * replacing the target block or occupying the neighboring block space. The
- * selected glyph is stored on the item stack like vanilla tool modes, while
- * the active stick's remaining uses are tracked as stack attributes so dyed
- * chalk can remain stackable.
+ * selected glyph is stored on the item stack like vanilla tool modes. Fresh
+ * chalk sticks can stack, while a stick that has been used is split into its
+ * own stack so its remaining-use attribute describes exactly one item.
  */
 
 using System.Text;
@@ -147,7 +147,7 @@ public sealed class ItemMarkingChalk : Item
 		{
 			if (TryEraseMark(blockAccessor, blockSel))
 			{
-				RestoreUse(slot);
+				RestoreUse(slot, byPlayer);
 				PlayChalkSound(byEntity, blockSel, byPlayer);
 			}
 
@@ -173,7 +173,7 @@ public sealed class ItemMarkingChalk : Item
 			return;
 		}
 
-		ConsumeUse(slot);
+		ConsumeUse(slot, byPlayer);
 		PlayChalkSound(byEntity, blockSel, byPlayer);
 	}
 
@@ -252,14 +252,15 @@ public sealed class ItemMarkingChalk : Item
 	{
 		base.GetHeldItemInfo(inSlot, dsc, world, withDebugInfo);
 
-		if (inSlot.Itemstack == null)
+		ItemStack? itemStack = inSlot.Itemstack;
+		if (itemStack == null || (itemStack.StackSize > 1 && !itemStack.Attributes.HasAttribute(UsesLeftAttribute)))
 		{
 			return;
 		}
 
 		dsc.AppendLine(Lang.Get(
 			"ghaelentweaks:marking-chalk-uses-left",
-			GetUsesLeft(inSlot.Itemstack),
+			GetUsesLeft(itemStack),
 			GetMaxUses()));
 	}
 
@@ -477,13 +478,14 @@ public sealed class ItemMarkingChalk : Item
 
 
 
-	//// Consumes one configured chalk use from the active stack.
+	//// Consumes one configured chalk use from the active stick.
 	////
-	//// The stack attribute represents the currently used stick. Once it
-	//// reaches zero, one item is removed and the remaining stack, if any,
-	//// starts a fresh stick with no use-count attribute.
+	//// Fresh sticks stay stackable until one is used.  The first partial use
+	//// splits a single stick into the active slot and moves the untouched
+	//// remainder elsewhere in the player inventory, so the visible use count
+	//// cannot appear to apply to every stick in the original stack.
 	////
-	private static void ConsumeUse(ItemSlot slot)
+	private static void ConsumeUse(ItemSlot slot, IPlayer byPlayer)
 	{
 		ItemStack? itemStack = slot.Itemstack;
 		if (itemStack == null)
@@ -496,13 +498,55 @@ public sealed class ItemMarkingChalk : Item
 		{
 			slot.TakeOut(1);
 			slot.Itemstack?.Attributes.RemoveAttribute(UsesLeftAttribute);
-		}
-		else
-		{
-			itemStack.Attributes.SetInt(UsesLeftAttribute, usesLeft);
+			slot.MarkDirty();
+			return;
 		}
 
+		if (itemStack.StackSize > 1)
+		{
+			SplitActiveUsedStick(slot, byPlayer, usesLeft);
+			return;
+		}
+
+		itemStack.Attributes.SetInt(UsesLeftAttribute, usesLeft);
 		slot.MarkDirty();
+	}
+
+
+
+	//// Splits one partially used chalk stick away from the untouched
+	//// remainder of a fresh stack.
+	////
+	//// The active slot keeps the used stick so the player can continue
+	//// drawing with the same selected mode.  The untouched remainder is placed
+	//// back in player inventory when possible, or dropped near the player when
+	//// no inventory slot can accept it.
+	////
+	private static void SplitActiveUsedStick(ItemSlot slot, IPlayer byPlayer, int usesLeft)
+	{
+		ItemStack? sourceStack = slot.Itemstack;
+		if (sourceStack == null || sourceStack.StackSize <= 1)
+		{
+			return;
+		}
+
+		ItemStack activeStick = sourceStack.Clone();
+		activeStick.StackSize = 1;
+		activeStick.Attributes.SetInt(UsesLeftAttribute, usesLeft);
+
+		ItemStack untouchedRemainder = sourceStack.Clone();
+		untouchedRemainder.StackSize = sourceStack.StackSize - 1;
+		untouchedRemainder.Attributes.RemoveAttribute(UsesLeftAttribute);
+
+		slot.Itemstack = activeStick;
+		slot.MarkDirty();
+
+		if (!byPlayer.InventoryManager.TryGiveItemstack(untouchedRemainder, true) && untouchedRemainder.StackSize > 0)
+		{
+			byPlayer.Entity.World.SpawnItemEntity(untouchedRemainder, byPlayer.Entity.Pos.XYZ.Add(0.0, 0.5, 0.0));
+		}
+
+		byPlayer.InventoryManager.BroadcastHotbarSlot();
 	}
 
 
@@ -512,7 +556,7 @@ public sealed class ItemMarkingChalk : Item
 	//// The refund is capped at the configured maximum so erasing old marks or
 	//// another player's marks cannot overfill a chalk stick.
 	////
-	private static void RestoreUse(ItemSlot slot)
+	private static void RestoreUse(ItemSlot slot, IPlayer byPlayer)
 	{
 		ItemStack? itemStack = slot.Itemstack;
 		if (itemStack == null)
@@ -520,14 +564,28 @@ public sealed class ItemMarkingChalk : Item
 			return;
 		}
 
-		int maxUses = GetMaxUses();
-		int usesLeft = GetUsesLeft(itemStack);
-		if (usesLeft >= maxUses)
+		if (!itemStack.Attributes.HasAttribute(UsesLeftAttribute))
 		{
 			return;
 		}
 
-		itemStack.Attributes.SetInt(UsesLeftAttribute, usesLeft + 1);
+		int maxUses = GetMaxUses();
+		int usesLeft = GetUsesLeft(itemStack);
+		int restoredUsesLeft = usesLeft + 1;
+		if (restoredUsesLeft >= maxUses)
+		{
+			itemStack.Attributes.RemoveAttribute(UsesLeftAttribute);
+			slot.MarkDirty();
+			return;
+		}
+
+		if (itemStack.StackSize > 1)
+		{
+			SplitActiveUsedStick(slot, byPlayer, restoredUsesLeft);
+			return;
+		}
+
+		itemStack.Attributes.SetInt(UsesLeftAttribute, restoredUsesLeft);
 		slot.MarkDirty();
 	}
 

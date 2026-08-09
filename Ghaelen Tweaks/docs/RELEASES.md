@@ -1,5 +1,21 @@
 # Releases
 
+## Version 0.4.4
+
+**Tag:** `v0.4.4`
+
+**Released:** 2026-08-09
+
+This hotfix improves the exit marker and fixes marking chalk stack use display.
+
+### Changes
+
+- Replaced the exit marker with a simpler doorway glyph that does not depend on left/right direction.
+- Fixed marking chalk stacks so using one stick splits it into its own partially used stack while the remaining sticks stay fresh.
+- If the inventory cannot accept the fresh remainder during that split, the remainder drops near the player instead of being lost.
+
+
+
 ## Version 0.4.3
 
 **Tag:** `v0.4.3`

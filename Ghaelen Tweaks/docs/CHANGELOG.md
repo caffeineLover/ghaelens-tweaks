@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.1 - 2026-08-09
+
 ### Fixed
 
 - Fixed marking chalk overlay textures rendering as filled squares by switching the decor art to the same spritesheet
@@ -11,6 +13,7 @@
 
 - Replaced the single yaw-based marking chalk arrow mode with explicit arrow up, arrow right, arrow down, and arrow left
   tool modes.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.0` to `0.4.1`.
 
 ## 0.4.0 - 2026-08-09
 

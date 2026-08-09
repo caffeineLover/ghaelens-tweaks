@@ -1,5 +1,21 @@
 # Releases
 
+## Version 0.4.1
+
+**Tag:** `v0.4.1`
+
+**Released:** 2026-08-09
+
+This hotfix fixes marking chalk overlay rendering and makes arrow selection explicit.
+
+### Changes
+
+- Fixed marking chalk overlay textures rendering as filled squares by switching the decor art to the same spritesheet cell format used by vanilla cave art.
+- Replaced the single yaw-based marking chalk arrow mode with explicit arrow up, arrow right, arrow down, and arrow left tool modes.
+- Existing square markers placed with `0.4.0` may need to be removed and placed again because new marks use corrected cell-based decor block codes.
+
+
+
 ## Version 0.4.0
 
 **Tag:** `v0.4.0`

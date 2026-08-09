@@ -62,7 +62,7 @@
   "doNotRenderAtLod2": true,
   "randomizeRotations": false,
   "shapeInventory": {
-    "base": "block/basic/layers/0voxel-up",
+    "base": "game:block/basic/layers/0voxel-up",
     "rotateX": 90
   },
   "sidesolid": { "all": false },

@@ -1,5 +1,21 @@
 # Releases
 
+## Version 0.4.2
+
+**Tag:** `v0.4.2`
+
+**Released:** 2026-08-09
+
+This hotfix adds marking chalk erasing and improves the danger mark's readability.
+
+### Changes
+
+- Added marking chalk erasing. Shift/crouch right-click or the explicit erase mode removes nearby Ghaelen Tweaks chalk marks from the clicked face.
+- Erasing refunds one use to the active chalk stick, capped at the configured maximum.
+- Reworked the danger glyph with a bolder pixel-art symbol so it reads more clearly in game.
+
+
+
 ## Version 0.4.1
 
 **Tag:** `v0.4.1`

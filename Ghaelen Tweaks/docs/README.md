@@ -62,7 +62,9 @@ Marking chalk can now place colored navigation marks on mine and trail surfaces.
   - Craft plain marking chalk from vanilla chalk stones.
   - Right-click a valid block face with marking chalk to place the selected mark.
   - Use the tool-mode selector to choose arrow up, arrow right, arrow down, arrow left, X, dot, ladder, stairs,
-    danger, or exit marks.
+    danger, exit, or erase mode.
+  - Crouch or hold Shift while right-clicking to erase nearby marking chalk marks on the clicked face.
+  - Erasing refunds one use to the active chalk stick, capped at the configured maximum.
   - Marking chalk works on solid stone, ore, brick, log/trunk, packed dirt, dry packed dirt, and rammed earth faces.
   - Each chalk stick has 32 uses by default, controlled by `marking-chalk-uses`.
   - Dye a batch of plain marking chalk with 1 L of vanilla dye in a barrel or with a fired bowl containing dye.

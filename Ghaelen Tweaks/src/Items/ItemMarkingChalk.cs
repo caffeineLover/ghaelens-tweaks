@@ -23,6 +23,8 @@ public sealed class ItemMarkingChalk : Item
 {
 	private const string ModeAttribute = "markingChalkMode";
 	private const string UsesLeftAttribute = "markingChalkUsesLeft";
+	private const string MarkingChalkDecorPrefix = "markingchalk-";
+	private const int EraseSearchRadius = 2;
 	private static readonly AssetLocation DrawSound = new("game", "sounds/player/chalkdraw");
 	private SkillItem[] toolModes = Array.Empty<SkillItem>();
 
@@ -37,7 +39,8 @@ public sealed class ItemMarkingChalk : Item
 		new("ladder", "1-2", "ghaelentweaks:marking-chalk-mode-ladder", "markingchalk-ladder.svg"),
 		new("stairs", "2-2", "ghaelentweaks:marking-chalk-mode-stairs", "markingchalk-stairs.svg"),
 		new("danger", "3-2", "ghaelentweaks:marking-chalk-mode-danger", "markingchalk-danger.svg"),
-		new("exit", "4-2", "ghaelentweaks:marking-chalk-mode-exit", "markingchalk-exit.svg")
+		new("exit", "4-2", "ghaelentweaks:marking-chalk-mode-exit", "markingchalk-exit.svg"),
+		new("erase", null, "ghaelentweaks:marking-chalk-mode-erase", "markingchalk-erase.svg", true)
 	};
 
 
@@ -51,6 +54,7 @@ public sealed class ItemMarkingChalk : Item
 	public override void OnLoaded(ICoreAPI api)
 	{
 		base.OnLoaded(api);
+		HeldPriorityInteract = true;
 
 		ICoreClientAPI? capi = api as ICoreClientAPI;
 		toolModes = new SkillItem[ModeDefinitions.Length];
@@ -92,12 +96,12 @@ public sealed class ItemMarkingChalk : Item
 
 
 
-	//// Handles right-click drawing against a selected block face.
+	//// Handles right-click drawing or erasing against a selected block face.
 	////
 	//// The client claims the interaction immediately so the server receives
 	//// the use event and the player sees the normal held-item animation. The
-	//// server performs all permission, surface, decor placement, and use
-	//// consumption work.
+	//// server performs all permission, erase, surface, decor placement, and
+	//// use-count work.
 	////
 	public override void OnHeldInteractStart(
 		ItemSlot slot,
@@ -137,6 +141,17 @@ public sealed class ItemMarkingChalk : Item
 		}
 
 		IBlockAccessor blockAccessor = byEntity.World.BlockAccessor;
+		if (ShouldErase(byEntity, slot.Itemstack))
+		{
+			if (TryEraseMark(blockAccessor, blockSel))
+			{
+				RestoreUse(slot);
+				PlayChalkSound(byEntity, blockSel, byPlayer);
+			}
+
+			return;
+		}
+
 		if (!SuitablePosition(blockAccessor, blockSel))
 		{
 			(byPlayer as IServerPlayer)?.SendIngameError(
@@ -157,15 +172,7 @@ public sealed class ItemMarkingChalk : Item
 		}
 
 		ConsumeUse(slot);
-		byEntity.World.PlaySoundAt(
-			DrawSound,
-			blockSel.FullPosition.X,
-			blockSel.FullPosition.Y,
-			blockSel.FullPosition.Z,
-			byPlayer,
-			true,
-			8f,
-			1f);
+		PlayChalkSound(byEntity, blockSel, byPlayer);
 	}
 
 
@@ -209,7 +216,7 @@ public sealed class ItemMarkingChalk : Item
 
 
 
-	//// Adds held-item help for drawing and mode selection.
+	//// Adds held-item help for drawing, erasing, and mode selection.
 	////
 	public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
 	{
@@ -218,6 +225,12 @@ public sealed class ItemMarkingChalk : Item
 			new WorldInteraction
 			{
 				ActionLangCode = "ghaelentweaks:heldhelp-draw-marking-chalk",
+				MouseButton = EnumMouseButton.Right
+			},
+			new WorldInteraction
+			{
+				ActionLangCode = "ghaelentweaks:heldhelp-erase-marking-chalk",
+				HotKeyCode = "shift",
 				MouseButton = EnumMouseButton.Right
 			},
 			new WorldInteraction
@@ -258,8 +271,13 @@ public sealed class ItemMarkingChalk : Item
 			? colorVariant
 			: "white";
 
-		int modeIndex = GameMath.Clamp(itemStack.Attributes.GetInt(ModeAttribute, 0), 0, ModeDefinitions.Length - 1);
-		string cell = ModeDefinitions[modeIndex].CellVariant;
+		int modeIndex = GetModeIndex(itemStack);
+		string? cell = ModeDefinitions[modeIndex].CellVariant;
+		if (cell == null)
+		{
+			return null;
+		}
+
 		AssetLocation blockCode = new("ghaelentweaks", $"markingchalk-{color}-{cell}");
 
 		Block? block = byEntity.World.GetBlock(blockCode);
@@ -270,6 +288,132 @@ public sealed class ItemMarkingChalk : Item
 		}
 
 		return block;
+	}
+
+
+
+	//// Erases the nearest marking chalk decor on the selected face.
+	////
+	//// Marking chalk uses the same sub-face decor grid as cave art, so normal
+	//// face-only decor breaking is too imprecise.  This searches nearby
+	//// subcells and removes only Ghaelen Tweaks chalk decor, leaving other
+	//// mods' decor and vanilla cave art untouched.
+	////
+	private static bool TryEraseMark(IBlockAccessor blockAccessor, BlockSelection blockSel)
+	{
+		Dictionary<int, Block>? decors = blockAccessor.GetSubDecors(blockSel.Position);
+		if (decors == null || decors.Count == 0)
+		{
+			return false;
+		}
+
+		int targetSubPosition = new DecorBits(blockSel.ToDecorIndex()).SubPosition;
+		int bestDistance = int.MaxValue;
+		int? bestDecorIndex = null;
+
+		foreach ((int decorIndex, Block decorBlock) in decors)
+		{
+			DecorBits decorBits = new(decorIndex);
+			if (decorBits.Face != blockSel.Face.Index || !IsMarkingChalkDecor(decorBlock))
+			{
+				continue;
+			}
+
+			int distance = SubpositionGridDistance(targetSubPosition, decorBits.SubPosition);
+			if (distance > EraseSearchRadius || distance >= bestDistance)
+			{
+				continue;
+			}
+
+			bestDistance = distance;
+			bestDecorIndex = decorIndex;
+		}
+
+		return bestDecorIndex.HasValue
+		       && blockAccessor.BreakDecor(blockSel.Position, blockSel.Face, bestDecorIndex.Value);
+	}
+
+
+
+	//// Checks whether a decor block belongs to this tweak's chalk overlay
+	//// family.
+	////
+	private static bool IsMarkingChalkDecor(Block decorBlock)
+	{
+		AssetLocation? code = decorBlock.Code;
+
+		return code != null
+		       && code.Domain == "ghaelentweaks"
+		       && code.Path.StartsWith(MarkingChalkDecorPrefix, StringComparison.Ordinal);
+	}
+
+
+
+	//// Measures grid-cell distance between two cave-art-style decor
+	//// subpositions.
+	////
+	private static int SubpositionGridDistance(int targetSubPosition, int candidateSubPosition)
+	{
+		if (targetSubPosition <= 0 || candidateSubPosition <= 0)
+		{
+			return targetSubPosition == candidateSubPosition ? 0 : int.MaxValue;
+		}
+
+		int targetOffset = targetSubPosition - 1;
+		int candidateOffset = candidateSubPosition - 1;
+		int xDistance = Math.Abs(targetOffset % 16 - candidateOffset % 16);
+		int yDistance = Math.Abs(targetOffset / 16 - candidateOffset / 16);
+
+		return Math.Max(xDistance, yDistance);
+	}
+
+
+
+	//// Checks whether the current interaction should erase instead of draw.
+	////
+	//// Shift is Vintage Story's separable mouse-interaction modifier, while
+	//// Sneak covers players who describe or trigger the gesture as crouching.
+	//// The explicit erase tool mode remains available for players who prefer
+	//// to select it instead of holding a modifier.
+	////
+	private static bool ShouldErase(EntityAgent byEntity, ItemStack itemStack)
+	{
+		return byEntity.Controls.ShiftKey || byEntity.Controls.Sneak || IsEraseMode(itemStack);
+	}
+
+
+
+	//// Checks whether the selected tool mode should erase instead of draw.
+	////
+	private static bool IsEraseMode(ItemStack itemStack)
+	{
+		return ModeDefinitions[GetModeIndex(itemStack)].Erases;
+	}
+
+
+
+	//// Gets the selected mode index stored on a chalk stack.
+	////
+	private static int GetModeIndex(ItemStack itemStack)
+	{
+		return GameMath.Clamp(itemStack.Attributes.GetInt(ModeAttribute, 0), 0, ModeDefinitions.Length - 1);
+	}
+
+
+
+	//// Plays the chalk interaction sound at the selected block hit position.
+	////
+	private static void PlayChalkSound(EntityAgent byEntity, BlockSelection blockSel, IPlayer byPlayer)
+	{
+		byEntity.World.PlaySoundAt(
+			DrawSound,
+			blockSel.FullPosition.X,
+			blockSel.FullPosition.Y,
+			blockSel.FullPosition.Z,
+			byPlayer,
+			true,
+			8f,
+			1f);
 	}
 
 
@@ -361,6 +505,32 @@ public sealed class ItemMarkingChalk : Item
 
 
 
+	//// Restores one use to the active stick after successfully erasing a mark.
+	////
+	//// The refund is capped at the configured maximum so erasing old marks or
+	//// another player's marks cannot overfill a chalk stick.
+	////
+	private static void RestoreUse(ItemSlot slot)
+	{
+		ItemStack? itemStack = slot.Itemstack;
+		if (itemStack == null)
+		{
+			return;
+		}
+
+		int maxUses = GetMaxUses();
+		int usesLeft = GetUsesLeft(itemStack);
+		if (usesLeft >= maxUses)
+		{
+			return;
+		}
+
+		itemStack.Attributes.SetInt(UsesLeftAttribute, usesLeft + 1);
+		slot.MarkDirty();
+	}
+
+
+
 	//// Gets the remaining uses on the active stick in a chalk stack.
 	////
 	private static int GetUsesLeft(ItemStack itemStack)
@@ -382,7 +552,8 @@ public sealed class ItemMarkingChalk : Item
 
 	private readonly record struct MarkingChalkMode(
 		string Code,
-		string CellVariant,
+		string? CellVariant,
 		string LangCode,
-		string IconPath);
+		string IconPath,
+		bool Erases = false);
 }

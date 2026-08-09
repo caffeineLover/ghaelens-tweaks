@@ -1,6 +1,6 @@
 # Marking Chalk
 
-Status: Initial preset-mark implementation added; first test feedback addressed.
+Status: Initial preset-mark implementation added; erase mode added.
 
 This document tracks the proposed marking chalk tweak for Ghaelen Tweaks.
 
@@ -28,7 +28,8 @@ This document tracks the proposed marking chalk tweak for Ghaelen Tweaks.
 - The placed mark uses the same color as the held marking chalk.
 - The underlying block remains unchanged.
 - The mark should not occupy the adjacent block space and should not interfere with torches, ladders, supports, water, or mining.
-- Existing decor-breaking behavior should remove marks when appropriate.
+- Crouch or hold Shift while right-clicking a chalk mark to remove it and refund one use to the active chalk stick.
+- Select the erase tool mode and right-click a chalk mark for the same erase behavior without holding Shift.
 - The item is stackable. A stack tracks the currently active stick's remaining uses; when that stick is exhausted, the
   stack loses one item and the next stick starts fresh.
 
@@ -130,6 +131,9 @@ Initial glyph set:
 - Danger.
 - Exit marker.
 
+The tool-mode selector also includes an erase mode. Erase mode and Shift/crouch right-click both remove nearby marking
+chalk decor from the clicked face without affecting vanilla cave art or other decor.
+
 ## Orientation
 
 Marks must support walls, floors, and ceilings.
@@ -162,6 +166,9 @@ Initial implementation:
 - Store mark art as one 96x96 spritesheet per color and resolve tool modes to `col`/`row` decor variants. Vintage
   Story's `surfacelayer` decor path expects this cell-based format; standalone per-symbol textures rendered as filled
   squares during the first in-game test.
+- Use the same exact sub-face decor index path for erasing that placement uses for drawing. Erasing searches nearby
+  subcells on the clicked face, removes only `ghaelentweaks:markingchalk-*` decor so players do not have to hit the
+  original placement cell perfectly, and refunds one active-stick use capped at the configured maximum.
 
 The first implementation should include only the preset-mark behavior. Freehand mode is intentionally deferred.
 
@@ -196,7 +203,6 @@ This is a different feature from decor-based preset marks and should not be part
 
 ## Open Questions
 
-- Whether marks should be removable by hand, knife, water, block breaking, or only normal decor breaking.
 - Whether black marking chalk should also be craftable directly from charcoal in addition to dyeing with `dye-black`.
 - Whether partially used chalk stacks need stricter split/merge behavior. The first implementation tracks uses on the
   active stick in the stack, which keeps dyed chalk stackable but means a manually split partially used stack can copy

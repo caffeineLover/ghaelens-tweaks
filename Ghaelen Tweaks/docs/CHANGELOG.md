@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 0.4.2 - 2026-08-09
+
+### Added
+
+- Added marking chalk erasing: Shift/crouch right-click or the explicit erase mode removes nearby Ghaelen Tweaks chalk
+  marks from the clicked face and refunds one active-stick use, capped at the configured maximum.
+
+### Changed
+
+- Reworked the marking chalk danger glyph with a bolder pixel-art symbol for better in-game readability.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.1` to `0.4.2`.
+
 ## 0.4.1 - 2026-08-09
 
 ### Fixed

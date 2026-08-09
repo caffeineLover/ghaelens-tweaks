@@ -1,5 +1,19 @@
 # Releases
 
+## Version 0.4.6
+
+**Tag:** `v0.4.6`
+
+**Released:** 2026-08-09
+
+This hotfix corrects the remaining floor and ceiling arrow direction reversal.
+
+### Changes
+
+- Fixed floor and ceiling arrow marks being rotated 180 degrees from the selected wall-arrow direction.
+
+
+
 ## Version 0.4.5
 
 **Tag:** `v0.4.5`

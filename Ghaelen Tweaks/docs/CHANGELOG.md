@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.4.6 - 2026-08-09
+
+### Fixed
+
+- Fixed marking chalk floor and ceiling arrows being rotated 180 degrees from the selected direction.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.5` to `0.4.6`.
+
 ## 0.4.5 - 2026-08-09
 
 ### Fixed

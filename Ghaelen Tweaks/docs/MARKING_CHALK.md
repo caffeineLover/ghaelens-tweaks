@@ -176,7 +176,9 @@ Initial implementation:
 - Map right and left arrow modes to the opposite-looking source cells. In-game surfacelayer rendering mirrored
   horizontal arrows on tested wall faces, so the swapped mapping makes the placed mark match the selected tool icon.
 - For floor and ceiling arrow marks, use the up-arrow spritesheet cell and set `DecorBits.Rotation` from the player's
-  yaw. Vintage Story's top and bottom face UV axes differ, so the rotation mapping is face-specific.
+  yaw. Vintage Story's top and bottom face UV axes differ, so the rotation mapping is face-specific. Use the opposite
+  of `BlockFacing.HorizontalFromYaw(...)` here because that helper returns the block-placement orientation opposite the
+  player's actual look direction in this interaction.
 - When placing a rotated floor or ceiling arrow, remove older Ghaelen Tweaks chalk decor in the same face subcell with a
   different rotation so redraws replace the old mark instead of stacking on top of it.
 - Use the same exact sub-face decor index path for erasing that placement uses for drawing. Erasing searches nearby

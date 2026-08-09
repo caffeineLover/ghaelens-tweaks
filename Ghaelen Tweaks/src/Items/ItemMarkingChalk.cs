@@ -354,11 +354,25 @@ public sealed class ItemMarkingChalk : Item
 			return decorBits;
 		}
 
-		BlockFacing playerFacing = BlockFacing.HorizontalFromYaw(byEntity.Pos.Yaw);
+		BlockFacing playerFacing = ResolvePlayerForwardFacing(byEntity);
 		BlockFacing desiredFacing = ResolveHorizontalArrowFacing(playerFacing, mode.ArrowDirection);
 		decorBits.Rotation = ResolveHorizontalArrowRotation(blockSel.Face, desiredFacing);
 
 		return decorBits;
+	}
+
+
+
+	//// Resolves the player's actual horizontal look direction for horizontal
+	//// plane arrow placement.
+	////
+	//// Vintage Story's `HorizontalFromYaw` is block-placement oriented here.
+	//// Its result is opposite the direction the player is looking, so floor
+	//// and ceiling arrows need the opposite facing to match player intent.
+	////
+	private static BlockFacing ResolvePlayerForwardFacing(EntityAgent byEntity)
+	{
+		return BlockFacing.HorizontalFromYaw(byEntity.Pos.Yaw).Opposite;
 	}
 
 

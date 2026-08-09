@@ -27,9 +27,6 @@ current task; do not broadly ingest or analyze the entire Reference from an ordi
 When practical, use the Reference project's index to locate relevant files, symbols, assets, and examples before opening
 the underlying material.  Treat the Reference as a research resource, not an undocumented build or runtime dependency.
 
-Do not copy third-party or decompiled material into a mod repository unless it is genuinely required and its origin and
-licensing have been reviewed and documented.
-
 ---
 
 ## Vintage Story Releases

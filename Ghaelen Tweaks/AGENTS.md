@@ -1,54 +1,14 @@
-## Persistent project memory
-Before performing substantial work, read and follow the shared instructions at:
+# Project Agent Instructions
 
-`..\Vintage Story Reference\prompts\Project Memory\PROJECT_MEMORY.md`
+Instructions version: 0.1.0
 
-These instructions as mandatory.  Maintain this repository's project-specific memory at `docs/PROJECT_MEMORY.md`.
-Before completing a work session, update that project memory as required by the shared instructions.
+Before working on this project, read and follow [`prompts/AGENTS.md`](./prompts/AGENTS.md).
 
+Treat everything under `prompts/` as read-only.  Do not modify, rename, move, delete, reformat, or version the shared
+standards files.  Project-specific instructions and approved exceptions belong in this file or the repository's
+enforced configuration.
 
+## Project-Specific Instructions
 
-## Shared Coding Standards
-Before writing, modifying, reviewing, or refactoring code, read and follow:
-
-`..\Vintage Story Reference\prompts\Coding Standards\CODING_STANDARDS.md`
-
-These shared coding standards are mandatory for all code changes in this project.  Do not duplicate them in this
-repository; always read the authoritative shared copy from the path above.
-
-
-
-## Shared Project Standards
-Before making changes, read and follow:
-
-`..\Vintage Story Reference\prompts\Project Standards\PROJECT_STANDARDS.md`
-
-These standards define the required project structure, Git hygiene, documentation rules, release process, Vintage Story
-Reference usage, and handling of generated files and user-maintained documents.  Apply them throughout the project
-unless this `AGENTS.md` contains a more specific instruction that explicitly overrides them.
-
-
-
-## Release Process
-
-After creating a release ZIP, always open File Explorer with the new ZIP selected.
-
-
-
-## Vintage Story Research
-
-When this project needs Vintage Story game, API, asset, recipe, patch, decompiled code, external documentation, or
-indexed mod-reference knowledge, use the Vintage Story Reference repository:
-
-```text
-..\Vintage Story Reference
-```
-
-Before researching, read and follow:
-
-```text
-..\Vintage Story Reference\prompts\Vintage Story Research\VINTAGE_STORY_RESEARCH.md
-```
-
-That prompt defines when and how to use the archive, including version selection, index-first research, raw-file access,
-and safety rules.
+Add project-specific rules, commands, context, and approved exceptions below this heading.  Do not place local changes
+in the shared `prompts/` tree.

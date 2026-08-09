@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Current unreleased work removes the Cat Lore Warning damage guardrail: guardian cats still glow and yowl near lore creatures, but Ghaelen Tweaks no longer adds its own cat fall-damage or lore-creature damage cancellation and no longer exposes `cat-impervious-to-lore-creatures`.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Current unreleased work includes initial marking chalk support for placing preset colored decor marks on mineable navigation surfaces.
 
 ## Active work
 
-No active implementation work is currently in progress. The latest completed source change removes the Cat Lore Warning immunity guardrail while leaving glow and yowl warnings intact.
+No active implementation work is currently in progress. The latest completed source change adds the initial preset-glyph marking chalk feature.
 
 ## Durable technical knowledge
 
@@ -27,6 +27,13 @@ No active implementation work is currently in progress. The latest completed sou
 - The palisade damage config toggle is `enable-palisade-damage-to-hostiles`; despite the concise setting name, the affected entities are lore creatures plus charging adult bears, wolves, and hyenas.
 - Cat Lore Warning only applies cat glow and yowl warning behavior. Ghaelen Tweaks does not cancel cat damage and no longer has a `cat-impervious-to-lore-creatures` config setting.
 - Vintage Story Reference `1.22.3` PetAI `5.1.1` defaults `PetConfig.FalldamageOff` to `true`, and `EntityBehaviorTameable.OnEntityReceiveDamage` cancels `EnumDamageSource.Fall` damage for tameable entities while that PetAI config is enabled. Cats `5.0.1` and WolfTaming `5.0.1` attach the `tameable` behavior and do not add their own fall-damage override, so tamed cats and dogs inherit PetAI's default fall-damage immunity unless `petconfig.json` turns it off.
+- Marking chalk uses `ItemMarkingChalk` in `src/Items/ItemMarkingChalk.cs`. It places `ghaelentweaks:markingchalk-{color}-{symbol}` decor blocks with `IBlockAccessor.SetDecor(..., blockSel.ToDecorIndex())`, so the target block remains unchanged and the adjacent block space is not occupied.
+- Marking chalk is stackable. It tracks the currently active stick's remaining uses in stack attribute `markingChalkUsesLeft`; when the count reaches zero, one item is removed and the next stick starts without a use-count attribute. Manual splits of a partially used stack can copy that active-stick use count.
+- Marking chalk mode selection uses stack attribute `markingChalkMode`. Initial modes are arrow, X, dot, ladder, stairs, danger, and exit. Arrow marks resolve to `arrow-north/east/south/west` from `BlockFacing.HorizontalFromYaw(...)`.
+- Marking chalk valid surfaces are intentionally narrow: solid Stone/Ore/Brick material faces, trunk/log-like Wood paths beginning `log-`, `logsection-`, `logquad-`, or `lognarrow-`, and prepared Soil paths beginning `packeddirt`, `drypackeddirt`, or `rammed-`.
+- Marking chalk config keys are `marking-chalk-uses` (default 32, clamped 1..512) and `marking-chalk-dye-batch-size` (default 16, clamped 1..64). Config Lib metadata lives in `assets/ghaelentweaks/config/configlib-patches.json`.
+- Marking chalk dyeing supports vanilla liquid dyes `black`, `blue`, `gray`, `green`, `orange`, `pink`, `purple`, `red`, `white`, and `yellow`; `dye-woad` outputs blue marking chalk because vanilla `dye-woad` and `dye-blue` are visually identical in 1.22.3.
+- Marking chalk recipe quantity config is applied by `MarkingChalkRecipeSettings` after assets finalize and after Config Lib changes. Grid recipes are updated directly; barrel recipes are updated via the public `barrelrecipes` registry and reflection to avoid adding a compile-time dependency on the survival assembly.
 - For Vintage Story 1.22.4 research, the sibling Vintage Story Reference index contains BetterRuins `0.6.3` from Mod DB. Its `modinfo.json` declares `"type": "content"`, so there is no Better Ruins assembly to patch for blueprint behavior.
 - Better Ruins `0.6.3` defines reusable blueprint/schematic items in `assets/betterruins/itemtypes/betterruins/schematic.json` as `betterruins:br-schematic-{type}`. The variant list has 30 types: `door`, `bed`, `book`, `chest`, `crate`, `gaslamp`, `jonaslamp`, `banner`, `table`, `stone`, `wood`, `ancient`, `candle`, `road`, `jonaspart`, `jonasassembly`, `mechanical`, `roofing`, `textureflipper`, `palisade`, `farmer`, `shipwright`, `weaver`, `artisan`, `pipes`, `gravedigger`, `cartwright`, `alchemist`, `carpenter`, and `toymaker`.
 - Better Ruins schematic-gated recipes live under `assets/betterruins/recipes/grid/schematic-*/*.json`. A 2026-07-25 audit found 886 `br-schematic-*` recipe references and all checked references use `"consume": false`.
@@ -61,6 +68,7 @@ No active implementation work is currently in progress. The latest completed sou
 - Learned Better Ruins schematics use direct Harmony patches instead of generated duplicate recipes. This avoids adding hundreds of duplicate Better Ruins recipes to the recipe registry and keeps physical blueprint behavior unchanged.
 - `assets/ghaelentweaks/patches/betterruins-blueprint-learning.json` conditionally patches Better Ruins' schematic item with the `BetterRuinsBlueprintReading` collectible behavior only when mod id `betterruins` is loaded.
 - `assets/survival/patches/display-case-stacking.json` patches vanilla normal and tall display cases with a registered block behavior rather than changing `sidesolid`. This keeps the tweak narrow and avoids making display cases act as general block support.
+- Marking chalk uses a dedicated custom item behavior instead of vanilla `CollectibleBehaviorArtPigment` so it can choose color-specific decor, enforce fixed uses, restrict surfaces to logs/stone/brick/prepared soil, and leave room for a future freehand mode.
 
 ## External interfaces and integrations
 
@@ -76,6 +84,7 @@ None recorded yet.
 
 - The Git repository root is one level above the mod project folder, while `AGENTS.md`, `docs/`, and `src/` are inside `Ghaelen Tweaks/`. Future agents should be explicit about whether a path is repository-root-relative or mod-project-relative.
 - Build verification was not run after the source-layout move or coding-standards comment pass because existing project notes say not to run builds unless explicitly instructed. The 2026-07-15 release was explicitly requested, so build and package verification were run for version `0.3.1`.
+- Marking chalk uses stack attributes for active-stick use tracking. This keeps dyed chalk stackable in normal play, but a player who manually splits a partially used stack can duplicate the active-stick remaining-use attribute onto both stacks.
 
 ## Open questions
 
@@ -100,6 +109,7 @@ None recorded yet.
 - Release `0.3.6` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, `dotnet build "Ghaelen Tweaks.sln"`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package` on 2026-07-29. The ZIP was created at `Releases/ghaelentweaks_0.3.6.zip`; its packaged `modinfo.json` was checked and contained version `0.3.6`, mod id `ghaelentweaks`, and game dependency `1.22.3`. The only warnings were existing CakeBuild NuGet advisory warnings and Git line-ending normalization warnings.
 - Release `0.3.8` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet build "Ghaelen Tweaks.sln"` on 2026-08-07. The whitespace check reported only the repository's existing CRLF normalization warnings. JSON validation and the solution build passed; the only build warnings were existing CakeBuild NuGet advisory warnings. The installed ACA `2.0.0-dev.16` DLL was inspected with a temporary `ilspycmd` tool install under `%TEMP%` to confirm the exact helper body and signature.
 - The 2026-08-09 cat immunity removal parsed `assets/game/lang/en.json` and `assets/ghaelentweaks/config/configlib-patches.json` with PowerShell `ConvertFrom-Json`. A targeted `rg` scan found no active source or asset references to `CatImpervious`, `cat-impervious`, `OnEntityReceiveDamage`, or `damage = 0`; `git diff --check` reported only the repository's existing CRLF normalization warnings. `dotnet build` was not run because explicit build permission was not given.
+- The 2026-08-09 marking chalk implementation parsed the new strict JSON assets and modified language/config JSON with PowerShell `ConvertFrom-Json`, generated 100 block mark PNGs and 10 item PNGs, visually inspected sample textures, and ran `git diff --check`; only the repository's existing CRLF normalization warnings were reported. `dotnet build` was not run because explicit build permission was not given.
 
 ## Useful commands
 
@@ -113,6 +123,8 @@ None recorded yet.
 - `Ghaelen Tweaks/Ghaelen Tweaks.csproj`: C# mod project.
 - `Ghaelen Tweaks/src/GhaelenTweaksModSystem.cs`: main mod system registration and lifecycle.
 - `Ghaelen Tweaks/src/Configuration/GhaelenTweaksConfig.cs`: mod configuration model.
+- `Ghaelen Tweaks/src/Items/ItemMarkingChalk.cs`: marking chalk item behavior for preset glyph placement, tool modes, surface filtering, and stackable use tracking.
+- `Ghaelen Tweaks/src/Systems/MarkingChalkRecipeSettings.cs`: applies configured marking chalk dye batch size to resolved grid and barrel recipes.
 - `Ghaelen Tweaks/src/BetterRuins/BetterRuinsBlueprintKnowledge.cs`: server persistence and client sync for learned Better Ruins schematic codes.
 - `Ghaelen Tweaks/src/BetterRuins/BetterRuinsBlueprintRecipePatches.cs`: Harmony patches for virtual learned schematic recipe matching and consumption.
 - `Ghaelen Tweaks/src/BetterRuins/CollectibleBehaviorBetterRuinsBlueprintReading.cs`: right-click behavior that records Better Ruins schematic knowledge.
@@ -123,6 +135,10 @@ None recorded yet.
 - `Ghaelen Tweaks/assets/`: Vintage Story assets and mod data.
 - `Ghaelen Tweaks/assets/ghaelentweaks/recipes/grid/clutter-barricade-recycling.json`: explicit axe/saw grid recipes for clutter barricade variants.
 - `Ghaelen Tweaks/assets/ghaelentweaks/recipes/grid/clutter-wood-recycling.json`: explicit axe/saw grid recipes for wood rubble, ruined tables, stacked small crates, large crates with rot, and chest rubble.
+- `Ghaelen Tweaks/assets/ghaelentweaks/recipes/grid/marking-chalk.json`: plain marking chalk recipe and bowl dyeing recipes.
+- `Ghaelen Tweaks/assets/ghaelentweaks/recipes/barrel/marking-chalk.json`: barrel dyeing recipes for marking chalk.
+- `Ghaelen Tweaks/assets/ghaelentweaks/blocktypes/overlay/marking-chalk.json`: hidden surfacelayer decor blocks for placed marking chalk glyphs.
+- `Ghaelen Tweaks/docs/MARKING_CHALK.md`: living marking chalk design and implementation note.
 - `Ghaelen Tweaks/assets/ghaelentweaks/patches/betterruins-blueprint-learning.json`: conditional Better Ruins schematic item behavior patch.
 - `Ghaelen Tweaks/assets/survival/patches/tule-handbasket.json`: appends a handbasket recipe named `tule-handbasket` using `thatch` in the vanilla handbasket pattern.
 - `Ghaelen Tweaks/docs/CODEX_STATE.md`: older persistent session notes that may contain useful historical context.
@@ -131,6 +147,12 @@ None recorded yet.
 
 ### 2026-08-09
 
+- Added initial marking chalk support on the primary local branch (`master`; no separate local `main` branch exists). New stackable `marking-chalk-{color}` items place hidden surfacelayer decor blocks `markingchalk-{color}-{symbol}` on valid solid stone/ore/brick, log/trunk, packed dirt, dry packed dirt, and rammed earth faces.
+- Added tool modes for arrow, X, dot, ladder, stairs, danger, and exit glyphs. Arrow mode selects a cardinal arrow variant from the player's yaw so floor and ceiling arrows can point in world directions.
+- Added configurable marking chalk use count (`marking-chalk-uses`, default 32) and dye batch size (`marking-chalk-dye-batch-size`, default 16), plus Config Lib metadata and English language text.
+- Added recipes: one vanilla `stone-chalk` crafts four plain marking chalk sticks; bowl recipes consume 1 L dye from a fired bowl and recolor the configured batch size while leaving the bowl; barrel recipes consume 1 L dye and recolor the configured batch. `dye-woad` outputs blue marking chalk.
+- Added generated item and mark textures: 10 item PNGs and 100 transparent decor glyph PNGs, plus SVG mode icons.
+- Updated `docs/MARKING_CHALK.md` from brainstorm draft to the first implementation note. Verified new strict JSON with `ConvertFrom-Json`, checked sample textures visually, and ran `git diff --check`; build was not run because explicit build permission was not given.
 - Removed `EntityBehaviorCatLoreGuardian.OnEntityReceiveDamage`, so Ghaelen Tweaks no longer cancels cat fall damage or lore-creature damage. The cat behavior still applies proximity glow on the client and warning yowls on the server.
 - Removed the `cat-impervious-to-lore-creatures` config property, Config Lib setting, English language labels, and README player-facing documentation. Added an Unreleased changelog entry for the removed immunity guardrail.
 - Researched Vintage Story Reference `1.22.3` PetAI `5.1.1`, Cats `5.0.1`, and WolfTaming `5.0.1`: PetAI loads/stores `petconfig.json`, defaults `FalldamageOff = true`, and cancels fall damage in `EntityBehaviorTameable.OnEntityReceiveDamage`; Cats and WolfTaming attach `tameable` and do not override that fall-damage path.

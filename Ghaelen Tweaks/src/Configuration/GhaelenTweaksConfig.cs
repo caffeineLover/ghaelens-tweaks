@@ -90,6 +90,11 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("marking-chalk-dye-batch-size")]
 	public int MarkingChalkDyeBatchSize { get; set; } = 16;
 
+	//// Sets the dynamic light level emitted by temporal marking chalk marks.
+	////
+	[JsonProperty("temporal-marking-chalk-light-level")]
+	public int TemporalMarkingChalkLightLevel { get; set; } = 3;
+
 
 
 	//// Normalizes loaded or externally supplied values into the supported
@@ -110,6 +115,7 @@ public sealed class GhaelenTweaksConfig
 		PalisadeDamageCooldownSeconds = ClampPalisadeDamageCooldown(PalisadeDamageCooldownSeconds);
 		MarkingChalkUses = ClampMarkingChalkUses(MarkingChalkUses);
 		MarkingChalkDyeBatchSize = ClampMarkingChalkDyeBatchSize(MarkingChalkDyeBatchSize);
+		TemporalMarkingChalkLightLevel = ClampLightLevel(TemporalMarkingChalkLightLevel);
 	}
 
 
@@ -208,5 +214,20 @@ public sealed class GhaelenTweaksConfig
 		}
 
 		return batchSize > 64 ? 64 : batchSize;
+	}
+
+
+
+	//// Clamps temporal marking chalk dynamic light to Vintage Story's light
+	//// level range.
+	////
+	private static int ClampLightLevel(int lightLevel)
+	{
+		if (lightLevel < 0)
+		{
+			return 0;
+		}
+
+		return lightLevel > 32 ? 32 : lightLevel;
 	}
 }

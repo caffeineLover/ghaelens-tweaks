@@ -30,7 +30,6 @@ public sealed class ItemMarkingChalk : Item
 	private const string TemporalMarkingChalkPaintDecorPrefix = "markingchalk-paint-temporal-";
 	private const string ArrowUpCellVariant = "1-1";
 	private const int FullFacePaintUseCost = 4;
-	private const int TemporalChalkLightLevel = 2;
 	private const int EraseSearchRadius = 2;
 	private static readonly AssetLocation DrawSound = new("game", "sounds/player/chalkdraw");
 	private static readonly AssetLocation MarkingChalkLightEntityCode =
@@ -778,16 +777,18 @@ public sealed class ItemMarkingChalk : Item
 	////
 	private static byte[] GetTemporalLightHsv(string color)
 	{
+		byte lightLevel = (byte)GameMath.Clamp(GhaelenTweaksConfig.Current.TemporalMarkingChalkLightLevel, 0, 32);
+
 		return color switch
 		{
-			"blue" => new byte[] { 38, 7, TemporalChalkLightLevel },
-			"green" => new byte[] { 22, 7, TemporalChalkLightLevel },
-			"orange" => new byte[] { 4, 7, TemporalChalkLightLevel },
-			"pink" => new byte[] { 54, 5, TemporalChalkLightLevel },
-			"purple" => new byte[] { 46, 7, TemporalChalkLightLevel },
-			"red" => new byte[] { 0, 7, TemporalChalkLightLevel },
-			"yellow" => new byte[] { 10, 7, TemporalChalkLightLevel },
-			_ => new byte[] { 0, 0, TemporalChalkLightLevel }
+			"blue" => new byte[] { 38, 7, lightLevel },
+			"green" => new byte[] { 22, 7, lightLevel },
+			"orange" => new byte[] { 4, 7, lightLevel },
+			"pink" => new byte[] { 54, 5, lightLevel },
+			"purple" => new byte[] { 46, 7, lightLevel },
+			"red" => new byte[] { 0, 7, lightLevel },
+			"yellow" => new byte[] { 10, 7, lightLevel },
+			_ => new byte[] { 0, 0, lightLevel }
 		};
 	}
 

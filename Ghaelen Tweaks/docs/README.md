@@ -68,8 +68,9 @@ Marking chalk can now place colored navigation marks on mine and trail surfaces.
     below 4.
   - Crouch or hold Shift while right-clicking to erase nearby marking chalk marks on the clicked face.
   - Erasing refunds the removed mark's use cost to the active chalk stick, capped at the configured maximum.
-  - Craft marking chalk with a temporal gear to make temporal marking chalk. Its placed marks emit a level-2 colored
-    dynamic glow matching the chalk color. This glow is for visibility, not spawn prevention.
+  - Craft marking chalk with a temporal gear to make temporal marking chalk. Its placed marks emit a colored dynamic
+    glow matching the chalk color. This glow defaults to light level 3, is controlled by
+    `temporal-marking-chalk-light-level`, and is for visibility rather than spawn prevention.
   - Marking chalk works on solid stone, ore, brick, log/trunk, packed dirt, dry packed dirt, and rammed earth faces.
   - Each chalk stick has 32 uses by default, controlled by `marking-chalk-uses`.
   - Using a stick from a stack splits the partially used stick away from the remaining fresh sticks.

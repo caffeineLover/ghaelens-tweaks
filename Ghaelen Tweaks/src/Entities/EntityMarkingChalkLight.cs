@@ -2,9 +2,10 @@
  * Provides invisible dynamic-light anchors for temporal marking chalk decor.
  *
  * Vintage Story decor is stored on block faces and can render glow, but decor
- * placement does not behave like placing a normal light-emitting block. This
+ * placement does not behave like placing a normal light-emitting block.  This
  * entity is spawned next to temporal chalk decor so the client receives a
- * persistent level-2 colored dynamic light tied to the chalk mark's lifetime.
+ * persistent configurable colored dynamic light tied to the chalk mark's
+ * lifetime.
  */
 
 using Vintagestory.API.Common;
@@ -38,7 +39,10 @@ public sealed class EntityMarkingChalkLight : Entity
 			{
 				(byte)GameMath.Clamp(WatchedAttributes.GetInt(HueAttribute, 0), 0, 255),
 				(byte)GameMath.Clamp(WatchedAttributes.GetInt(SaturationAttribute, 0), 0, 255),
-				(byte)GameMath.Clamp(WatchedAttributes.GetInt(ValueAttribute, 2), 0, 255)
+				(byte)GameMath.Clamp(
+					WatchedAttributes.GetInt(ValueAttribute, GhaelenTweaksConfig.Current.TemporalMarkingChalkLightLevel),
+					0,
+					32)
 			};
 		}
 		set
@@ -123,10 +127,28 @@ public sealed class EntityMarkingChalkLight : Entity
 		}
 
 		cleanupSeconds = 0f;
+		ApplyConfiguredLightLevel();
+
 		if (!HasMatchingTemporalDecor())
 		{
 			Die(EnumDespawnReason.Removed);
 		}
+	}
+
+
+
+	//// Refreshes persisted light markers when the configured light level
+	//// changes after the marker was spawned.
+	////
+	private void ApplyConfiguredLightLevel()
+	{
+		int configuredLightLevel = GameMath.Clamp(GhaelenTweaksConfig.Current.TemporalMarkingChalkLightLevel, 0, 32);
+		if (WatchedAttributes.GetInt(ValueAttribute, -1) == configuredLightLevel)
+		{
+			return;
+		}
+
+		WatchedAttributes.SetInt(ValueAttribute, configuredLightLevel);
 	}
 
 

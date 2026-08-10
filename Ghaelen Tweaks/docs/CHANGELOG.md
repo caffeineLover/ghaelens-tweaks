@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## 0.4.11 - 2026-08-09
+
+### Added
+
+- Added the `temporal-marking-chalk-light-level` config setting and Config Lib control for temporal marking chalk's
+  dynamic glow.
+
+### Changed
+
+- Changed temporal marking chalk's default dynamic light level from 2 to 3.
+- Removed static temporal chalk decor light definitions so the hidden marker entity is the configurable dynamic light
+  source.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.10` to `0.4.11`.
+
 ## 0.4.10 - 2026-08-09
 
 ### Fixed

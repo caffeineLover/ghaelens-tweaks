@@ -144,6 +144,19 @@
         "step": 1
       },
       "sortingWeight": 13
+    },
+    {
+      "type": "number",
+      "code": "temporal-marking-chalk-light-level",
+      "ingui": "ghaelentweaks:setting-temporal-marking-chalk-light-level",
+      "comment": "ghaelentweaks:setting-temporal-marking-chalk-light-level-comment",
+      "default": 3,
+      "range": {
+        "min": 0,
+        "max": 32,
+        "step": 1
+      },
+      "sortingWeight": 14
     }
   ]
 }

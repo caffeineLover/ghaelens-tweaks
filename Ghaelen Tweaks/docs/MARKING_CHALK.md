@@ -12,7 +12,7 @@ This document tracks the proposed marking chalk tweak for Ghaelen Tweaks.
 - Support colored marking chalk made from vanilla dyes.
 - Keep the first implementation based on preset glyphs, not freehand drawing or typed text.
 - Give each marking chalk item a fixed number of uses.
-- Expose marking chalk use count and dyeing batch size through Ghaelen Tweaks configuration.
+- Expose marking chalk use count, dyeing batch size, and temporal glow strength through Ghaelen Tweaks configuration.
 - Let players paint an entire valid block face when a compact symbol is not visible enough.
 - Let players spend a temporal gear to make marks that emit a small colored glow.
 
@@ -36,7 +36,7 @@ This document tracks the proposed marking chalk tweak for Ghaelen Tweaks.
   use count is below 4.
 - Erasing a full-face paint mark refunds the paint mark's use cost, capped at the configured maximum.
 - Craft any marking chalk with a temporal gear to create temporal marking chalk of the same color. Placed temporal
-  glyphs and paint marks emit a level-2 colored dynamic glow matching the chalk color.
+  glyphs and paint marks emit a configurable colored dynamic glow matching the chalk color.
 - The item is stackable while sticks are fresh. When a player first uses a stick from a stack, that stick splits into
   its own one-item stack and tracks only that stick's remaining uses.
 - If the player inventory cannot accept the untouched remainder during that split, the remainder drops near the player.
@@ -175,13 +175,15 @@ Initial implementation:
 - Add a separate full-face paint decor family without column and row variants. It uses `new DecorBits(blockSel.Face)`
   instead of `BlockSelection.ToDecorIndex()` so it fills the clicked face as decor without replacing the block.
 - Add a temporal marking chalk item family. Temporal glyph and paint decor use the same visible art plus glow vertex
-  flags, while a hidden `markingchalklight` entity supplies persistent level-2 colored dynamic light because
+  flags, while a hidden `markingchalklight` entity supplies persistent configurable colored dynamic light because
   `SetDecor(...)` marks chunk decor dirty but does not reliably run the normal block-light placement path.
 - The temporal chalk glow is for visibility, not spawn control. Lore creature spawn checks read
   `BlockAccessor.GetLightLevel(...)`; they compare against `MaxLightLevel` inclusively, so a real light level of 2
   would still allow a spawn rule with `maxLightLevel: 2`.
 - Default each marking chalk item to `32` uses, configurable through `marking-chalk-uses`.
 - Default dyeing recipes to a batch size of `16`, configurable through `marking-chalk-dye-batch-size`.
+- Default temporal marking chalk dynamic glow to light level `3`, configurable from `0` to `32` through
+  `temporal-marking-chalk-light-level`.
 - Use custom C# item behavior rather than vanilla `ArtPigment` so the item can choose a color-specific decor block,
   track fixed uses, restrict surfaces to the agreed list, and reserve room for a future freehand mode.
 - Keep fresh marking chalk stackable, but split a partially used active stick away from the fresh remainder so the

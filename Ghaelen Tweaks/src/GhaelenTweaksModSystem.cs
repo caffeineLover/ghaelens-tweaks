@@ -267,6 +267,11 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 					tree.GetInt("value", GhaelenTweaksConfig.Current.MarkingChalkDyeBatchSize);
 				break;
 
+			case "temporal-marking-chalk-light-level":
+				GhaelenTweaksConfig.Current.TemporalMarkingChalkLightLevel =
+					tree.GetInt("value", GhaelenTweaksConfig.Current.TemporalMarkingChalkLightLevel);
+				break;
+
 			default:
 				changed = false;
 				break;

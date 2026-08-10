@@ -1,5 +1,22 @@
 # Releases
 
+## Version 0.4.11
+
+**Tag:** `v0.4.11`
+
+**Released:** 2026-08-09
+
+This release makes temporal marking chalk glow strength configurable and raises the default dynamic glow level.
+
+### Changes
+
+- Added `temporal-marking-chalk-light-level`, a config setting for the dynamic light emitted by temporal marking chalk.
+- Changed temporal marking chalk's default dynamic light level from 2 to 3.
+- Removed static temporal chalk decor light definitions so the hidden marker entity is the configurable dynamic light
+  source.
+
+
+
 ## Version 0.4.10
 
 **Tag:** `v0.4.10`

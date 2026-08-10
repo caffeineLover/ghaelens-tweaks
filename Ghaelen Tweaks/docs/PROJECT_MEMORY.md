@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.4.9` adds marking chalk full-face paint, temporal glow variants, and crisper ladder art.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.4.10` fixes the marking chalk ladder glyph that became invisible in `0.4.9` and clarifies that temporal marking chalk glow is visual rather than spawn-control lighting.
 
 ## Active work
 
-No active implementation work is currently in progress. The latest completed source change adds full-face paint marks and temporal marking chalk light markers while keeping the corrected floor and ceiling arrow orientation from `0.4.8`.
+No active implementation work is currently in progress. The latest completed source change adds full-face paint marks and temporal marking chalk light markers while keeping the corrected floor and ceiling arrow orientation from `0.4.8`; the latest asset fix restores the ladder glyph visibility for `0.4.10`.
 
 ## Durable technical knowledge
 
@@ -43,7 +43,11 @@ No active implementation work is currently in progress. The latest completed sou
 - Marking chalk erase mode remains at its original index so existing saved draw-mode indices keep their meaning; paint-face mode is appended after it. Shift/crouch right-click also erases regardless of the selected draw mode. Successful erasing searches nearby sub-face decor cells on the clicked face, calls exact `BreakDecor(..., decorIndex)` only for `ghaelentweaks:markingchalk-*` decor, and restores the erased mark's use cost capped at the configured maximum. If no nearby glyph is found, erase falls back to face-only paint decor on the clicked face.
 - Paint-face mode costs 4 uses by default, capped to the configured maximum when `marking-chalk-uses` is below 4. Erasing a paint-face mark refunds the same capped cost.
 - Temporal marking chalk is a separate item family `temporal-marking-chalk-{color}` made by crafting matching marking chalk with `game:gear-temporal`. Temporal glyphs use `markingchalk-temporal-{color}-{col}-{row}` decor and temporal paint uses `markingchalk-paint-temporal-{color}` decor.
-- Temporal marking chalk decor has glow vertex flags for the visible overlay, but actual level-2 colored light is supplied by hidden `EntityMarkingChalkLight` entities. Vintage Story Reference `1.22.3` shows `SetDecor(...)` marks chunk decor dirty, not the normal block-light placement path, so the hidden entity is the persistent light source and self-removes if its temporal decor is gone.
+- Temporal marking chalk decor has glow vertex flags for the visible overlay, but actual level-2 colored dynamic light is supplied by hidden `EntityMarkingChalkLight` entities. Vintage Story Reference `1.22.3` shows `SetDecor(...)` marks chunk decor dirty, not the normal block-light placement path, so the hidden entity is the persistent visual light source and self-removes if its temporal decor is gone.
+- Temporal marking chalk glow should not be treated as a lore spawn prevention mechanic. Vintage Story Reference
+  `1.22.3` lore spawning reads `BlockAccessor.GetLightLevel(...)` and checks `MaxLightLevel` inclusively, so a real
+  light level of exactly 2 still satisfies a spawn condition with `maxLightLevel: 2`; the current entity dynamic light
+  is not known to affect that server-side block-light lookup.
 - Marking chalk surfacelayer art follows vanilla cave art: one 96x96 spritesheet per color, with `col` and `row` block variants selecting a 16x16 cell. Standalone per-symbol surfacelayer textures rendered as filled squares during the first in-game test.
 - Marking chalk placement removes older Ghaelen Tweaks chalk decor in the same face subcell but with a different rotation after a successful placement. Decor rotation is part of the storage key, so this prevents rotated floor/ceiling redraws from stacking multiple marks in one subcell.
 - Marking chalk valid surfaces are intentionally narrow: solid Stone/Ore/Brick material faces, trunk/log-like Wood paths beginning `log-`, `logsection-`, `logquad-`, or `lognarrow-`, and prepared Soil paths beginning `packeddirt`, `drypackeddirt`, or `rammed-`.
@@ -97,6 +101,9 @@ No active implementation work is currently in progress. The latest completed sou
 - Do not rely on `lightHsvByType` alone for temporal marking chalk decor. Decor placement through `SetDecor(...)`
   renders the overlay but does not behave like placing a normal light-emitting block, so `0.4.9` uses hidden dynamic
   light entities tied to temporal decor entries.
+- Do not sample the first nontransparent pixel when regenerating marking chalk glyph art. The `0.4.9` ladder cell was
+  accidentally generated from an antialiased edge pixel with alpha 15, making the ladder effectively invisible in game;
+  use full-strength chalk pixels when redrawing crisp cells.
 
 ## Bugs, risks, and limitations
 
@@ -199,6 +206,9 @@ No active implementation work is currently in progress. The latest completed sou
   chalk uses separate temporal decor block families plus hidden `EntityMarkingChalkLight` entities because Vintage
   Story Reference `1.22.3` shows `SetDecor(...)` only marks chunk decor dirty and does not reliably trigger normal
   block-light placement.
+- Release `0.4.10` fixes the `0.4.9` ladder glyph by redrawing the ladder spritesheet cell in every color with
+  full-alpha chalk pixels. It also records that lore spawn light checks are inclusive and use server block light, so
+  temporal chalk's level-2 dynamic glow is a visual glow rather than a spawn-proofing guarantee.
 - Removed `EntityBehaviorCatLoreGuardian.OnEntityReceiveDamage`, so Ghaelen Tweaks no longer cancels cat fall damage or lore-creature damage. The cat behavior still applies proximity glow on the client and warning yowls on the server.
 - Removed the `cat-impervious-to-lore-creatures` config property, Config Lib setting, English language labels, and README player-facing documentation. Added an Unreleased changelog entry for the removed immunity guardrail.
 - Researched Vintage Story Reference `1.22.3` PetAI `5.1.1`, Cats `5.0.1`, and WolfTaming `5.0.1`: PetAI loads/stores `petconfig.json`, defaults `FalldamageOff = true`, and cancels fall damage in `EntityBehaviorTameable.OnEntityReceiveDamage`; Cats and WolfTaming attach `tameable` and do not override that fall-damage path.

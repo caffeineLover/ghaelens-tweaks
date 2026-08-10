@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 0.4.10 - 2026-08-09
+
+### Fixed
+
+- Fixed the marking chalk ladder glyph disappearing in game because the `0.4.9` ladder cell was generated from a
+  nearly transparent antialiasing pixel.
+
+### Changed
+
+- Documented that temporal marking chalk's level-2 dynamic glow is for visibility and is not a server-side lore spawn
+  prevention light.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.9` to `0.4.10`.
+
 ## 0.4.9 - 2026-08-09
 
 ### Added
@@ -9,7 +22,7 @@
 - Added a marking chalk paint-face mode that colors the entire clicked face and costs 4 uses, or the configured maximum
   when a chalk stick is configured below 4 uses.
 - Added temporal marking chalk recipes. Crafting any marking chalk with a temporal gear creates a temporal variant whose
-  placed glyphs and paint marks emit level-2 colored light.
+  placed glyphs and paint marks emit a level-2 colored dynamic glow.
 
 ### Changed
 

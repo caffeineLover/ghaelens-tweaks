@@ -1,5 +1,21 @@
 # Releases
 
+## Version 0.4.10
+
+**Tag:** `v0.4.10`
+
+**Released:** 2026-08-09
+
+This hotfix restores the marking chalk ladder symbol and clarifies the scope of temporal chalk glow.
+
+### Changes
+
+- Fixed the ladder marking so it uses opaque chalk pixels and appears reliably in game.
+- Clarified that temporal marking chalk's level-2 dynamic glow is visual and should not be treated as lore spawn
+  prevention.
+
+
+
 ## Version 0.4.9
 
 **Tag:** `v0.4.9`
@@ -13,7 +29,7 @@ This release expands marking chalk with full-face paint marks, temporal glow var
 - Added paint-face mode for marking chalk. It paints the entire clicked face and costs 4 uses, or the whole stick when
   `marking-chalk-uses` is configured below 4.
 - Added temporal marking chalk. Craft any marking chalk with a temporal gear to create a temporal variant whose placed
-  glyphs and paint marks emit level-2 colored light.
+  glyphs and paint marks emit a level-2 colored dynamic glow.
 - Tightened the ladder glyph so it reads more clearly on placed chalk marks.
 
 

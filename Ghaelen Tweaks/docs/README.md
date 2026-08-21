@@ -14,6 +14,14 @@ Light mudbricks can now use gravel or sand in the crafting recipe.
   - The recipe is otherwise unchanged.
   - Dark mudbricks are unchanged.
 
+## Affordable Gray Dye
+
+Gray dye can now be made without sacrificing rusty gears or metal scraps.
+
+- Seal 2 L of water and one powdered charcoal in a barrel for 8 hours.
+- The recipe produces 2 L of gray dye.
+- The original rusty gear and metal scraps recipes remain available.
+
 ## Tule Handbasket Recipe
 
 Tule can now be used to make a handbasket.

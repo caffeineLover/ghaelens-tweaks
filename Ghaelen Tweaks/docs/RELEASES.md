@@ -1,5 +1,20 @@
 # Releases
 
+## Version 0.5.0
+
+**Tag:** `Added-alternate-gray-dye-recipe`
+
+**Released:** 2026-08-21
+
+This release makes gray dye affordable without removing the original vanilla recipes.
+
+### Changes
+
+- Added an alternate barrel recipe that turns 2 L of water and one powdered charcoal into 2 L of gray dye after 8
+  sealed hours.
+
+
+
 ## Version 0.4.11
 
 **Tag:** `v0.4.11`

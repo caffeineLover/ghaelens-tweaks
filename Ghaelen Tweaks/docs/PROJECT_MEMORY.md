@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-08-09
+Last updated: 2026-08-21
 
 ## Project overview
 
@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.4.11` makes temporal marking chalk dynamic glow strength configurable and defaults it to light level 3.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.5.0` adds an affordable alternate gray dye recipe while preserving the original vanilla recipes.
 
 ## Active work
 
-No active implementation work is currently in progress. The latest completed source change adds configurable temporal marking chalk dynamic light level while keeping the corrected floor and ceiling arrow orientation from `0.4.8` and the ladder glyph asset fix from `0.4.10`.
+No active implementation work is currently in progress. The latest completed change adds an alternate barrel recipe that produces 2 L of gray dye from 2 L of water and one powdered charcoal after 8 sealed hours.
 
 ## Durable technical knowledge
 
@@ -25,6 +25,8 @@ No active implementation work is currently in progress. The latest completed sou
 - Vintage Story 1.22.3 `survival/recipes/grid/basket.json` uses the 3x2 pattern `L_L	LLL` or `P_P	PPP`, with quantity 2 per occupied slot, for cattail and papyrus handbaskets.
 - Vintage Story 1.22.3 `RecipeBase.Enabled` can be changed at runtime. `InventoryCraftingGrid` checks `gridRecipe.Enabled` before matching recipes, so the tule handbasket config toggles the patched recipe by setting that flag after assets finalize and on Config Lib events.
 - The palisade damage config toggle is `enable-palisade-damage-to-hostiles`; despite the concise setting name, the affected entities are lore creatures plus charging adult bears, wolves, and hyenas.
+- `assets/survival/patches/gray-dye.json` appends an affordable gray dye recipe without replacing the vanilla rusty
+  gear or metal scraps recipes.
 - Cat Lore Warning only applies cat glow and yowl warning behavior. Ghaelen Tweaks does not cancel cat damage and no longer has a `cat-impervious-to-lore-creatures` config setting.
 - Vintage Story Reference `1.22.3` PetAI `5.1.1` defaults `PetConfig.FalldamageOff` to `true`, and `EntityBehaviorTameable.OnEntityReceiveDamage` cancels `EnumDamageSource.Fall` damage for tameable entities while that PetAI config is enabled. Cats `5.0.1` and WolfTaming `5.0.1` attach the `tameable` behavior and do not add their own fall-damage override, so tamed cats and dogs inherit PetAI's default fall-damage immunity unless `petconfig.json` turns it off.
 - Marking chalk uses `ItemMarkingChalk` in `src/Items/ItemMarkingChalk.cs`. It places `ghaelentweaks:markingchalk-{color}-{col}-{row}` decor blocks with `IBlockAccessor.SetDecor(..., blockSel.ToDecorIndex())`, so the target block remains unchanged and the adjacent block space is not occupied. Paint-face mode instead places `ghaelentweaks:markingchalk-paint-{color}` with `new DecorBits(blockSel.Face)` to fill the clicked face as decor.

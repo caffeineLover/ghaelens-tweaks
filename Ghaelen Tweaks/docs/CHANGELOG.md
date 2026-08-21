@@ -2,29 +2,20 @@
 
 ## Unreleased
 
+## 0.5.0 - 2026-08-21
+- Added an affordable gray dye barrel recipe using 2 L of water and one powdered charcoal.
+
 ## 0.4.11 - 2026-08-09
-
-### Added
-
 - Added the `temporal-marking-chalk-light-level` config setting and Config Lib control for temporal marking chalk's
   dynamic glow.
-
-### Changed
-
 - Changed temporal marking chalk's default dynamic light level from 2 to 3.
 - Removed static temporal chalk decor light definitions so the hidden marker entity is the configurable dynamic light
   source.
 - Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.10` to `0.4.11`.
 
 ## 0.4.10 - 2026-08-09
-
-### Fixed
-
 - Fixed the marking chalk ladder glyph disappearing in game because the `0.4.9` ladder cell was generated from a
   nearly transparent antialiasing pixel.
-
-### Changed
-
 - Documented that temporal marking chalk's level-2 dynamic glow is for visibility and is not a server-side lore spawn
   prevention light.
 - Bumped `Ghaelen Tweaks/modinfo.json` version from `0.4.9` to `0.4.10`.

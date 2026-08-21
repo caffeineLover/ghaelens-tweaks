@@ -1,0 +1,17 @@
+[
+  {
+    "op": "add",
+    "path": "/-",
+    "value": {
+      "code": "dye-gray-charcoal",
+      "sealHours": 8,
+      "ingredients": [
+        { "type": "item", "code": "waterportion", "litres": 2 },
+        { "type": "item", "code": "powder-charcoal", "quantity": 1 }
+      ],
+      "output": { "type": "item", "code": "dye-gray", "litres": 2 }
+    },
+    "file": "game:recipes/barrel/dye/gray.json",
+    "side": "Server"
+  }
+]

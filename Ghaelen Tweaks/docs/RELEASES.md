@@ -1,5 +1,28 @@
 # Releases
 
+## Version 0.6.0
+
+**Tag:** `parental-controls-initial`
+
+**Released:** 2026-08-21
+
+This release introduces the first recoverable parental-control consequence for repeated player deaths.
+
+### Changes
+
+- Added a server-enforced respawn delay that escalates separately for each player after repeated deaths.
+- The default first-death delay is 30 seconds: a 15-second base plus the newly applied 15-second death increase.
+- Added repeated cooldown recovery. Every 900 death-free seconds removes one accumulated increase until none remain;
+  recovery continues while the player is offline.
+- Added a synced death-screen countdown that disables the respawn button until the server-owned deadline expires.
+- Added `pc-use-death-delay`, `pc-death-delay`, `pc-death-delay-increase`, and `pc-death-delay-cooldown`, all exposed
+  through Config Lib.
+- Added the disabled-by-default `pc-use-respawn-sickness` reserved setting for the next parental-controls feature.
+- Added `PARENTAL_CONTROLS.md` with the complete recoverable consequence backlog, implemented delay specification, and
+  draft escalating movement-sickness design.
+
+
+
 ## Version 0.5.0
 
 **Tag:** `Added-alternate-gray-dye-recipe`

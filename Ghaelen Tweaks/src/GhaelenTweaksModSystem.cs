@@ -4,8 +4,8 @@
  * This class registers block and entity behaviors, loads and normalizes mod
  * configuration, listens for optional Config Lib setting events, applies
  * Harmony patches, initializes Better Ruins blueprint knowledge sync, and
- * creates the server-only palisade damage system. Individual features live
- * in dedicated behavior, patch, and system classes.
+ * creates the server-only gameplay systems. Individual features live in
+ * dedicated behavior, patch, and system classes.
  */
 
 using HarmonyLib;
@@ -73,10 +73,12 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		{
 			ClutterFuelHandbookPatches.Apply(harmony, api.Logger);
 			PersistentCraftingGridPatches.Apply(harmony, api.Logger);
+			ParentalControlDeathDelayPatches.ApplyClient(harmony, api.Logger);
 		}
 
 		if (api.Side == EnumAppSide.Server)
 		{
+			ParentalControlDeathDelayPatches.ApplyServer(harmony, api.Logger);
 			palisadeDamageSystem = new PalisadeDamageSystem(api);
 		}
 	}
@@ -94,6 +96,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		base.StartClientSide(api);
 
 		BetterRuinsBlueprintKnowledge.StartClientSide(api);
+		ParentalControlDeathDelaySystem.StartClientSide(api);
 	}
 
 
@@ -110,6 +113,7 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 
 		GhaelenTweaksChatCommands.StartServerSide(api);
 		BetterRuinsBlueprintKnowledge.StartServerSide(api);
+		ParentalControlDeathDelaySystem.StartServerSide(api);
 	}
 
 
@@ -144,6 +148,8 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 		palisadeDamageSystem?.Dispose();
 		palisadeDamageSystem = null;
 		BetterRuinsBlueprintKnowledge.Dispose();
+		ParentalControlDeathDelaySystem.Dispose();
+		ParentalControlDeathDelayPatches.Dispose();
 		harmony?.UnpatchAll(HarmonyId);
 		harmony = null;
 		this.api = null;
@@ -272,6 +278,31 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 					tree.GetInt("value", GhaelenTweaksConfig.Current.TemporalMarkingChalkLightLevel);
 				break;
 
+			case "pc-use-death-delay":
+				GhaelenTweaksConfig.Current.PcUseDeathDelay =
+					tree.GetBool("value", GhaelenTweaksConfig.Current.PcUseDeathDelay);
+				break;
+
+			case "pc-death-delay":
+				GhaelenTweaksConfig.Current.PcDeathDelay =
+					tree.GetInt("value", GhaelenTweaksConfig.Current.PcDeathDelay);
+				break;
+
+			case "pc-death-delay-increase":
+				GhaelenTweaksConfig.Current.PcDeathDelayIncrease =
+					tree.GetInt("value", GhaelenTweaksConfig.Current.PcDeathDelayIncrease);
+				break;
+
+			case "pc-death-delay-cooldown":
+				GhaelenTweaksConfig.Current.PcDeathDelayCooldown =
+					tree.GetInt("value", GhaelenTweaksConfig.Current.PcDeathDelayCooldown);
+				break;
+
+			case "pc-use-respawn-sickness":
+				GhaelenTweaksConfig.Current.PcUseRespawnSickness =
+					tree.GetBool("value", GhaelenTweaksConfig.Current.PcUseRespawnSickness);
+				break;
+
 			default:
 				changed = false;
 				break;
@@ -289,6 +320,11 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 				if (settingCode == "betterruins-blueprint-learning")
 				{
 					BetterRuinsBlueprintKnowledge.SyncAllOnlinePlayers();
+				}
+
+				if (settingCode == "pc-use-death-delay")
+				{
+					ParentalControlDeathDelaySystem.ApplyConfigChange();
 				}
 			}
 		}

@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 0.6.0 - 2026-08-21
+
+### Added
+
+- Added an escalating parental-controls respawn delay. The first death waits the configured base plus one increase;
+  repeated death-free cooldown periods remove accumulated increases until only the base remains.
+- Added `pc-death-delay`, `pc-death-delay-increase`, and `pc-death-delay-cooldown` settings with Config Lib controls.
+- Added the enabled-by-default `pc-use-death-delay` master switch and the disabled-by-default
+  `pc-use-respawn-sickness` reserved switch, both with Config Lib controls.
+- Added `PARENTAL_CONTROLS.md` with the broader recoverable death-consequence backlog and respawn-delay specification.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.5.0` to `0.6.0`.
+
 ## 0.5.0 - 2026-08-21
 - Added an affordable gray dye barrel recipe using 2 L of water and one powdered charcoal.
 

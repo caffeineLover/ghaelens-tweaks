@@ -122,6 +122,22 @@ The player crafting grid can now keep its ingredients when the inventory closes.
   - Closing and reopening the inventory keeps the crafting-grid ingredients in place.
   - The setting can be edited through Config Lib when it is installed.
 
+## Parental Controls: Respawn Delay
+
+Repeated deaths now create a progressively longer, recoverable respawn delay.
+
+- `pc-use-death-delay` enables the system; it defaults to `true`.
+- `pc-death-delay` sets the base delay in seconds; the default is `15`.
+- `pc-death-delay-increase` adds that many seconds on every death; the default is `15`.
+- `pc-death-delay-cooldown` removes one accumulated increase after that many death-free seconds; the default is `900`
+  seconds, or 15 minutes.
+- The current death receives the newly added increase, so the first default delay is 30 seconds.
+- Cooldown recovery repeats and continues while the player is offline.
+- The server enforces the deadline and the death screen displays the remaining time.
+- All death-delay settings can be edited through Config Lib when it is installed.
+- `pc-use-respawn-sickness` is exposed as a disabled-by-default placeholder while that system is being designed.
+- See `PARENTAL_CONTROLS.md` for the complete parental-controls feature backlog and specification.
+
 ## Cat Lore Warning
 
 Cats from the Cats mod can now warn you about nearby lore creatures.

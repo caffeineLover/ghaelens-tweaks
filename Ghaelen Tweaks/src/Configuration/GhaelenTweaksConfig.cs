@@ -95,6 +95,32 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("temporal-marking-chalk-light-level")]
 	public int TemporalMarkingChalkLightLevel { get; set; } = 3;
 
+	//// Controls whether escalating parental-controls death delays are active.
+	////
+	[JsonProperty("pc-use-death-delay")]
+	public bool PcUseDeathDelay { get; set; } = true;
+
+	//// Sets the base number of seconds added to every escalated death delay.
+	////
+	[JsonProperty("pc-death-delay")]
+	public int PcDeathDelay { get; set; } = 15;
+
+	//// Sets the number of seconds added to the current delay after each death.
+	////
+	[JsonProperty("pc-death-delay-increase")]
+	public int PcDeathDelayIncrease { get; set; } = 15;
+
+	//// Sets the death-free seconds required to remove one accumulated delay
+	//// increase.
+	////
+	[JsonProperty("pc-death-delay-cooldown")]
+	public int PcDeathDelayCooldown { get; set; } = 15 * 60;
+
+	//// Reserves the master switch for the planned respawn-sickness system.
+	////
+	[JsonProperty("pc-use-respawn-sickness")]
+	public bool PcUseRespawnSickness { get; set; }
+
 
 
 	//// Normalizes loaded or externally supplied values into the supported
@@ -116,6 +142,9 @@ public sealed class GhaelenTweaksConfig
 		MarkingChalkUses = ClampMarkingChalkUses(MarkingChalkUses);
 		MarkingChalkDyeBatchSize = ClampMarkingChalkDyeBatchSize(MarkingChalkDyeBatchSize);
 		TemporalMarkingChalkLightLevel = ClampLightLevel(TemporalMarkingChalkLightLevel);
+		PcDeathDelay = ClampPcDeathDelay(PcDeathDelay);
+		PcDeathDelayIncrease = ClampPcDeathDelay(PcDeathDelayIncrease);
+		PcDeathDelayCooldown = ClampPcDeathDelayCooldown(PcDeathDelayCooldown);
 	}
 
 
@@ -229,5 +258,41 @@ public sealed class GhaelenTweaksConfig
 		}
 
 		return lightLevel > 32 ? 32 : lightLevel;
+	}
+
+
+
+	//// Clamps a parental-controls death delay component to the supported
+	//// range of zero through one hour.
+	////
+	//// Zero remains valid for both the base and increase settings.  Setting
+	//// both values to zero disables the effective delay without a separate
+	//// feature toggle.
+	////
+	private static int ClampPcDeathDelay(int seconds)
+	{
+		if (seconds < 0)
+		{
+			return 0;
+		}
+
+		return seconds > 60 * 60 ? 60 * 60 : seconds;
+	}
+
+
+
+	//// Clamps the death-free cooldown to one second through seven days.
+	////
+	//// A positive cooldown avoids division by zero when the server lazily
+	//// calculates how many accumulated increases have expired.
+	////
+	private static int ClampPcDeathDelayCooldown(int seconds)
+	{
+		if (seconds < 1)
+		{
+			return 1;
+		}
+
+		return seconds > 7 * 24 * 60 * 60 ? 7 * 24 * 60 * 60 : seconds;
 	}
 }

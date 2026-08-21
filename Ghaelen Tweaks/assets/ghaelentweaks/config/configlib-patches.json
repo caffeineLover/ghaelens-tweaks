@@ -157,6 +157,61 @@
         "step": 1
       },
       "sortingWeight": 14
+    },
+    {
+      "type": "boolean",
+      "code": "pc-use-death-delay",
+      "ingui": "ghaelentweaks:setting-pc-use-death-delay",
+      "comment": "ghaelentweaks:setting-pc-use-death-delay-comment",
+      "default": true,
+      "sortingWeight": 15
+    },
+    {
+      "type": "number",
+      "code": "pc-death-delay",
+      "ingui": "ghaelentweaks:setting-pc-death-delay",
+      "comment": "ghaelentweaks:setting-pc-death-delay-comment",
+      "default": 15,
+      "range": {
+        "min": 0,
+        "max": 3600,
+        "step": 1
+      },
+      "sortingWeight": 16
+    },
+    {
+      "type": "number",
+      "code": "pc-death-delay-increase",
+      "ingui": "ghaelentweaks:setting-pc-death-delay-increase",
+      "comment": "ghaelentweaks:setting-pc-death-delay-increase-comment",
+      "default": 15,
+      "range": {
+        "min": 0,
+        "max": 3600,
+        "step": 1
+      },
+      "sortingWeight": 17
+    },
+    {
+      "type": "number",
+      "code": "pc-death-delay-cooldown",
+      "ingui": "ghaelentweaks:setting-pc-death-delay-cooldown",
+      "comment": "ghaelentweaks:setting-pc-death-delay-cooldown-comment",
+      "default": 900,
+      "range": {
+        "min": 1,
+        "max": 604800,
+        "step": 1
+      },
+      "sortingWeight": 18
+    },
+    {
+      "type": "boolean",
+      "code": "pc-use-respawn-sickness",
+      "ingui": "ghaelentweaks:setting-pc-use-respawn-sickness",
+      "comment": "ghaelentweaks:setting-pc-use-respawn-sickness-comment",
+      "default": false,
+      "sortingWeight": 19
     }
   ]
 }

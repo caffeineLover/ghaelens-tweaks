@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.5.0` adds an affordable alternate gray dye recipe while preserving the original vanilla recipes.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.6.0` adds the first server-enforced parental control: an escalating, recoverable per-player respawn delay. The broader consequence backlog and draft movement-sickness design live in `docs/PARENTAL_CONTROLS.md`.
 
 ## Active work
 
-No active implementation work is currently in progress. The latest completed change adds an alternate barrel recipe that produces 2 L of gray dye from 2 L of water and one powdered charcoal after 8 sealed hours.
+No active implementation work is currently in progress. Version `0.6.0` uses tag `parental-controls-initial`.
 
 ## Durable technical knowledge
 
@@ -27,6 +27,13 @@ No active implementation work is currently in progress. The latest completed cha
 - The palisade damage config toggle is `enable-palisade-damage-to-hostiles`; despite the concise setting name, the affected entities are lore creatures plus charging adult bears, wolves, and hyenas.
 - `assets/survival/patches/gray-dye.json` appends an affordable gray dye recipe without replacing the vanilla rusty
   gear or metal scraps recipes.
+- Parental-controls respawn delay state is persisted per player under mod-data key
+  `ghaelentweaks:pc-death-delay-state`. Defaults are 15 base seconds, 15 seconds added by each death, and a 900-second
+  death-free cooldown that removes one accumulated increase repeatedly. Cooldown calculations use UTC wall time and
+  therefore include offline time.
+- The respawn delay is enforced by a server Harmony prefix on
+  `Vintagestory.Server.ServerSystemEntitySimulation.OnPlayerRespawn(IServerPlayer)`. A one-way protobuf packet on
+  `ghaelentweaks-pc-death-delay` drives the client death-dialog countdown; client state is presentational only.
 - Cat Lore Warning only applies cat glow and yowl warning behavior. Ghaelen Tweaks does not cancel cat damage and no longer has a `cat-impervious-to-lore-creatures` config setting.
 - Vintage Story Reference `1.22.3` PetAI `5.1.1` defaults `PetConfig.FalldamageOff` to `true`, and `EntityBehaviorTameable.OnEntityReceiveDamage` cancels `EnumDamageSource.Fall` damage for tameable entities while that PetAI config is enabled. Cats `5.0.1` and WolfTaming `5.0.1` attach the `tameable` behavior and do not add their own fall-damage override, so tamed cats and dogs inherit PetAI's default fall-damage immunity unless `petconfig.json` turns it off.
 - Marking chalk uses `ItemMarkingChalk` in `src/Items/ItemMarkingChalk.cs`. It places `ghaelentweaks:markingchalk-{color}-{col}-{row}` decor blocks with `IBlockAccessor.SetDecor(..., blockSel.ToDecorIndex())`, so the target block remains unchanged and the adjacent block space is not occupied. Paint-face mode instead places `ghaelentweaks:markingchalk-paint-{color}` with `new DecorBits(blockSel.Face)` to fill the clicked face as decor.
@@ -182,6 +189,20 @@ No active implementation work is currently in progress. The latest completed cha
 - `Ghaelen Tweaks/docs/CODEX_STATE.md`: older persistent session notes that may contain useful historical context.
 
 ## Session history
+
+### 2026-08-21 — Parental-controls respawn delay
+
+- Added `docs/PARENTAL_CONTROLS.md` with the recoverable death-consequence backlog and the approved respawn-delay spec.
+- Implemented persistent per-player delay escalation, repeated real-time cooldown decay, reconnect synchronization,
+  server respawn enforcement, and the client death-dialog countdown.
+- Added Config Lib settings `pc-death-delay` (15), `pc-death-delay-increase` (15), and
+  `pc-death-delay-cooldown` (900), plus README, language, and Unreleased changelog documentation.
+- Added the enabled-by-default `pc-use-death-delay` switch and wired runtime disabling to release active deadlines
+  immediately. Added the disabled-by-default `pc-use-respawn-sickness` reserved switch and documented a proposed
+  stack-based movement penalty in `docs/PARENTAL_CONTROLS.md`; sickness mechanics remain unimplemented pending the
+  active-time versus wall-time cooldown decision.
+- Verified both private patch targets against the StoryForge 1.22.2 assemblies. `dotnet build` passed with zero
+  warnings and errors; Config Lib and language JSON parsed successfully.
 
 ### 2026-08-09
 

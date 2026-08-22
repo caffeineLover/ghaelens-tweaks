@@ -10,5 +10,6 @@ enforced configuration.
 
 ## Project-Specific Instructions
 
-Add project-specific rules, commands, context, and approved exceptions below this heading.  Do not place local changes
-in the shared `prompts/` tree.
+- When the user requests a release without supplying a Git tag, use the exact release version as the tag.
+- Add other project-specific rules, commands, context, and approved exceptions below this heading.  Do not place local
+  changes in the shared `prompts/` tree.

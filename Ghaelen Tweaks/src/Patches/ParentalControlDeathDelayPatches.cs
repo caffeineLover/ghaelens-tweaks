@@ -20,7 +20,8 @@ namespace GhaelenTweaks;
 internal static class ParentalControlDeathDelayPatches
 {
 	private const string ClientTargetTypeName = "Vintagestory.Client.NoObf.GuiDialogDead";
-	private const string ClientTargetMethodName = "OnGameTick";
+	private const string ClientTickTargetMethodName = "OnGameTick";
+	private const string ClientRespawnTargetMethodName = "OnRespawn";
 	private const string ServerTargetTypeName = "Vintagestory.Server.ServerSystemEntitySimulation";
 	private const string ServerTargetMethodName = "OnPlayerRespawn";
 	private static FieldInfo? clientRespawningField;
@@ -50,10 +51,12 @@ internal static class ParentalControlDeathDelayPatches
 
 
 
-	//// Applies the client postfix that displays and disables the countdown.
+	//// Applies the client hooks that display and enforce the countdown.
 	////
-	//// The patch reuses the vanilla death dialog's dynamic countdown line and
-	//// restores its original revival text when the parental delay expires.
+	//// The tick patch reuses the vanilla death dialog's dynamic countdown line
+	//// and restores its original revival text when the delay expires.  The
+	//// respawn prefix prevents vanilla from entering its permanent respawning
+	//// state when an early click races a dialog recompose or network update.
 	////
 	internal static void ApplyClient(Harmony harmony, ILogger logger)
 	{
@@ -61,10 +64,19 @@ internal static class ParentalControlDeathDelayPatches
 			harmony,
 			logger,
 			ClientTargetTypeName,
-			ClientTargetMethodName,
+			ClientTickTargetMethodName,
 			new[] { typeof(float) },
 			nameof(PostfixClientDeathDialogTick),
 			isPrefix: false);
+
+		ApplyPatch(
+			harmony,
+			logger,
+			ClientTargetTypeName,
+			ClientRespawnTargetMethodName,
+			Type.EmptyTypes,
+			nameof(PrefixClientRespawn),
+			isPrefix: true);
 	}
 
 
@@ -86,6 +98,25 @@ internal static class ParentalControlDeathDelayPatches
 	private static bool PrefixServerPlayerRespawn(IServerPlayer player)
 	{
 		return ParentalControlDeathDelaySystem.IsServerRespawnAllowed(player);
+	}
+
+
+
+	//// Prevents an early client click from latching vanilla's respawning flag.
+	////
+	//// The server remains authoritative.  This client guard prevents the
+	//// vanilla dialog from disabling itself permanently before sending a
+	//// request that the server must reject.
+	////
+	private static bool PrefixClientRespawn(object __instance)
+	{
+		if (ParentalControlDeathDelaySystem.GetClientRemainingMilliseconds() <= 0)
+		{
+			return true;
+		}
+
+		ClearClientRespawning(__instance);
+		return false;
 	}
 
 
@@ -122,6 +153,10 @@ internal static class ParentalControlDeathDelayPatches
 
 		if (remainingMilliseconds > 0)
 		{
+			// An authoritative rejection packet can arrive after vanilla has
+			// already latched this flag.  Clear it while our own disabled state
+			// protects the button so expiry can always unlock the dialog.
+			ClearClientRespawning(__instance);
 			CaptureCountdownText(countdownElement);
 			long remainingSeconds = 1 + ((remainingMilliseconds - 1) / 1000);
 			countdownElement?.SetNewText(
@@ -139,10 +174,29 @@ internal static class ParentalControlDeathDelayPatches
 
 		if (respawnButton != null)
 		{
-			clientRespawningField ??= AccessTools.Field(__instance.GetType(), "respawning");
-			bool respawning = clientRespawningField?.GetValue(__instance) is true;
+			bool respawning = IsClientRespawning(__instance);
 			respawnButton.Enabled = !respawning;
 		}
+	}
+
+
+
+	//// Reads vanilla's in-progress flag without taking ownership of respawn.
+	////
+	private static bool IsClientRespawning(object instance)
+	{
+		clientRespawningField ??= AccessTools.Field(instance.GetType(), "respawning");
+		return clientRespawningField?.GetValue(instance) is true;
+	}
+
+
+
+	//// Repairs vanilla's latched in-progress state after an early rejection.
+	////
+	private static void ClearClientRespawning(object instance)
+	{
+		clientRespawningField ??= AccessTools.Field(instance.GetType(), "respawning");
+		clientRespawningField?.SetValue(instance, false);
 	}
 
 

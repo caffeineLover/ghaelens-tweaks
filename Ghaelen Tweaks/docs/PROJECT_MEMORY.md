@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.6.0` adds the first server-enforced parental control: an escalating, recoverable per-player respawn delay. The broader consequence backlog and draft movement-sickness design live in `docs/PARENTAL_CONTROLS.md`.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.6.1` contains the escalating, recoverable per-player respawn delay and prevents rejected early respawn attempts from leaving the death dialog permanently disabled. The broader consequence backlog and draft movement-sickness design live in `docs/PARENTAL_CONTROLS.md`.
 
 ## Active work
 
-No active implementation work is currently in progress. Version `0.6.0` uses tag `parental-controls-initial`.
+No active implementation work is currently in progress. Version `0.6.1` uses tag `0.6.1`.
 
 ## Durable technical knowledge
 
@@ -34,6 +34,9 @@ No active implementation work is currently in progress. Version `0.6.0` uses tag
 - The respawn delay is enforced by a server Harmony prefix on
   `Vintagestory.Server.ServerSystemEntitySimulation.OnPlayerRespawn(IServerPlayer)`. A one-way protobuf packet on
   `ghaelentweaks-pc-death-delay` drives the client death-dialog countdown; client state is presentational only.
+- Vintage Story's death dialog sets its private `respawning` flag before sending a respawn request and does not clear
+  it after a server rejection. The client delay prefix blocks early callbacks, and the countdown tick clears any stale
+  flag while the authoritative delay remains active so the button can unlock at expiry.
 - Cat Lore Warning only applies cat glow and yowl warning behavior. Ghaelen Tweaks does not cancel cat damage and no longer has a `cat-impervious-to-lore-creatures` config setting.
 - Vintage Story Reference `1.22.3` PetAI `5.1.1` defaults `PetConfig.FalldamageOff` to `true`, and `EntityBehaviorTameable.OnEntityReceiveDamage` cancels `EnumDamageSource.Fall` damage for tameable entities while that PetAI config is enabled. Cats `5.0.1` and WolfTaming `5.0.1` attach the `tameable` behavior and do not add their own fall-damage override, so tamed cats and dogs inherit PetAI's default fall-damage immunity unless `petconfig.json` turns it off.
 - Marking chalk uses `ItemMarkingChalk` in `src/Items/ItemMarkingChalk.cs`. It places `ghaelentweaks:markingchalk-{color}-{col}-{row}` decor blocks with `IBlockAccessor.SetDecor(..., blockSel.ToDecorIndex())`, so the target block remains unchanged and the adjacent block space is not occupied. Paint-face mode instead places `ghaelentweaks:markingchalk-paint-{color}` with `new DecorBits(blockSel.Face)` to fill the clicked face as decor.
@@ -147,6 +150,9 @@ No active implementation work is currently in progress. Version `0.6.0` uses tag
 - The post-`0.3.5` clutter-fuel handbook compatibility fix was verified with `dotnet build "Ghaelen Tweaks.sln"` on 2026-07-29. The solution build passed; the only warnings were existing CakeBuild NuGet advisory warnings.
 - Release `0.3.6` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, `dotnet build "Ghaelen Tweaks.sln"`, and `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=Package` on 2026-07-29. The ZIP was created at `Releases/ghaelentweaks_0.3.6.zip`; its packaged `modinfo.json` was checked and contained version `0.3.6`, mod id `ghaelentweaks`, and game dependency `1.22.3`. The only warnings were existing CakeBuild NuGet advisory warnings and Git line-ending normalization warnings.
 - Release `0.3.8` pre-tag verification ran `git diff --check`, `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and `dotnet build "Ghaelen Tweaks.sln"` on 2026-08-07. The whitespace check reported only the repository's existing CRLF normalization warnings. JSON validation and the solution build passed; the only build warnings were existing CakeBuild NuGet advisory warnings. The installed ACA `2.0.0-dev.16` DLL was inspected with a temporary `ilspycmd` tool install under `%TEMP%` to confirm the exact helper body and signature.
+- Release `0.6.1` pre-tag verification ran `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`
+  and `dotnet build "Ghaelen Tweaks.sln"` on 2026-08-21. JSON validation and the solution build passed; the only
+  warnings were the existing CakeBuild NuGet vulnerability advisories.
 - The 2026-08-09 cat immunity removal parsed `assets/game/lang/en.json` and `assets/ghaelentweaks/config/configlib-patches.json` with PowerShell `ConvertFrom-Json`. A targeted `rg` scan found no active source or asset references to `CatImpervious`, `cat-impervious`, `OnEntityReceiveDamage`, or `damage = 0`; `git diff --check` reported only the repository's existing CRLF normalization warnings. `dotnet build` was not run because explicit build permission was not given.
 - The 2026-08-09 marking chalk implementation parsed the new strict JSON assets and modified language/config JSON with PowerShell `ConvertFrom-Json`, generated 100 block mark PNGs and 10 item PNGs, visually inspected sample textures, and ran `git diff --check`; only the repository's existing CRLF normalization warnings were reported. `dotnet build` was not run because explicit build permission was not given.
 
@@ -203,6 +209,9 @@ No active implementation work is currently in progress. Version `0.6.0` uses tag
   active-time versus wall-time cooldown decision.
 - Verified both private patch targets against the StoryForge 1.22.2 assemblies. `dotnet build` passed with zero
   warnings and errors; Config Lib and language JSON parsed successfully.
+- Diagnosed a live multiplayer deadlock in which an early respawn request was rejected by the server after vanilla had
+  latched its private client `respawning` flag. Added a client `OnRespawn` prefix plus stale-state recovery in the
+  countdown tick, and verified the private target method and field against the StoryForge 1.22.7 assembly.
 
 ### 2026-08-09
 

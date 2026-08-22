@@ -1,5 +1,21 @@
 # Releases
 
+## Version 0.6.1
+
+**Tag:** `0.6.1`
+
+**Released:** 2026-08-21
+
+This hotfix prevents an early rejected respawn attempt from permanently disabling the death dialog.
+
+### Changes
+
+- Respawn clicks are now held on the client while the parental-control delay remains active.
+- A rejected early attempt now clears Vintage Story's stale respawning state so the button reliably unlocks when the
+  countdown reaches zero.
+
+
+
 ## Version 0.6.0
 
 **Tag:** `parental-controls-initial`

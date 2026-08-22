@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.6.1 - 2026-08-21
+
+### Fixed
+
+- Fixed the death dialog remaining permanently disabled after an early respawn click was rejected by the server.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.6.0` to `0.6.1`.
+
 ## 0.6.0 - 2026-08-21
 
 ### Added

@@ -1,5 +1,21 @@
 # Releases
 
+## Version 0.6.3
+
+**Tag:** `0.6.3`
+
+**Released:** 2026-08-22
+
+This release makes the escalating respawn consequence clearer before the player returns to the world.
+
+### Changes
+
+- The death dialog now shows the delay that one more death would receive at the player's current count.
+- The next delay is calculated by the server using the active increment and elapsed cooldown recovery.
+- The scheduled-delay message remains visible beneath the current respawn countdown or vanilla revival text.
+
+
+
 ## Version 0.6.2
 
 **Tag:** `0.6.2`

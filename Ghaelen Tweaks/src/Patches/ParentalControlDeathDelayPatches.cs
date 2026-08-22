@@ -27,6 +27,7 @@ internal static class ParentalControlDeathDelayPatches
 	private static FieldInfo? clientRespawningField;
 	private static WeakReference<GuiElementDynamicText>? lastCountdownElement;
 	private static string originalCountdownText = string.Empty;
+	private static string lastRenderedCountdownText = string.Empty;
 	private static bool countdownOverridden;
 
 
@@ -53,10 +54,10 @@ internal static class ParentalControlDeathDelayPatches
 
 	//// Applies the client hooks that display and enforce the countdown.
 	////
-	//// The tick patch reuses the vanilla death dialog's dynamic countdown line
-	//// and restores its original revival text when the delay expires.  The
-	//// respawn prefix prevents vanilla from entering its permanent respawning
-	//// state when an early click races a dialog recompose or network update.
+	//// The tick patch reuses the vanilla death dialog's dynamic countdown area
+	//// for both current and next-death timing while preserving revival text.
+	//// The respawn prefix prevents vanilla from entering its permanent
+	//// respawning state when an early click races a recompose or network update.
 	////
 	internal static void ApplyClient(Harmony harmony, ILogger logger)
 	{
@@ -87,6 +88,7 @@ internal static class ParentalControlDeathDelayPatches
 	{
 		lastCountdownElement = null;
 		originalCountdownText = string.Empty;
+		lastRenderedCountdownText = string.Empty;
 		countdownOverridden = false;
 		clientRespawningField = null;
 	}
@@ -125,7 +127,7 @@ internal static class ParentalControlDeathDelayPatches
 	////
 	//// Vanilla still owns opening, composing, revival timing, limited lives,
 	//// respawn dispatch, and closing.  This postfix changes only the countdown
-	//// line and button enabled state while the synced delay remains positive.
+	//// line while dead and the button state while the synced delay is positive.
 	////
 	private static void PostfixClientDeathDialogTick(object __instance)
 	{
@@ -150,6 +152,7 @@ internal static class ParentalControlDeathDelayPatches
 		GuiElementTextButton? respawnButton = composer.GetButton("respawnbtn");
 		GuiElementDynamicText? countdownElement = composer.GetDynamicText("reviveCountdown");
 		long remainingMilliseconds = ParentalControlDeathDelaySystem.GetClientRemainingMilliseconds();
+		long? nextDeathDelaySeconds = ParentalControlDeathDelaySystem.GetClientNextDeathDelaySeconds();
 
 		if (remainingMilliseconds > 0)
 		{
@@ -159,8 +162,10 @@ internal static class ParentalControlDeathDelayPatches
 			ClearClientRespawning(__instance);
 			CaptureCountdownText(countdownElement);
 			long remainingSeconds = 1 + ((remainingMilliseconds - 1) / 1000);
-			countdownElement?.SetNewText(
-				Lang.Get("ghaelentweaks:pc-death-delay-countdown", remainingSeconds));
+			SetCountdownText(
+				countdownElement,
+				Lang.Get("ghaelentweaks:pc-death-delay-countdown", remainingSeconds),
+				nextDeathDelaySeconds);
 
 			if (respawnButton != null)
 			{
@@ -170,7 +175,15 @@ internal static class ParentalControlDeathDelayPatches
 			return;
 		}
 
-		RestoreCountdownText();
+		if (nextDeathDelaySeconds.HasValue)
+		{
+			CaptureCountdownText(countdownElement);
+			SetCountdownText(countdownElement, originalCountdownText, nextDeathDelaySeconds);
+		}
+		else
+		{
+			RestoreCountdownText();
+		}
 
 		if (respawnButton != null)
 		{
@@ -220,6 +233,13 @@ internal static class ParentalControlDeathDelayPatches
 		{
 			lastCountdownElement = new WeakReference<GuiElementDynamicText>(countdownElement);
 			originalCountdownText = countdownElement.GetText();
+			lastRenderedCountdownText = string.Empty;
+		}
+		else if (countdownOverridden && countdownElement.GetText() != lastRenderedCountdownText)
+		{
+			// Vanilla can update its revival timer while this patch owns the
+			// displayed text.  Preserve that new value for the next combined line.
+			originalCountdownText = countdownElement.GetText();
 		}
 
 		countdownOverridden = true;
@@ -227,7 +247,33 @@ internal static class ParentalControlDeathDelayPatches
 
 
 
-	//// Restores the vanilla revival countdown after the custom delay expires.
+	//// Combines the current status with the scheduled delay for one more death.
+	////
+	//// Auto-height lets the existing 350-pixel death-dialog text element render
+	//// both short lines in the vertical gap above the respawn button.
+	////
+	private static void SetCountdownText(
+		GuiElementDynamicText? countdownElement,
+		string primaryText,
+		long? nextDeathDelaySeconds)
+	{
+		if (countdownElement == null || !nextDeathDelaySeconds.HasValue)
+		{
+			return;
+		}
+
+		string scheduleText = Lang.Get(
+			"ghaelentweaks:pc-next-death-delay",
+			nextDeathDelaySeconds.Value);
+		lastRenderedCountdownText = string.IsNullOrWhiteSpace(primaryText)
+			? scheduleText
+			: $"{primaryText}\n{scheduleText}";
+		countdownElement.SetNewText(lastRenderedCountdownText, autoHeight: true);
+	}
+
+
+
+	//// Restores the vanilla revival countdown when no custom schedule is active.
 	////
 	private static void RestoreCountdownText()
 	{
@@ -240,6 +286,7 @@ internal static class ParentalControlDeathDelayPatches
 
 		lastCountdownElement = null;
 		originalCountdownText = string.Empty;
+		lastRenderedCountdownText = string.Empty;
 		countdownOverridden = false;
 	}
 

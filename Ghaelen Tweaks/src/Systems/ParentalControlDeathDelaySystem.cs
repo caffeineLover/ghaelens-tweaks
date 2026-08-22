@@ -6,7 +6,7 @@
  * lazily according to real death-free time, including time spent offline.
  * The first counted death is free; later deaths produce an incremental
  * delay.  The server stores compact JSON state in permanent player mod data,
- * and a one-way packet gives the client a monotonic presentation countdown.
+ * and a one-way packet gives the client the current countdown and next delay.
  */
 
 using System.Text;
@@ -29,19 +29,23 @@ internal static class ParentalControlDeathDelaySystem
 	private static PlayerDeathDelegate? playerDeathHandler;
 	private static PlayerDelegate? playerNowPlayingHandler;
 	private static long clientRespawnAvailableAtElapsedMilliseconds;
+	private static long clientNextDeathDelaySeconds;
+	private static bool clientHasScheduledNextDeathDelay;
 
 
 
 	//// Registers the client receiver for the server-owned respawn deadline.
 	////
-	//// The packet carries remaining duration rather than a wall-clock
-	//// timestamp so server and client clock differences cannot change the
-	//// displayed or enforced delay.
+	//// The packet carries remaining duration rather than a wall-clock timestamp
+	//// so server and client clock differences cannot change the displayed or
+	//// enforced delay.  It also carries the server-calculated next delay.
 	////
 	internal static void StartClientSide(ICoreClientAPI api)
 	{
 		clientApi = api;
 		clientRespawnAvailableAtElapsedMilliseconds = 0;
+		clientNextDeathDelaySeconds = 0;
+		clientHasScheduledNextDeathDelay = false;
 
 		api.Network
 			.RegisterChannel(ChannelName)
@@ -98,6 +102,8 @@ internal static class ParentalControlDeathDelaySystem
 		serverApi = null;
 		clientApi = null;
 		clientRespawnAvailableAtElapsedMilliseconds = 0;
+		clientNextDeathDelaySeconds = 0;
+		clientHasScheduledNextDeathDelay = false;
 	}
 
 
@@ -126,13 +132,19 @@ internal static class ParentalControlDeathDelaySystem
 			{
 				state.RespawnAvailableAtUtcMilliseconds = 0;
 				SaveState(player, state);
-				SendDelayPacket(player, 0);
+				SendDelayPacket(
+					player,
+					0,
+					CalculateNextDeathDelaySeconds(state, nowMilliseconds));
 			}
 
 			return true;
 		}
 
-		SendDelayPacket(player, remainingMilliseconds);
+		SendDelayPacket(
+			player,
+			remainingMilliseconds,
+			CalculateNextDeathDelaySeconds(state, nowMilliseconds));
 		long remainingSeconds = DivideRoundingUp(remainingMilliseconds, 1000);
 		player.SendLocalisedMessage(
 			GlobalConstants.GeneralChatGroup,
@@ -150,12 +162,24 @@ internal static class ParentalControlDeathDelaySystem
 	////
 	internal static long GetClientRemainingMilliseconds()
 	{
-		if (clientApi == null || !GhaelenTweaksConfig.Current.PcUseDeathDelay)
+		if (clientApi == null || !clientHasScheduledNextDeathDelay)
 		{
 			return 0;
 		}
 
 		return Math.Max(0, clientRespawnAvailableAtElapsedMilliseconds - clientApi.ElapsedMilliseconds);
+	}
+
+
+
+	//// Returns the server-calculated delay that one more death would receive.
+	////
+	//// A null result means no active death-dialog schedule should be shown.
+	//// The client displays this value but never uses it for enforcement.
+	////
+	internal static long? GetClientNextDeathDelaySeconds()
+	{
+		return clientHasScheduledNextDeathDelay ? clientNextDeathDelaySeconds : null;
 	}
 
 
@@ -177,15 +201,17 @@ internal static class ParentalControlDeathDelaySystem
 	internal static void ClearClientDelay()
 	{
 		clientRespawnAvailableAtElapsedMilliseconds = 0;
+		clientNextDeathDelaySeconds = 0;
+		clientHasScheduledNextDeathDelay = false;
 	}
 
 
 
-	//// Applies a runtime master-switch change to connected players.
+	//// Applies a runtime death-delay configuration change to connected players.
 	////
 	//// Disabling the feature immediately clears active deadlines without
-	//// erasing counted-death history.  Re-enabling affects later deaths; it does
-	//// not retroactively reinstate a deadline that was explicitly cleared.
+	//// erasing counted-death history.  Numeric changes refresh the displayed
+	//// next-death schedule but do not rewrite an already assigned deadline.
 	////
 	internal static void ApplyConfigChange()
 	{
@@ -229,7 +255,7 @@ internal static class ParentalControlDeathDelaySystem
 	{
 		if (!GhaelenTweaksConfig.Current.PcUseDeathDelay)
 		{
-			SendDelayPacket(player, 0);
+			SendClearDelayPacket(player);
 			return;
 		}
 
@@ -249,7 +275,10 @@ internal static class ParentalControlDeathDelaySystem
 			nowMilliseconds,
 			MultiplySaturating(delaySeconds, 1000));
 		SaveState(player, state);
-		SendDelayPacket(player, MultiplySaturating(delaySeconds, 1000));
+		SendDelayPacket(
+			player,
+			MultiplySaturating(delaySeconds, 1000),
+			CalculateNextDeathDelaySeconds(state, nowMilliseconds));
 
 		if (delaySeconds > 0)
 		{
@@ -278,15 +307,19 @@ internal static class ParentalControlDeathDelaySystem
 
 		if (player.Entity?.Alive != false)
 		{
-			SendDelayPacket(player, 0);
+			SendClearDelayPacket(player);
 			return;
 		}
 
 		ParentalControlDeathDelayState state = ReadState(player);
+		long nowMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 		long remainingMilliseconds = Math.Max(
 			0,
-			state.RespawnAvailableAtUtcMilliseconds - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-		SendDelayPacket(player, remainingMilliseconds);
+			state.RespawnAvailableAtUtcMilliseconds - nowMilliseconds);
+		SendDelayPacket(
+			player,
+			remainingMilliseconds,
+			CalculateNextDeathDelaySeconds(state, nowMilliseconds));
 	}
 
 
@@ -306,7 +339,7 @@ internal static class ParentalControlDeathDelaySystem
 			SaveState(player, state);
 		}
 
-		SendDelayPacket(player, 0);
+		SendClearDelayPacket(player);
 	}
 
 
@@ -324,6 +357,8 @@ internal static class ParentalControlDeathDelaySystem
 		clientRespawnAvailableAtElapsedMilliseconds = AddSaturating(
 			clientApi.ElapsedMilliseconds,
 			remainingMilliseconds);
+		clientNextDeathDelaySeconds = Math.Max(0, packet.NextDeathDelaySeconds);
+		clientHasScheduledNextDeathDelay = packet.HasScheduledNextDeathDelay;
 	}
 
 
@@ -372,6 +407,27 @@ internal static class ParentalControlDeathDelaySystem
 
 
 
+	//// Calculates the delay that a hypothetical death at the given time would receive.
+	////
+	//// Applying lazy cooldown recovery before adding the hypothetical death keeps
+	//// the displayed schedule aligned with the server's authoritative next-death
+	//// calculation, including death-free time spent offline.
+	////
+	private static long CalculateNextDeathDelaySeconds(
+		ParentalControlDeathDelayState state,
+		long nowMilliseconds)
+	{
+		int nextDeathCount = GetDecayedDeathCount(state, nowMilliseconds);
+		if (nextDeathCount < int.MaxValue)
+		{
+			nextDeathCount++;
+		}
+
+		return CalculateDelaySeconds(nextDeathCount);
+	}
+
+
+
 	//// Reads a player's permanent delay state from its compact JSON payload.
 	////
 	//// Missing or invalid data starts from a clean state and logs a warning
@@ -411,16 +467,30 @@ internal static class ParentalControlDeathDelaySystem
 
 
 
-	//// Sends an authoritative remaining duration to one connected client.
+	//// Sends the active wait and server-calculated next-death schedule to one client.
 	////
-	private static void SendDelayPacket(IServerPlayer player, long remainingMilliseconds)
+	private static void SendDelayPacket(
+		IServerPlayer player,
+		long remainingMilliseconds,
+		long nextDeathDelaySeconds)
 	{
 		serverChannel?.SendPacket(
 			new ParentalControlDeathDelayPacket
 			{
-				RemainingMilliseconds = Math.Max(0, remainingMilliseconds)
+				RemainingMilliseconds = Math.Max(0, remainingMilliseconds),
+				NextDeathDelaySeconds = Math.Max(0, nextDeathDelaySeconds),
+				HasScheduledNextDeathDelay = true
 			},
 			player);
+	}
+
+
+
+	//// Clears all death-delay presentation state on one connected client.
+	////
+	private static void SendClearDelayPacket(IServerPlayer player)
+	{
+		serverChannel?.SendPacket(new ParentalControlDeathDelayPacket(), player);
 	}
 
 
@@ -486,4 +556,10 @@ internal sealed class ParentalControlDeathDelayPacket
 {
 	[ProtoMember(1)]
 	public long RemainingMilliseconds { get; set; }
+
+	[ProtoMember(2)]
+	public long NextDeathDelaySeconds { get; set; }
+
+	[ProtoMember(3)]
+	public bool HasScheduledNextDeathDelay { get; set; }
 }

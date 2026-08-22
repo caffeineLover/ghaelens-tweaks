@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.6.3 - 2026-08-22
+
+### Added
+
+- Added the next scheduled death delay to the death dialog so players can see the consequence of dying again.
+
+### Changed
+
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.6.2` to `0.6.3`.
+
 ## 0.6.2 - 2026-08-21
 
 ### Changed

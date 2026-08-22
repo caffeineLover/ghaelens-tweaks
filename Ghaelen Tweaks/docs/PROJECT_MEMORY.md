@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-08-21
+Last updated: 2026-08-22
 
 ## Project overview
 
@@ -8,18 +8,17 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.6.2` gives the first counted death a free respawn, escalates later deaths by a configurable increment, and retains the 0.6.1 fix for rejected early respawn attempts. The broader consequence backlog and draft movement-sickness design live in `docs/PARENTAL_CONTROLS.md`.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.6.3` adds the server-calculated next death delay to the death dialog while retaining the free first respawn and escalating, recoverable delay. The broader consequence backlog and draft movement-sickness design live in `docs/PARENTAL_CONTROLS.md`.
 
 ## Active work
 
-No active implementation work is currently in progress. Version `0.6.2` uses tag `0.6.2`.
+No active implementation work is currently in progress. Version `0.6.3` uses tag `0.6.3`.
 
 ## Durable technical knowledge
 
 - All source files must be placed under `Ghaelen Tweaks/src/`.
 - Strongly related source files should be grouped in clearly named subfolders under `src/`.
 - The SDK-style project file uses default compile includes, so C# files under `src/` are compiled without explicit `Compile Include` entries.
-- Existing docs in `docs/CODEX_STATE.md` say not to run builds unless explicitly instructed by the user.
 - C# source files must follow the shared Vintage Story mod coding standards: file-level `/* ... */` comments, `////` comments for callable members, internal `//` intent comments, and three blank lines before method comment blocks.
 - Vintage Story 1.22.3 `survival/blocktypes/plant/reedpapyrus.json` defines tule as `tallplant-tule-*`. Normal tule drops `thatch`; harvested tule drops `tuleroot`.
 - Vintage Story 1.22.3 `survival/recipes/grid/basket.json` uses the 3x2 pattern `L_L	LLL` or `P_P	PPP`, with quantity 2 per occupied slot, for cattail and papyrus handbaskets.
@@ -35,7 +34,8 @@ No active implementation work is currently in progress. Version `0.6.2` uses tag
   saved only under the new name afterward.
 - The respawn delay is enforced by a server Harmony prefix on
   `Vintagestory.Server.ServerSystemEntitySimulation.OnPlayerRespawn(IServerPlayer)`. A one-way protobuf packet on
-  `ghaelentweaks-pc-death-delay` drives the client death-dialog countdown; client state is presentational only.
+  `ghaelentweaks-pc-death-delay` drives the client death-dialog countdown and next-death schedule; client state is
+  presentational only.
 - Vintage Story's death dialog sets its private `respawning` flag before sending a respawn request and does not clear
   it after a server rejection. The client delay prefix blocks early callbacks, and the countdown tick clears any stale
   flag while the authoritative delay remains active so the button can unlock at expiry.

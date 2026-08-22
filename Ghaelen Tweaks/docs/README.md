@@ -132,7 +132,8 @@ Repeated deaths now create a progressively longer, recoverable respawn delay aft
   or 15 minutes.
 - If `n` is the current counted deaths, the delay is `max(0, n - 1) * increment`; the first death is free.
 - Cooldown recovery repeats and continues while the player is offline.
-- The server enforces the deadline and the death screen displays the remaining time.
+- The server enforces the deadline, and the death screen displays both the remaining time and the delay for one more
+  death at the player's current count.
 - All death-delay settings can be edited through Config Lib when it is installed.
 - `pc-use-respawn-sickness` is exposed as a disabled-by-default placeholder while that system is being designed.
 - See `PARENTAL_CONTROLS.md` for the complete parental-controls feature backlog and specification.

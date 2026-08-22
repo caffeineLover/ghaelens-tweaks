@@ -78,9 +78,9 @@ continues while the player is offline.
   teleporting.
 - A client Harmony prefix prevents an early click from latching vanilla's `respawning` state, and the countdown tick
   clears that stale state after any server rejection so the button reliably unlocks when the delay expires.
-- The server sends the remaining duration to the affected client over a one-way mod channel.
+- The server sends the remaining duration and next scheduled delay to the affected client over a one-way mod channel.
 - The client reuses the vanilla death dialog's countdown line, disables the respawn button until the delay expires, and
-  restores the vanilla revival text afterward.
+  shows the scheduled delay for one more death beneath the current countdown or vanilla revival text.
 - Reconnecting while dead resynchronizes the remaining deadline and does not bypass the wait.
 - Config changes affect future death calculations. A delay already assigned to a death retains its original deadline.
 
@@ -92,6 +92,7 @@ continues while the player is offline.
 - [x] Recovery repeats until the counted deaths reach zero.
 - [x] The server rejects early respawn packets even if the client UI is bypassed.
 - [x] An early rejected respawn attempt does not leave the death dialog permanently disabled.
+- [x] The death dialog shows the delay one more death would receive at the player's current count.
 - [x] Active delay and escalation state survive reconnects and server restarts.
 - [x] Config Lib exposes the master switch and both numeric settings with their units, defaults, and ranges.
 

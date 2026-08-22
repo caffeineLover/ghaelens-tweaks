@@ -317,7 +317,9 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 					BetterRuinsBlueprintKnowledge.SyncAllOnlinePlayers();
 				}
 
-				if (settingCode == "pc-use-death-delay")
+				if (settingCode is "pc-use-death-delay"
+					or "pc-spawn-delay-increment"
+					or "pc-spawn-delay-cooldown")
 				{
 					ParentalControlDeathDelaySystem.ApplyConfigChange();
 				}

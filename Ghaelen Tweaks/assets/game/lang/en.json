@@ -38,6 +38,7 @@
   "ghaelentweaks:setting-pc-use-respawn-sickness-comment": "Reserved master switch for the planned respawn-sickness system. The feature is not implemented yet.",
   "ghaelentweaks:pc-death-delay-started": "Your respawn delay is now {0} seconds.",
   "ghaelentweaks:pc-death-delay-countdown": "Respawn available in {0} seconds.",
+  "ghaelentweaks:pc-next-death-delay": "Next death delay: {0} seconds.",
   "ghaelentweaks:heldhelp-read-betterruins-blueprint": "Read blueprint",
   "ghaelentweaks:heldhelp-draw-marking-chalk": "Draw selected mark",
   "ghaelentweaks:heldhelp-erase-marking-chalk": "Erase mark",

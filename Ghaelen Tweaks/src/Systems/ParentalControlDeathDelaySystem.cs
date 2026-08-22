@@ -2,11 +2,11 @@
  * Owns the server-authoritative parental-controls respawn delay and its
  * client countdown synchronization.
  *
- * Each player's accumulated delay increases persistently on death and
- * decays lazily according to real death-free time, including time spent
- * offline.  The server stores only compact JSON state in permanent player
- * mod data.  A one-way network packet gives the client a local monotonic
- * countdown without trusting the client to decide when respawning is legal.
+ * Each player's counted deaths increase persistently on death and decay
+ * lazily according to real death-free time, including time spent offline.
+ * The first counted death is free; later deaths produce an incremental
+ * delay.  The server stores compact JSON state in permanent player mod data,
+ * and a one-way packet gives the client a monotonic presentation countdown.
  */
 
 using System.Text;
@@ -184,7 +184,7 @@ internal static class ParentalControlDeathDelaySystem
 	//// Applies a runtime master-switch change to connected players.
 	////
 	//// Disabling the feature immediately clears active deadlines without
-	//// erasing accumulated history.  Re-enabling affects later deaths; it does
+	//// erasing counted-death history.  Re-enabling affects later deaths; it does
 	//// not retroactively reinstate a deadline that was explicitly cleared.
 	////
 	internal static void ApplyConfigChange()
@@ -219,11 +219,11 @@ internal static class ParentalControlDeathDelaySystem
 
 
 
-	//// Escalates and persists the dying player's current respawn delay.
+	//// Counts the death and persists the dying player's current respawn delay.
 	////
-	//// Expired increases are removed before the new death adds one increase,
-	//// so the current death always uses the newly escalated delay.  The new
-	//// death also restarts the death-free cooldown window.
+	//// Expired deaths are removed before the new death is counted.  The first
+	//// counted death is free, and each death beyond it contributes one
+	//// configured delay increment.  The new death restarts the cooldown.
 	////
 	private static void OnPlayerDeath(IServerPlayer player, DamageSource damageSource)
 	{
@@ -235,16 +235,15 @@ internal static class ParentalControlDeathDelaySystem
 
 		long nowMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 		ParentalControlDeathDelayState state = ReadState(player);
-		int accumulatedIncrements = GetDecayedIncrementCount(state, nowMilliseconds);
+		int deathCount = GetDecayedDeathCount(state, nowMilliseconds);
 
-		if (GhaelenTweaksConfig.Current.PcDeathDelayIncrease > 0
-			&& accumulatedIncrements < int.MaxValue)
+		if (deathCount < int.MaxValue)
 		{
-			accumulatedIncrements++;
+			deathCount++;
 		}
 
-		long delaySeconds = CalculateDelaySeconds(accumulatedIncrements);
-		state.AccumulatedIncrements = accumulatedIncrements;
+		long delaySeconds = CalculateDelaySeconds(deathCount);
+		state.DeathCount = deathCount;
 		state.LastDeathAtUtcMilliseconds = nowMilliseconds;
 		state.RespawnAvailableAtUtcMilliseconds = AddSaturating(
 			nowMilliseconds,
@@ -252,10 +251,13 @@ internal static class ParentalControlDeathDelaySystem
 		SaveState(player, state);
 		SendDelayPacket(player, MultiplySaturating(delaySeconds, 1000));
 
-		player.SendLocalisedMessage(
-			GlobalConstants.GeneralChatGroup,
-			"ghaelentweaks:pc-death-delay-started",
-			delaySeconds);
+		if (delaySeconds > 0)
+		{
+			player.SendLocalisedMessage(
+				GlobalConstants.GeneralChatGroup,
+				"ghaelentweaks:pc-death-delay-started",
+				delaySeconds);
+		}
 	}
 
 
@@ -326,33 +328,31 @@ internal static class ParentalControlDeathDelaySystem
 
 
 
-	//// Calculates accumulated increases remaining after death-free cooldowns.
+	//// Calculates counted deaths remaining after death-free cooldowns.
 	////
 	//// Cooldown periods use UTC wall time and therefore continue while the
 	//// player is offline.  The calculation is lazy: persistence is updated on
 	//// the next death rather than by a permanent server tick listener.
 	////
-	private static int GetDecayedIncrementCount(
+	private static int GetDecayedDeathCount(
 		ParentalControlDeathDelayState state,
 		long nowMilliseconds)
 	{
-		if (state.AccumulatedIncrements <= 0
-			|| state.LastDeathAtUtcMilliseconds <= 0
-			|| GhaelenTweaksConfig.Current.PcDeathDelayIncrease <= 0)
+		if (state.DeathCount <= 0 || state.LastDeathAtUtcMilliseconds <= 0)
 		{
 			return 0;
 		}
 
 		long elapsedMilliseconds = Math.Max(0, nowMilliseconds - state.LastDeathAtUtcMilliseconds);
-		long cooldownMilliseconds = (long)GhaelenTweaksConfig.Current.PcDeathDelayCooldown * 1000;
-		long expiredIncrements = elapsedMilliseconds / cooldownMilliseconds;
+		long cooldownMilliseconds = (long)GhaelenTweaksConfig.Current.PcSpawnDelayCooldown * 1000;
+		long expiredDeaths = elapsedMilliseconds / cooldownMilliseconds;
 
-		if (expiredIncrements >= state.AccumulatedIncrements)
+		if (expiredDeaths >= state.DeathCount)
 		{
 			return 0;
 		}
 
-		return state.AccumulatedIncrements - (int)expiredIncrements;
+		return state.DeathCount - (int)expiredDeaths;
 	}
 
 
@@ -362,12 +362,12 @@ internal static class ParentalControlDeathDelaySystem
 	//// Saturating arithmetic keeps corrupt or extremely old player state from
 	//// wrapping into a negative deadline.
 	////
-	private static long CalculateDelaySeconds(int accumulatedIncrements)
+	private static long CalculateDelaySeconds(int deathCount)
 	{
-		long increaseSeconds = MultiplySaturating(
-			accumulatedIncrements,
-			GhaelenTweaksConfig.Current.PcDeathDelayIncrease);
-		return AddSaturating(GhaelenTweaksConfig.Current.PcDeathDelay, increaseSeconds);
+		long penalizedDeaths = Math.Max(0, (long)deathCount - 1);
+		return MultiplySaturating(
+			penalizedDeaths,
+			GhaelenTweaksConfig.Current.PcSpawnDelayIncrement);
 	}
 
 
@@ -463,8 +463,16 @@ internal static class ParentalControlDeathDelaySystem
 
 internal sealed class ParentalControlDeathDelayState
 {
+	[JsonProperty("death-count")]
+	public int DeathCount { get; set; }
+
+	//// Migrates the 0.6.x persisted counter without writing its old name again.
+	////
 	[JsonProperty("accumulated-increments")]
-	public int AccumulatedIncrements { get; set; }
+	private int LegacyAccumulatedIncrements
+	{
+		set => DeathCount = Math.Max(DeathCount, value);
+	}
 
 	[JsonProperty("last-death-at-utc-milliseconds")]
 	public long LastDeathAtUtcMilliseconds { get; set; }

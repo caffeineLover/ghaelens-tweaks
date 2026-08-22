@@ -1,5 +1,26 @@
 # Releases
 
+## Version 0.6.2
+
+**Tag:** `0.6.2`
+
+**Released:** 2026-08-21
+
+This release gives players their first death for free while retaining an escalating, recoverable consequence for
+repeated deaths.
+
+### Changes
+
+- The first counted death now has no respawn delay.
+- With default settings, consecutive deaths now wait 0, 20, 40, and 60 seconds.
+- Every 900 death-free seconds removes one counted death, continuing while the player is offline until the count reaches
+  zero.
+- Replaced the three earlier numeric delay settings with `pc-spawn-delay-increment` and
+  `pc-spawn-delay-cooldown`, both exposed through Config Lib.
+- Existing 0.6.x accumulated death state migrates automatically to the new counter.
+
+
+
 ## Version 0.6.1
 
 **Tag:** `0.6.1`

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.6.2 - 2026-08-21
+
+### Changed
+
+- Changed escalating respawn delays so the first counted death is free and later deaths wait
+  `(counted deaths - 1) * pc-spawn-delay-increment` seconds.
+- Replaced `pc-death-delay`, `pc-death-delay-increase`, and `pc-death-delay-cooldown` with
+  `pc-spawn-delay-increment` (default `20`) and `pc-spawn-delay-cooldown` (default `900`).
+- Changed each complete death-free cooldown period to remove one counted death until the count reaches zero.
+- Bumped `Ghaelen Tweaks/modinfo.json` version from `0.6.1` to `0.6.2`.
+
 ## 0.6.1 - 2026-08-21
 
 ### Fixed

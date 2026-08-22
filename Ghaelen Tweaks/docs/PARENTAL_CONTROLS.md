@@ -50,32 +50,30 @@ play.
 | Setting | Default | Unit | Meaning |
 |---|---:|---|---|
 | `pc-use-death-delay` | true | boolean | Master switch for escalating respawn delays. |
-| `pc-death-delay` | 15 | seconds | Base delay included in every death's respawn wait. |
-| `pc-death-delay-increase` | 15 | seconds | Amount added for every currently accumulated death increase. |
-| `pc-death-delay-cooldown` | 900 | seconds | Death-free time that removes one accumulated increase. |
+| `pc-spawn-delay-increment` | 20 | seconds | Delay added for each counted death beyond the free first death. |
+| `pc-spawn-delay-cooldown` | 900 | seconds | Death-free time that removes one counted death. |
 
-The base and increase accept `0..3600`. The cooldown accepts `1..604800`. Turning off `pc-use-death-delay` immediately
-releases active delays and prevents deaths from escalating the system while it is disabled.
+The increment accepts `0..3600`. The cooldown accepts `1..604800`. Turning off `pc-use-death-delay` immediately releases
+active delays and prevents deaths from increasing the count while it is disabled.
 
 ### Escalation and recovery
 
-1. Before processing a death, remove one accumulated increase for every complete cooldown period since the previous
-   death.
-2. Add one new increase for the current death.
-3. Assign `base + (accumulated increases * increase)` seconds to the current death.
+1. Before processing a death, subtract one from the counted deaths for every complete cooldown period since the previous
+   death, stopping at zero.
+2. Add one counted death for the current death.
+3. Assign `max(0, counted deaths - 1) * increment` seconds to the current death.
 4. Restart the death-free cooldown window from that death.
-5. Repeat cooldown recovery until the accumulated increases reach zero, leaving only the configured base for a future
-   death.
+5. Repeat cooldown recovery until the counted deaths reach zero.
 
-With the defaults, consecutive deaths wait 30, 45, 60, and 75 seconds. After 15 death-free minutes, one increase is
-removed. After 30 death-free minutes, two increases are removed. Death-free cooldown time uses UTC wall time and
+With the defaults, consecutive deaths wait 0, 20, 40, and 60 seconds. After 15 death-free minutes, one counted death is
+removed. After 30 death-free minutes, two counted deaths are removed. Death-free cooldown time uses UTC wall time and
 continues while the player is offline.
 
 ### Enforcement and presentation
 
-- The server persists the accumulated increase count, last-death time, and active respawn deadline in permanent player
+- The server persists the counted deaths, last-death time, and active respawn deadline in permanent player
   mod data.
-- The current death uses the newly increased delay.
+- The first counted death is free; the current death otherwise uses the newly increased count.
 - A server Harmony prefix rejects respawn requests before vanilla consumes a temporal return-point use or begins
   teleporting.
 - A client Harmony prefix prevents an early click from latching vanilla's `respawning` state, and the countdown tick
@@ -88,14 +86,14 @@ continues while the player is offline.
 
 ### Acceptance criteria
 
-- [x] The first death with default settings has a 30-second delay.
-- [x] Each consecutive death adds another 15 seconds.
-- [x] Every complete 900-second death-free period removes one accumulated 15-second increase.
-- [x] Recovery repeats until no accumulated increases remain.
+- [x] The first counted death has no respawn delay.
+- [x] Each consecutive death adds another 20 seconds with default settings.
+- [x] Every complete 900-second death-free period removes one counted death.
+- [x] Recovery repeats until the counted deaths reach zero.
 - [x] The server rejects early respawn packets even if the client UI is bypassed.
 - [x] An early rejected respawn attempt does not leave the death dialog permanently disabled.
 - [x] Active delay and escalation state survive reconnects and server restarts.
-- [x] Config Lib exposes the master switch and all three numeric settings with their units, defaults, and ranges.
+- [x] Config Lib exposes the master switch and both numeric settings with their units, defaults, and ranges.
 
 ## Draft: escalating respawn sickness
 

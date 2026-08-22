@@ -100,21 +100,15 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("pc-use-death-delay")]
 	public bool PcUseDeathDelay { get; set; } = true;
 
-	//// Sets the base number of seconds added to every escalated death delay.
+	//// Sets the delay seconds contributed by each death beyond the free one.
 	////
-	[JsonProperty("pc-death-delay")]
-	public int PcDeathDelay { get; set; } = 15;
+	[JsonProperty("pc-spawn-delay-increment")]
+	public int PcSpawnDelayIncrement { get; set; } = 20;
 
-	//// Sets the number of seconds added to the current delay after each death.
+	//// Sets the death-free seconds required to remove one counted death.
 	////
-	[JsonProperty("pc-death-delay-increase")]
-	public int PcDeathDelayIncrease { get; set; } = 15;
-
-	//// Sets the death-free seconds required to remove one accumulated delay
-	//// increase.
-	////
-	[JsonProperty("pc-death-delay-cooldown")]
-	public int PcDeathDelayCooldown { get; set; } = 15 * 60;
+	[JsonProperty("pc-spawn-delay-cooldown")]
+	public int PcSpawnDelayCooldown { get; set; } = 15 * 60;
 
 	//// Reserves the master switch for the planned respawn-sickness system.
 	////
@@ -142,9 +136,8 @@ public sealed class GhaelenTweaksConfig
 		MarkingChalkUses = ClampMarkingChalkUses(MarkingChalkUses);
 		MarkingChalkDyeBatchSize = ClampMarkingChalkDyeBatchSize(MarkingChalkDyeBatchSize);
 		TemporalMarkingChalkLightLevel = ClampLightLevel(TemporalMarkingChalkLightLevel);
-		PcDeathDelay = ClampPcDeathDelay(PcDeathDelay);
-		PcDeathDelayIncrease = ClampPcDeathDelay(PcDeathDelayIncrease);
-		PcDeathDelayCooldown = ClampPcDeathDelayCooldown(PcDeathDelayCooldown);
+		PcSpawnDelayIncrement = ClampPcSpawnDelayIncrement(PcSpawnDelayIncrement);
+		PcSpawnDelayCooldown = ClampPcSpawnDelayCooldown(PcSpawnDelayCooldown);
 	}
 
 
@@ -262,14 +255,12 @@ public sealed class GhaelenTweaksConfig
 
 
 
-	//// Clamps a parental-controls death delay component to the supported
-	//// range of zero through one hour.
+	//// Clamps the per-death delay increment to zero through one hour.
 	////
-	//// Zero remains valid for both the base and increase settings.  Setting
-	//// both values to zero disables the effective delay without a separate
-	//// feature toggle.
+	//// Zero remains valid because it disables the effective delay without
+	//// disabling death-count tracking or the master switch.
 	////
-	private static int ClampPcDeathDelay(int seconds)
+	private static int ClampPcSpawnDelayIncrement(int seconds)
 	{
 		if (seconds < 0)
 		{
@@ -284,9 +275,9 @@ public sealed class GhaelenTweaksConfig
 	//// Clamps the death-free cooldown to one second through seven days.
 	////
 	//// A positive cooldown avoids division by zero when the server lazily
-	//// calculates how many accumulated increases have expired.
+	//// calculates how many counted deaths have expired.
 	////
-	private static int ClampPcDeathDelayCooldown(int seconds)
+	private static int ClampPcSpawnDelayCooldown(int seconds)
 	{
 		if (seconds < 1)
 		{

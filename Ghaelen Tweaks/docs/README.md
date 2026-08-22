@@ -124,14 +124,13 @@ The player crafting grid can now keep its ingredients when the inventory closes.
 
 ## Parental Controls: Respawn Delay
 
-Repeated deaths now create a progressively longer, recoverable respawn delay.
+Repeated deaths now create a progressively longer, recoverable respawn delay after a free first death.
 
 - `pc-use-death-delay` enables the system; it defaults to `true`.
-- `pc-death-delay` sets the base delay in seconds; the default is `15`.
-- `pc-death-delay-increase` adds that many seconds on every death; the default is `15`.
-- `pc-death-delay-cooldown` removes one accumulated increase after that many death-free seconds; the default is `900`
-  seconds, or 15 minutes.
-- The current death receives the newly added increase, so the first default delay is 30 seconds.
+- `pc-spawn-delay-increment` sets the seconds added for each counted death beyond the first; the default is `20`.
+- `pc-spawn-delay-cooldown` removes one counted death after that many death-free seconds; the default is `900` seconds,
+  or 15 minutes.
+- If `n` is the current counted deaths, the delay is `max(0, n - 1) * increment`; the first death is free.
 - Cooldown recovery repeats and continues while the player is offline.
 - The server enforces the deadline and the death screen displays the remaining time.
 - All death-delay settings can be edited through Config Lib when it is installed.

@@ -8,11 +8,11 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.6.1` contains the escalating, recoverable per-player respawn delay and prevents rejected early respawn attempts from leaving the death dialog permanently disabled. The broader consequence backlog and draft movement-sickness design live in `docs/PARENTAL_CONTROLS.md`.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.6.2` gives the first counted death a free respawn, escalates later deaths by a configurable increment, and retains the 0.6.1 fix for rejected early respawn attempts. The broader consequence backlog and draft movement-sickness design live in `docs/PARENTAL_CONTROLS.md`.
 
 ## Active work
 
-No active implementation work is currently in progress. Version `0.6.1` uses tag `0.6.1`.
+No active implementation work is currently in progress. Version `0.6.2` uses tag `0.6.2`.
 
 ## Durable technical knowledge
 
@@ -28,9 +28,11 @@ No active implementation work is currently in progress. Version `0.6.1` uses tag
 - `assets/survival/patches/gray-dye.json` appends an affordable gray dye recipe without replacing the vanilla rusty
   gear or metal scraps recipes.
 - Parental-controls respawn delay state is persisted per player under mod-data key
-  `ghaelentweaks:pc-death-delay-state`. Defaults are 15 base seconds, 15 seconds added by each death, and a 900-second
-  death-free cooldown that removes one accumulated increase repeatedly. Cooldown calculations use UTC wall time and
-  therefore include offline time.
+  `ghaelentweaks:pc-death-delay-state`. The defaults are a 20-second increment and a 900-second death-free
+  cooldown. Delay is `max(0, death count - 1) * increment`, and each complete cooldown removes one death from the count
+  down to zero. Cooldown calculations use UTC wall time and therefore include offline time.
+- Persisted `accumulated-increments` state from versions 0.6.0 and 0.6.1 migrates to `death-count` when next read and is
+  saved only under the new name afterward.
 - The respawn delay is enforced by a server Harmony prefix on
   `Vintagestory.Server.ServerSystemEntitySimulation.OnPlayerRespawn(IServerPlayer)`. A one-way protobuf packet on
   `ghaelentweaks-pc-death-delay` drives the client death-dialog countdown; client state is presentational only.
@@ -153,6 +155,10 @@ No active implementation work is currently in progress. Version `0.6.1` uses tag
 - Release `0.6.1` pre-tag verification ran `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`
   and `dotnet build "Ghaelen Tweaks.sln"` on 2026-08-21. JSON validation and the solution build passed; the only
   warnings were the existing CakeBuild NuGet vulnerability advisories.
+- Release `0.6.2` pre-tag verification ran `git diff --check`,
+  `dotnet run --project CakeBuild/CakeBuild.csproj -- --target=ValidateJson`, and
+  `dotnet build "Ghaelen Tweaks.sln"` on 2026-08-21. All checks passed; the only warnings were the existing CakeBuild
+  NuGet vulnerability advisories and Git line-ending normalization notices.
 - The 2026-08-09 cat immunity removal parsed `assets/game/lang/en.json` and `assets/ghaelentweaks/config/configlib-patches.json` with PowerShell `ConvertFrom-Json`. A targeted `rg` scan found no active source or asset references to `CatImpervious`, `cat-impervious`, `OnEntityReceiveDamage`, or `damage = 0`; `git diff --check` reported only the repository's existing CRLF normalization warnings. `dotnet build` was not run because explicit build permission was not given.
 - The 2026-08-09 marking chalk implementation parsed the new strict JSON assets and modified language/config JSON with PowerShell `ConvertFrom-Json`, generated 100 block mark PNGs and 10 item PNGs, visually inspected sample textures, and ran `git diff --check`; only the repository's existing CRLF normalization warnings were reported. `dotnet build` was not run because explicit build permission was not given.
 
@@ -212,6 +218,11 @@ No active implementation work is currently in progress. Version `0.6.1` uses tag
 - Diagnosed a live multiplayer deadlock in which an early respawn request was rejected by the server after vanilla had
   latched its private client `respawning` flag. Added a client `OnRespawn` prefix plus stale-state recovery in the
   countdown tick, and verified the private target method and field against the StoryForge 1.22.7 assembly.
+- Reworked delay escalation so counted deaths produce default waits of 0, 20, 40, and 60 seconds. Replaced the three
+  earlier numeric settings with `pc-spawn-delay-increment` and `pc-spawn-delay-cooldown`, both exposed through Config
+  Lib. Reflection checks verified formula outputs, repeated cooldown decay to zero, and legacy counter migration;
+  solution build and JSON validation passed with only the existing CakeBuild NuGet advisories.
+- Prepared this first-death-free redesign for release `0.6.2` with tag `0.6.2`.
 
 ### 2026-08-09
 

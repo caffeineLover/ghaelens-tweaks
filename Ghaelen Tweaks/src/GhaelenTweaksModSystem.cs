@@ -283,19 +283,14 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 					tree.GetBool("value", GhaelenTweaksConfig.Current.PcUseDeathDelay);
 				break;
 
-			case "pc-death-delay":
-				GhaelenTweaksConfig.Current.PcDeathDelay =
-					tree.GetInt("value", GhaelenTweaksConfig.Current.PcDeathDelay);
+			case "pc-spawn-delay-increment":
+				GhaelenTweaksConfig.Current.PcSpawnDelayIncrement =
+					tree.GetInt("value", GhaelenTweaksConfig.Current.PcSpawnDelayIncrement);
 				break;
 
-			case "pc-death-delay-increase":
-				GhaelenTweaksConfig.Current.PcDeathDelayIncrease =
-					tree.GetInt("value", GhaelenTweaksConfig.Current.PcDeathDelayIncrease);
-				break;
-
-			case "pc-death-delay-cooldown":
-				GhaelenTweaksConfig.Current.PcDeathDelayCooldown =
-					tree.GetInt("value", GhaelenTweaksConfig.Current.PcDeathDelayCooldown);
+			case "pc-spawn-delay-cooldown":
+				GhaelenTweaksConfig.Current.PcSpawnDelayCooldown =
+					tree.GetInt("value", GhaelenTweaksConfig.Current.PcSpawnDelayCooldown);
 				break;
 
 			case "pc-use-respawn-sickness":

@@ -1,13 +1,7 @@
-/*
-	Build pipeline for Ghaelen Tweaks. It reads release metadata from modinfo.json, validates the JSON assets that
-	Vintage Story will load, builds the code mod, and creates the versioned ModDB-ready zip.
-*/
-
 using Cake.Frosting;
+using CakeBuild.Tasks;
 
 namespace CakeBuild;
-
-
 
 public static class Program
 {
@@ -21,5 +15,8 @@ public static class Program
 
 
 
-// Cake constructs this context by reflection; there is intentionally no direct new BuildContext(...) call.
-// ReSharper disable once ClassNeverInstantiated.Global
+[TaskName("Default")]
+[IsDependentOn(typeof(BuildTask))]
+public class DefaultTask : FrostingTask
+{
+}

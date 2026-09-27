@@ -16,4 +16,8 @@
             <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
         </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Tasks\" />
+    </ItemGroup>
 </Project>

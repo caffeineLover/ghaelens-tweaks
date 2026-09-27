@@ -1,40 +1,31 @@
-﻿using Cake.Common.IO;
-using Cake.Common.Tools.DotNet;
-using Cake.Common.Tools.DotNet.Build;
+﻿// Creates the distributable Vintage Story ZIP from the staged mod.  Packaging does not modify the deployed test copy
+// and does not clear older release archives from the Releases directory.
+
+using Cake.Common.IO;
 using Cake.Frosting;
 
-namespace CakeBuild;
+namespace CakeBuild.Tasks;
 
 [TaskName("Package")]
-[IsDependentOn(typeof(ValidateJsonTask))]
+[IsDependentOn(typeof(StageModTask))]
 public sealed class PackageTask : FrostingTask<BuildContext>
 {
 	public override void Run(BuildContext context)
 	{
-		context.DotNetBuild($"../{BuildContext.ProjectName}/{BuildContext.ProjectName}.csproj", new DotNetBuildSettings
-		{
-			Configuration = "Release"
-		});
+		var releasesDirectory = "../Releases";
+		var source = $"./bin/staging/{context.Name}";
+		var package = $"{releasesDirectory}/{context.Name}_{context.Version}.zip";
 
-		context.EnsureDirectoryExists("../Releases");
-		context.CleanDirectory("../Releases");
-		context.EnsureDirectoryExists($"../Releases/{context.Name}");
+		// Preserve existing releases while ensuring a package for the current version can be rebuilt cleanly.
+		context.EnsureDirectoryExists(releasesDirectory);
 
-		if (context.DirectoryExists($"../{BuildContext.ProjectName}/assets"))
+		if (context.FileExists(package))
 		{
-			context.CopyDirectory($"../{BuildContext.ProjectName}/assets", $"../Releases/{context.Name}/assets");
+			context.DeleteFile(package);
 		}
 
-		context.CopyFile($"../{BuildContext.ProjectName}/modinfo.json", $"../Releases/{context.Name}/modinfo.json");
-		if (context.FileExists($"../{BuildContext.ProjectName}/modicon.png"))
-		{
-			context.CopyFile($"../{BuildContext.ProjectName}/modicon.png", $"../Releases/{context.Name}/modicon.png");
-		}
-
-		context.CopyFile(
-			$"../{BuildContext.ProjectName}/bin/Release/Mods/{context.Name}/GhaelenTweaks.dll",
-			$"../Releases/{context.Name}/GhaelenTweaks.dll");
-
-		context.Zip($"../Releases/{context.Name}", $"../Releases/{context.Name}_{context.Version}.zip");
+		// Zip the staged mod contents directly so modinfo.json, the DLL, assets, and optional icon are at the ZIP root.
+		context.Zip(source, package);
 	}
 }
+

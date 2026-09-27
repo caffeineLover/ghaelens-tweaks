@@ -1,23 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="Directory.Build.props.user" Condition="Exists('Directory.Build.props.user')" />
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <AssemblyName>GhaelenTweaks</AssemblyName>
-    <RootNamespace>GhaelenTweaks</RootNamespace>
-    <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>bin\$(Configuration)\Mods\ghaelentweaks\</OutputPath>
-    <StoryForgeVintageStoryInstall>$(APPDATA)\StoryForge\versions\1.22.2</StoryForgeVintageStoryInstall>
-    <VintageStoryInstall Condition="'$(VintageStoryInstall)' == '' and Exists('$(StoryForgeVintageStoryInstall)\VintagestoryAPI.dll')">$(StoryForgeVintageStoryInstall)</VintageStoryInstall>
-    <VintageStoryInstall Condition="'$(VintageStoryInstall)' == ''">$(VINTAGE_STORY)</VintageStoryInstall>
-    <VintageStoryApiDll>$(VintageStoryInstall)\VintagestoryAPI.dll</VintageStoryApiDll>
-    <VintageStoryHarmonyDll>$(VintageStoryInstall)\Lib\0Harmony.dll</VintageStoryHarmonyDll>
-    <VintageStoryNewtonsoftJsonDll>$(VintageStoryInstall)\Lib\Newtonsoft.Json.dll</VintageStoryNewtonsoftJsonDll>
-    <VintageStoryProtobufDll>$(VintageStoryInstall)\Lib\protobuf-net.dll</VintageStoryProtobufDll>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<AssemblyName>GhaelenTweaks</AssemblyName>
+		<RootNamespace>GhaelenTweaks</RootNamespace>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<OutputPath>bin\$(Configuration)\Mods\mod</OutputPath>
+		<StoryForgeVintageStoryInstall>$(APPDATA)\StoryForge\versions\1.22.2</StoryForgeVintageStoryInstall>
+		<VintageStoryInstall Condition="'$(VintageStoryInstall)' == '' and Exists('$(StoryForgeVintageStoryInstall)\VintagestoryAPI.dll')">$(StoryForgeVintageStoryInstall)</VintageStoryInstall>
+		<VintageStoryInstall Condition="'$(VintageStoryInstall)' == ''">$(VINTAGE_STORY)</VintageStoryInstall>
+		<VintageStoryApiDll>$(VintageStoryInstall)\VintagestoryAPI.dll</VintageStoryApiDll>
+		<VintageStoryHarmonyDll>$(VintageStoryInstall)\Lib\0Harmony.dll</VintageStoryHarmonyDll>
+		<VintageStoryNewtonsoftJsonDll>$(VintageStoryInstall)\Lib\Newtonsoft.Json.dll</VintageStoryNewtonsoftJsonDll>
+		<VintageStoryProtobufDll>$(VintageStoryInstall)\Lib\protobuf-net.dll</VintageStoryProtobufDll>
+	</PropertyGroup>
 
   <Target Name="ValidateVintageStoryApiReference" BeforeTargets="ResolveReferences">
     <Error Condition="'$(VintageStoryInstall)' == ''"

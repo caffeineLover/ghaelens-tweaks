@@ -17,8 +17,8 @@ public sealed class ValidateJsonTask : FrostingTask<BuildContext>
 			return;
 		}
 
-		var modOutputDirectory = $"../{BuildContext.ProjectName}/bin";
-		var jsonFiles = context.GetFiles($"../{BuildContext.ProjectName}/assets/**/*.json");
+		var modOutputDirectory = $"../{context.ProjectName}/bin";
+		var jsonFiles = context.GetFiles($"../{context.ProjectName}/assets/**/*.json");
 		foreach (var file in jsonFiles)
 		{
 			if (file.FullPath.StartsWith(context.MakeAbsolute(context.Directory(modOutputDirectory)).FullPath))

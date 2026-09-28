@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using Vintagestory.API.Common;
 
-namespace GhaelenTweaks.Compatibility.XSkills
+namespace GhaelenTweaks.XSkills
 {
     /// <summary>
     /// Reflection-only adapter for xSkills/xLib.

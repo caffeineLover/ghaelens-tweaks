@@ -3,6 +3,8 @@
 
 using Cake.Common.IO;
 using Cake.Frosting;
+using Cake.Common.Diagnostics;
+
 
 namespace CakeBuild.Tasks;
 
@@ -26,5 +28,8 @@ public sealed class PackageTask : FrostingTask<BuildContext>
 
 		// Zip the staged mod contents directly so modinfo.json, the DLL, assets, and optional icon are at the ZIP root.
 		context.Zip(source, package);
+		
+		var fullPackagePath = context.MakeAbsolute(context.File(package)).FullPath;
+		context.Information($"Package created: {fullPackagePath}");
 	}
 }

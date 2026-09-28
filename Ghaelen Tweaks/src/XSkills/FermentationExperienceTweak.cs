@@ -8,7 +8,7 @@ using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 
-namespace GhaelenTweaks.Compatibility.XSkills
+namespace GhaelenTweaks.XSkills
 {
     /// <summary>
     /// Adds process-based Fermentation XP to xSkills without compile-time
@@ -297,7 +297,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
                 return;
             }
 
-            BarrelState state = BarrelStates.GetOrCreateValue(__instance);
+            BarrelState state = BarrelStates.GetOrCreateValue(__instance)!;
             state.Active = true;
             state.BrewerUid = player.PlayerUID;
             state.RecipeCode = recipeCode;
@@ -337,7 +337,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
                 return;
             }
 
-            BarrelState state = BarrelStates.GetOrCreateValue(__instance);
+            BarrelState state = BarrelStates.GetOrCreateValue(__instance)!;
 
             if (!state.Active
                 || string.IsNullOrEmpty(state.BrewerUid)
@@ -369,7 +369,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
             object __instance,
             ITreeAttribute tree)
         {
-            BarrelState state = BarrelStates.GetOrCreateValue(__instance);
+            BarrelState state = BarrelStates.GetOrCreateValue(__instance)!;
 
             tree.SetBool(BarrelActiveKey, state.Active);
 
@@ -398,7 +398,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
             object __instance,
             ITreeAttribute tree)
         {
-            BarrelState state = BarrelStates.GetOrCreateValue(__instance);
+            BarrelState state = BarrelStates.GetOrCreateValue(__instance)!;
 
             state.Active = tree.GetBool(BarrelActiveKey, false);
 
@@ -426,7 +426,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
                 return;
             }
 
-            PressState state = PressStates.GetOrCreateValue(__instance);
+            PressState state = PressStates.GetOrCreateValue(__instance)!;
             state.PlayerUid = fromPlayer.PlayerUID;
         }
 
@@ -449,7 +449,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
                 return;
             }
 
-            PressState state = PressStates.GetOrCreateValue(__instance);
+            PressState state = PressStates.GetOrCreateValue(__instance)!;
 
             if (string.IsNullOrEmpty(state.PlayerUid))
             {
@@ -520,7 +520,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
                 return;
             }
 
-            BoilerState state = BoilerStates.GetOrCreateValue(boiler);
+            BoilerState state = BoilerStates.GetOrCreateValue(boiler)!;
             state.PlayerUid = byPlayer.PlayerUID;
 
             MarkDirty(boiler);
@@ -537,7 +537,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
             object __instance,
             float __state)
         {
-            float after = GetAdjacentDistillateLitres(__instance);
+            float after = GetAdjacentDistillateLitres(__instance)!;
             float produced = after - __state;
 
             if (produced <= 0f)
@@ -545,7 +545,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
                 return;
             }
 
-            BoilerState state = BoilerStates.GetOrCreateValue(__instance);
+            BoilerState state = BoilerStates.GetOrCreateValue(__instance)!;
 
             if (string.IsNullOrEmpty(state.PlayerUid))
             {
@@ -562,7 +562,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
             object __instance,
             ITreeAttribute tree)
         {
-            BoilerState state = BoilerStates.GetOrCreateValue(__instance);
+            BoilerState state = BoilerStates.GetOrCreateValue(__instance)!;
 
             if (string.IsNullOrEmpty(state.PlayerUid))
             {
@@ -579,7 +579,7 @@ namespace GhaelenTweaks.Compatibility.XSkills
             object __instance,
             ITreeAttribute tree)
         {
-            BoilerState state = BoilerStates.GetOrCreateValue(__instance);
+            BoilerState state = BoilerStates.GetOrCreateValue(__instance)!;
             state.PlayerUid =
                 tree.GetString(BoilerOwnerUidKey, null);
         }

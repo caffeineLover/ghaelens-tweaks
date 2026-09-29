@@ -293,6 +293,16 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 					tree.GetInt("value", GhaelenTweaksConfig.Current.PcSpawnDelayCooldown);
 				break;
 
+			case "pc-exempt-root":
+				GhaelenTweaksConfig.Current.PcExemptRoot =
+					tree.GetBool("value", GhaelenTweaksConfig.Current.PcExemptRoot);
+				break;
+
+			case "pc-exempt-by-username":
+				GhaelenTweaksConfig.Current.PcExemptByUsername =
+					tree.GetAsString("value") ?? GhaelenTweaksConfig.Current.PcExemptByUsername;
+				break;
+
 			case "pc-use-respawn-sickness":
 				GhaelenTweaksConfig.Current.PcUseRespawnSickness =
 					tree.GetBool("value", GhaelenTweaksConfig.Current.PcUseRespawnSickness);
@@ -319,7 +329,9 @@ public sealed class GhaelenTweaksModSystem : ModSystem
 
 				if (settingCode is "pc-use-death-delay"
 					or "pc-spawn-delay-increment"
-					or "pc-spawn-delay-cooldown")
+					or "pc-spawn-delay-cooldown"
+					or "pc-exempt-root"
+					or "pc-exempt-by-username")
 				{
 					ParentalControlDeathDelaySystem.ApplyConfigChange();
 				}

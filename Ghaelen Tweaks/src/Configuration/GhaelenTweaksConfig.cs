@@ -110,6 +110,23 @@ public sealed class GhaelenTweaksConfig
 	[JsonProperty("pc-spawn-delay-cooldown")]
 	public int PcSpawnDelayCooldown { get; set; } = 15 * 60;
 
+	//// Controls whether privileged server roles bypass parental-controls delays.
+	////
+	//// A privileged role has a Vintage Story privilege level above the normal
+	//// player level.  This includes root, operator, and custom administrative
+	//// roles.
+	////
+	[JsonProperty("pc-exempt-root")]
+	public bool PcExemptRoot { get; set; } = true;
+
+	//// Names players who bypass parental-controls delays.
+	////
+	//// Supply a comma-separated list of player names.  Matching trims spaces
+	//// and ignores letter case so server operators can format the list freely.
+	////
+	[JsonProperty("pc-exempt-by-username")]
+	public string PcExemptByUsername { get; set; } = string.Empty;
+
 	//// Reserves the master switch for the planned respawn-sickness system.
 	////
 	[JsonProperty("pc-use-respawn-sickness")]

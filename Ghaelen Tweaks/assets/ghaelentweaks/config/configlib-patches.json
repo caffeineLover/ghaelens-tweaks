@@ -194,11 +194,27 @@
     },
     {
       "type": "boolean",
+      "code": "pc-exempt-root",
+      "ingui": "ghaelentweaks:setting-pc-exempt-root",
+      "comment": "ghaelentweaks:setting-pc-exempt-root-comment",
+      "default": true,
+      "sortingWeight": 18
+    },
+    {
+      "type": "string",
+      "code": "pc-exempt-by-username",
+      "ingui": "ghaelentweaks:setting-pc-exempt-by-username",
+      "comment": "ghaelentweaks:setting-pc-exempt-by-username-comment",
+      "default": "",
+      "sortingWeight": 19
+    },
+    {
+      "type": "boolean",
       "code": "pc-use-respawn-sickness",
       "ingui": "ghaelentweaks:setting-pc-use-respawn-sickness",
       "comment": "ghaelentweaks:setting-pc-use-respawn-sickness-comment",
       "default": false,
-      "sortingWeight": 18
+      "sortingWeight": 20
     }
   ]
 }

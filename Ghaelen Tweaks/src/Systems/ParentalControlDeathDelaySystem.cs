@@ -116,7 +116,7 @@ internal static class ParentalControlDeathDelaySystem
 	////
 	internal static bool IsServerRespawnAllowed(IServerPlayer player)
 	{
-		if (!GhaelenTweaksConfig.Current.PcUseDeathDelay)
+		if (!GhaelenTweaksConfig.Current.PcUseDeathDelay || IsExempt(player))
 		{
 			ClearServerDelay(player);
 			return true;
@@ -253,9 +253,9 @@ internal static class ParentalControlDeathDelaySystem
 	////
 	private static void OnPlayerDeath(IServerPlayer player, DamageSource damageSource)
 	{
-		if (!GhaelenTweaksConfig.Current.PcUseDeathDelay)
+		if (!GhaelenTweaksConfig.Current.PcUseDeathDelay || IsExempt(player))
 		{
-			SendClearDelayPacket(player);
+			ClearServerDelay(player);
 			return;
 		}
 
@@ -299,7 +299,7 @@ internal static class ParentalControlDeathDelaySystem
 	////
 	private static void SyncPlayerDelay(IServerPlayer player)
 	{
-		if (!GhaelenTweaksConfig.Current.PcUseDeathDelay)
+		if (!GhaelenTweaksConfig.Current.PcUseDeathDelay || IsExempt(player))
 		{
 			ClearServerDelay(player);
 			return;
@@ -340,6 +340,41 @@ internal static class ParentalControlDeathDelaySystem
 		}
 
 		SendClearDelayPacket(player);
+	}
+
+
+
+	//// Determines whether parental controls should ignore one server player.
+	////
+	//// Privileged roles have a higher Vintage Story privilege level than normal
+	//// players.  The username list supplements role-based exemptions for named
+	//// accounts and is split lazily because configuration changes at runtime.
+	////
+	private static bool IsExempt(IServerPlayer player)
+	{
+		if (GhaelenTweaksConfig.Current.PcExemptRoot
+			&& player.Role?.PrivilegeLevel > 0)
+		{
+			return true;
+		}
+
+		string configuredUsernames = GhaelenTweaksConfig.Current.PcExemptByUsername;
+		if (string.IsNullOrWhiteSpace(configuredUsernames))
+		{
+			return false;
+		}
+
+		foreach (string username in configuredUsernames.Split(
+			',',
+			StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+		{
+			if (string.Equals(username, player.PlayerName, StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 

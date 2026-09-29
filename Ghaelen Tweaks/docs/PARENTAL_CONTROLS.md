@@ -52,9 +52,12 @@ play.
 | `pc-use-death-delay` | true | boolean | Master switch for escalating respawn delays. |
 | `pc-spawn-delay-increment` | 20 | seconds | Delay added for each counted death beyond the free first death. |
 | `pc-spawn-delay-cooldown` | 900 | seconds | Death-free time that removes one counted death. |
+| `pc-exempt-root` | true | boolean | Exempt root, operator, and custom privileged roles. |
+| `pc-exempt-by-username` | empty | comma-separated usernames | Exempt named players, ignoring letter case. |
 
 The increment accepts `0..3600`. The cooldown accepts `1..604800`. Turning off `pc-use-death-delay` immediately releases
 active delays and prevents deaths from increasing the count while it is disabled.
+Exempt players do not accrue counted deaths and are released from any active delay when their exemption applies.
 
 ### Escalation and recovery
 

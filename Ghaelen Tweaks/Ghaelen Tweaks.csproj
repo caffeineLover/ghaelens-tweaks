@@ -10,7 +10,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>bin\$(Configuration)\Mods\mod</OutputPath>
-		<StoryForgeVintageStoryInstall>$(APPDATA)\StoryForge\versions\1.22.2</StoryForgeVintageStoryInstall>
+		<StoryForgeVintageStoryInstall>$(APPDATA)\StoryForge\versions\1.22.7</StoryForgeVintageStoryInstall>
 		<VintageStoryInstall Condition="'$(VintageStoryInstall)' == '' and Exists('$(StoryForgeVintageStoryInstall)\VintagestoryAPI.dll')">$(StoryForgeVintageStoryInstall)</VintageStoryInstall>
 		<VintageStoryInstall Condition="'$(VintageStoryInstall)' == ''">$(VINTAGE_STORY)</VintageStoryInstall>
 		<VintageStoryApiDll>$(VintageStoryInstall)\VintagestoryAPI.dll</VintageStoryApiDll>

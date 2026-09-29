@@ -130,6 +130,8 @@ Repeated deaths now create a progressively longer, recoverable respawn delay aft
 - `pc-spawn-delay-increment` sets the seconds added for each counted death beyond the first; the default is `20`.
 - `pc-spawn-delay-cooldown` removes one counted death after that many death-free seconds; the default is `900` seconds,
   or 15 minutes.
+- `pc-exempt-root` exempts root, operator, and custom privileged roles; it defaults to `true`.
+- `pc-exempt-by-username` exempts a comma-separated, case-insensitive list of player names; it defaults to empty.
 - If `n` is the current counted deaths, the delay is `max(0, n - 1) * increment`; the first death is free.
 - Cooldown recovery repeats and continues while the player is offline.
 - The server enforces the deadline, and the death screen displays both the remaining time and the delay for one more

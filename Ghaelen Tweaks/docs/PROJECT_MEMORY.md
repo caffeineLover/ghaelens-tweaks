@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2026-08-22
+Last updated: 2026-09-29
 
 ## Project overview
 
@@ -8,7 +8,7 @@ Ghaelen Tweaks is a Vintage Story mod collected under the `Ghaelen Tweaks/` proj
 
 ## Current state
 
-The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Release `0.6.3` adds the server-calculated next death delay to the death dialog while retaining the free first respawn and escalating, recoverable delay. The broader consequence backlog and draft movement-sickness design live in `docs/PARENTAL_CONTROLS.md`.
+The mod project uses `Ghaelen Tweaks/Ghaelen Tweaks.csproj`. Documentation currently lives under `Ghaelen Tweaks/docs/`. Source code now lives under `Ghaelen Tweaks/src/`, with related source files grouped into feature-oriented subfolders where there is a clear functional grouping. The C# files have been updated to follow the shared comment and callable-member spacing standards. The mod also contains content patches for recipe and asset changes under `Ghaelen Tweaks/assets/`. Version `0.7.0` targets Vintage Story `1.22.7`. The parental-controls system provides a free first respawn and escalating, recoverable delays; its broader consequence backlog and draft movement-sickness design live in `docs/PARENTAL_CONTROLS.md`.
 
 ## Active work
 
@@ -30,6 +30,9 @@ No active implementation work is currently in progress. Version `0.6.3` uses tag
   `ghaelentweaks:pc-death-delay-state`. The defaults are a 20-second increment and a 900-second death-free
   cooldown. Delay is `max(0, death count - 1) * increment`, and each complete cooldown removes one death from the count
   down to zero. Cooldown calculations use UTC wall time and therefore include offline time.
+- `pc-exempt-root` defaults to `true` and bypasses parental controls for every role whose Vintage Story privilege level
+  exceeds the normal player level. `pc-exempt-by-username` accepts a comma-separated, case-insensitive username list.
+  Exemptions release active respawn delays immediately and prevent further death-count accumulation.
 - Persisted `accumulated-increments` state from versions 0.6.0 and 0.6.1 migrates to `death-count` when next read and is
   saved only under the new name afterward.
 - The respawn delay is enforced by a server Harmony prefix on

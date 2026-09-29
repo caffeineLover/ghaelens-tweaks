@@ -5,9 +5,9 @@
   "authors": [
     "Ghaelen"
   ],
-  "description": "To be added",
-  "version": "0.7.0",
+  "description": "A collection of tweaks, QoL improvements, and optional features that Maester Ghaelen likes to play with.",
+  "version": "0.7.1",
   "dependencies": {
-    "game": "1.22.3"
+    "game": "1.22.7"
   }
 }
